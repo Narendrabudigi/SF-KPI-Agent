@@ -7,14 +7,14 @@ import config
 from clients import databricks_client
 from clients import databricks_sql_client
 
-console = Console()
+import runtime_state
 
 def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, severity: str, year: str, month: str):
     """
     Waits for MULTIPLE Databricks Notebook runs to complete, then fetches all their output tables via SQL.
     Returns a combined Problem Context for the Prescriptive LLM Agent.
     """
-    console.print(f"[bold cyan][RCA Coordinator][/bold cyan] Monitoring {len(run_info_list)} Databricks Runs simultaneously...")
+    runtime_state.log_system_event(f"[bold cyan][RCA Coordinator][/bold cyan] Monitoring {len(run_info_list)} Databricks Runs simultaneously...")
     
     start_time = time.time()
     pending_runs = list(run_info_list)
@@ -32,20 +32,20 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
                     result_state = state.get("result_state", "")
                     
                     if result_state == "SUCCESS":
-                        console.print(f"[bold green][RCA Coordinator][/bold green] Run {run_id} ({run_info['kpi_name']}) completed!")
+                        runtime_state.log_system_event(f"[bold green][RCA Coordinator][/bold green] Run {run_id} ({run_info['kpi_name']}) completed!")
                         completed_runs.append(run_info)
                         pending_runs.remove(run_info)
                     else:
-                        console.print(f"[bold red][RCA Coordinator] Databricks Run {run_id} ({run_info['kpi_name']}) Failed![/bold red] Result State: {result_state}")
+                        runtime_state.log_system_event(f"[bold red][RCA Coordinator] Databricks Run {run_id} ({run_info['kpi_name']}) Failed![/bold red] Result State: {result_state}")
                         pending_runs.remove(run_info)
                         
             except Exception as e:
-                console.print(f"[bold red][RCA Coordinator] API Error on Run {run_id}:[/bold red] {e}")
+                runtime_state.log_system_event(f"[bold red][RCA Coordinator] API Error on Run {run_id}:[/bold red] {e}")
                 
         if pending_runs:
             elapsed = time.time() - start_time
             if elapsed > config.MAX_WAIT_SECONDS:
-                console.print(f"[bold red][RCA Coordinator] Timeout waiting for runs.[/bold red]")
+                runtime_state.log_system_event(f"[bold red][RCA Coordinator] Timeout waiting for runs.[/bold red]")
                 break
             time.sleep(config.DATABRICKS_POLL_INTERVAL)
             
@@ -58,7 +58,7 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
         kpi_name = run_info["kpi_name"]
         is_primary = run_info["is_primary"]
         
-        console.print(f"[bold cyan][RCA Coordinator][/bold cyan] Fetching results for {kpi_name} from [bold]{table_name}[/bold]...")
+        runtime_state.log_system_event(f"[bold cyan][RCA Coordinator][/bold cyan] Fetching results for {kpi_name} from [bold]{table_name}[/bold]...")
         try:
             df = databricks_sql_client.fetch_results(table_name)
             # Filter the dataframe to only include rows related to the primary incident (case-insensitive column search)
@@ -71,14 +71,14 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
                 role = "PRIMARY BREACH ROOT CAUSES" if is_primary else f"CASCADING IMPACT ON {kpi_name}"
                 context_blocks.append(f"--- {role} ---\n{df.to_string()}\n")
             else:
-                console.print(f"[bold yellow][RCA Coordinator][/bold yellow] Warning: No matching rows found in {table_name} for {primary_kpi_name}.")
+                runtime_state.log_system_event(f"[bold yellow][RCA Coordinator][/bold yellow] Warning: No matching rows found in {table_name} for {primary_kpi_name}.")
                 
         except Exception as sql_e:
-            console.print(f"[bold red][RCA Coordinator] SQL Fetch Error for {table_name}:[/bold red] {sql_e}")
+            runtime_state.log_system_event(f"[bold red][RCA Coordinator] SQL Fetch Error for {table_name}:[/bold red] {sql_e}")
             
     if len(context_blocks) > 1:
         full_context = "\n".join(context_blocks)
-        console.print(Panel(full_context, title="🧠 ML Context Built for LLM", border_style="cyan"))
+        runtime_state.console.print(Panel(full_context, title="🧠 ML Context Built for LLM", border_style="cyan"))
         return full_context
     else:
         return None

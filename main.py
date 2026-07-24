@@ -55,6 +55,12 @@ def get_results():
             return JSONResponse(content={"error": str(e)}, status_code=500)
     return JSONResponse(content=[])
 
+@app.get("/api/status")
+def get_status():
+    """Returns the live in-memory execution status of the system."""
+    import runtime_state
+    return JSONResponse(content=runtime_state.SYSTEM_STATE)
+
 @app.post("/api/reset")
 def reset_results():
     """Clears the historical AI insights."""

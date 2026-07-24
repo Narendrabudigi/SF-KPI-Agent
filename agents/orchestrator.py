@@ -1,11 +1,12 @@
 import time
+import datetime
 import threading
-from rich.console import Console
 from rich.panel import Panel
 
 # Import config and client from the parent root directory
 import config
 from clients import odata_client
+import runtime_state
 
 # Relative imports for other agents in the same folder
 from agents import recruitment_agent
@@ -14,8 +15,6 @@ from agents import employee_central_agent
 from agents import employee_payment_agent
 from agents import coordinator_agent
 from agents import prescriptive_agent
-
-console = Console()
 
 # Threading locks to serialize writes to the same Databricks tables per domain
 DOMAIN_LOCKS = {
@@ -58,7 +57,16 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     Stage 2: Trigger dependency notebooks (Dependency Breach) and wait.
     Passes combined R (result) and D (dependency) tables to the LLM.
     """
-    console.print(f"[bold red]!! BREACH DETECTED !![/bold red] Processing incident: {primary_kpi_name} (Severity: {severity}, Period: {year}-{month})")
+    runtime_state.log_system_event(f"[bold red]!! BREACH DETECTED !![/bold red] Processing incident: {primary_kpi_name} (Severity: {severity}, Period: {year}-{month})")
+    
+    domain_key = get_domain_key(primary_kpi_name)
+    if domain_key:
+        runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "running"
+    
+    runtime_state.SYSTEM_STATE["status"] = f"analyzing_{domain_key}" if domain_key else "running_stage_1"
+    breach_key = f"{primary_kpi_name} ({year}-{month})"
+    if breach_key not in runtime_state.SYSTEM_STATE["current_breaches"]:
+        runtime_state.SYSTEM_STATE["current_breaches"].append(breach_key)
     
     matrix_entry = config.INTERDEPENDENCY_MATRIX.get(primary_kpi_name, {})
     affects = matrix_entry.get("affects", [])
@@ -67,7 +75,7 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     # -------------------------------------------------------------------------
     # STAGE 1: Main Breach (MB)
     # -------------------------------------------------------------------------
-    console.print(f"[bold cyan]STAGE 1 (Main Breach):[/bold cyan] Triggering Primary Databricks Notebook for {primary_kpi_name}...")
+    runtime_state.log_system_event(f"[bold cyan]STAGE 1 (Main Breach):[/bold cyan] Triggering Primary Databricks Notebook for {primary_kpi_name}...")
     
     mb_run_info_list = []
     agent_module, table_name = resolve_agent_info(primary_kpi_name)
@@ -81,15 +89,25 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                 "kpi_name": primary_kpi_name,
                 "is_primary": True
             })
+            # Add to active runs state
+            runtime_state.SYSTEM_STATE["active_runs"].append({
+                "run_id": run_id,
+                "kpi_name": primary_kpi_name,
+                "stage": "Stage 1 (Primary Analysis)"
+            })
     else:
-        console.print(f"[bold red]Failed to find primary agent mapped for {primary_kpi_name}[/bold red]")
+        runtime_state.log_system_event(f"[bold red]Failed to find primary agent mapped for {primary_kpi_name}[/bold red]")
+        if domain_key:
+            runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
         return
         
     if not mb_run_info_list:
-        console.print("[red]Failed to trigger primary Databricks job.[/red]")
+        runtime_state.log_system_event("[red]Failed to trigger primary Databricks job.[/red]")
+        if domain_key:
+            runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
         return
         
-    console.print(f"[bold cyan]STAGE 1:[/bold cyan] Waiting for Main Breach job to complete...")
+    runtime_state.log_system_event(f"[bold cyan]STAGE 1:[/bold cyan] Waiting for Main Breach job to complete...")
     mb_context = coordinator_agent.wait_and_fetch_results_batch(
         mb_run_info_list, 
         primary_kpi_name, 
@@ -98,16 +116,26 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
         month
     )
     
+    # Remove from active runs
+    runtime_state.SYSTEM_STATE["active_runs"] = [
+        r for r in runtime_state.SYSTEM_STATE["active_runs"] if r["run_id"] != run_id
+    ]
+    
     if not mb_context:
-        console.print("[red]Main Breach execution failed. Aborting dependency cascade.[/red]")
+        runtime_state.log_system_event("[red]Main Breach execution failed. Aborting dependency cascade.[/red]")
+        if domain_key:
+            runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
         return
+        
+    if domain_key:
+        runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "completed"
         
     # -------------------------------------------------------------------------
     # STAGE 2: Dependency Breach (DB)
     # -------------------------------------------------------------------------
     db_run_info_list = []
     if affects:
-        console.print(f"[bold cyan]STAGE 2 (Dependency):[/bold cyan] Triggering {len(affects)} Dependency Notebooks simultaneously...")
+        runtime_state.log_system_event(f"[bold cyan]STAGE 2 (Dependency):[/bold cyan] Triggering {len(affects)} Dependency Notebooks simultaneously...")
         
         # Acquire locks for each dependency domain before running
         dep_locks_acquired = []
@@ -115,9 +143,11 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             dep_domain = get_domain_key(dep_kpi)
             d_lock = DOMAIN_LOCKS.get(dep_domain)
             if d_lock:
-                console.print(f"[bold yellow][Orchestrator][/bold yellow] Acquiring dependency lock for domain: [cyan]{dep_domain}[/cyan]...")
+                runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Acquiring dependency lock for domain: [cyan]{dep_domain}[/cyan]...")
                 d_lock.acquire()
                 dep_locks_acquired.append((dep_domain, d_lock))
+                if dep_domain:
+                    runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "running"
                 
         try:
             def trigger_dependency_agent(target_kpi):
@@ -140,8 +170,13 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                             "kpi_name": target_kpi,
                             "is_primary": False
                         })
+                        runtime_state.SYSTEM_STATE["active_runs"].append({
+                            "run_id": run_id,
+                            "kpi_name": target_kpi,
+                            "stage": "Stage 2 (Dependency Analysis)"
+                        })
                 else:
-                    console.print(f"[yellow]Warning: No agent mapped for dependency {target_kpi}[/yellow]")
+                    runtime_state.log_system_event(f"[yellow]Warning: No agent mapped for dependency {target_kpi}[/yellow]")
                     
             threads = []
             for dep_kpi in affects:
@@ -153,7 +188,7 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                 t.join()
                 
             if db_run_info_list:
-                console.print(f"[bold cyan]STAGE 2:[/bold cyan] Waiting for {len(db_run_info_list)} Dependency jobs to complete...")
+                runtime_state.log_system_event(f"[bold cyan]STAGE 2:[/bold cyan] Waiting for {len(db_run_info_list)} Dependency jobs to complete...")
                 db_context = coordinator_agent.wait_and_fetch_results_batch(
                     db_run_info_list, 
                     primary_kpi_name, 
@@ -164,17 +199,26 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             else:
                 db_context = ""
         finally:
+            # Remove all Stage 2 runs from active runs status
+            for run_info in db_run_info_list:
+                runtime_state.SYSTEM_STATE["active_runs"] = [
+                    r for r in runtime_state.SYSTEM_STATE["active_runs"] if r["run_id"] != run_info["run_id"]
+                ]
+                
             # Release dependency locks
             for dep_domain, d_lock in dep_locks_acquired:
-                console.print(f"[bold yellow][Orchestrator][/bold yellow] Releasing dependency lock for domain: [cyan]{dep_domain}[/cyan]")
+                runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing dependency lock for domain: [cyan]{dep_domain}[/cyan]")
+                if runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] == "running":
+                    runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "completed"
                 d_lock.release()
     else:
         db_context = ""
-        console.print("[dim]No dependencies to trigger for this KPI.[/dim]")
+        runtime_state.log_system_event("[dim]No dependencies to trigger for this KPI.[/dim]")
         
     # -------------------------------------------------------------------------
     # STAGE 3: Combine & Prescribe
     # -------------------------------------------------------------------------
+    runtime_state.SYSTEM_STATE["status"] = "prescribing"
     full_combined_context = f"{mb_context}\n\n{db_context}" if db_context else mb_context
     
     prescriptive_agent.run_prescriptive_analysis(
@@ -182,6 +226,10 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
         primary_kpi_name,
         correlated_with=correlated_with
     )
+    
+    # Remove from active breaches
+    if breach_key in runtime_state.SYSTEM_STATE["current_breaches"]:
+        runtime_state.SYSTEM_STATE["current_breaches"].remove(breach_key)
 
 def route_kpi_breach(kpi_name, severity, year, month, **extra_params):
     """Wrapper to start the incident workflow."""
@@ -205,14 +253,14 @@ def route_kpi_breach(kpi_name, severity, year, month, **extra_params):
     lock = DOMAIN_LOCKS.get(domain_key)
     
     if lock:
-        console.print(f"[bold yellow][Orchestrator][/bold yellow] Waiting to acquire lock for domain: [cyan]{domain_key}[/cyan]...")
+        runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Waiting to acquire lock for domain: [cyan]{domain_key}[/cyan]...")
         lock.acquire()
         
     try:
         handle_rca_workflow(kpi_name_clean, severity, year, month, **extra_params)
     finally:
         if lock:
-            console.print(f"[bold yellow][Orchestrator][/bold yellow] Releasing lock for domain: [cyan]{domain_key}[/cyan]")
+            runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing lock for domain: [cyan]{domain_key}[/cyan]")
             lock.release()
 
 def check_sap_breaches():
@@ -220,6 +268,10 @@ def check_sap_breaches():
     Fetches KPI data from SAP and routes any breaches to the correct domain agent.
     Can be run once manually or in a loop.
     """
+    runtime_state.SYSTEM_STATE["status"] = "fetching"
+    runtime_state.SYSTEM_STATE["last_checked"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    runtime_state.log_system_event("Checking OData endpoint for active breaches...")
+    
     kpi_data = odata_client.fetch_kpi_data()
     
     if kpi_data:
@@ -255,7 +307,7 @@ def check_sap_breaches():
                         continue
                     extra_params[k] = v
                 
-                console.print(Panel(f"🎯 Triggering Domain Agent dynamically...\nKPI: [bold]{kpi_name}[/bold]\nSeverity: [bold]{severity}[/bold]\nYear: [bold]{year}[/bold]\nMonth: [bold]{month}[/bold]\nParams: {extra_params}", title="Agent Trigger Payload", border_style="green"))
+                runtime_state.log_system_event(f"🎯 Triggering Domain Agent dynamically for: [bold]{kpi_name}[/bold]")
                 
                 # Run each breach in parallel; safety locks inside route_kpi_breach serialize runs on the same domain
                 t = threading.Thread(target=route_kpi_breach, args=(kpi_name, severity, year, month), kwargs=extra_params)
@@ -263,30 +315,58 @@ def check_sap_breaches():
                 threads.append(t)
                 
         # Wait for all simultaneous breach threads to finish before returning.
-        # This is CRITICAL for Vercel, so it keeps the CPU awake until all are done.
         for t in threads:
             t.join()
                 
         if not breach_found:
-            console.print("[dim]No breaches detected in this cycle.[/dim]")
-
+            runtime_state.log_system_event("[dim]No breaches detected in this cycle.[/dim]")
+            
+    runtime_state.SYSTEM_STATE["status"] = "completed"
+    time.sleep(2)
+    runtime_state.SYSTEM_STATE["status"] = "idle"
 
 def run_orchestrator():
     """
     Master Orchestrator Loop:
-    Continuously polls the OData service and routes breaches.
+    Checks OData endpoint at exactly 9:00 AM every day.
     """
-    console.print(Panel("[bold blue]Starting Master Orchestrator Agent[/bold blue]\nMonitoring OData endpoint for KPI breaches..."))
+    runtime_state.log_system_event("HR Master Service initialized.")
     
-    while True:
+    # Run once immediately on startup so results are available immediately
+    runtime_state.log_system_event("Starting initial boot check...")
+    try:
         check_sap_breaches()
+    except Exception as e:
+        runtime_state.log_system_event(f"[bold red]Startup check failed: {e}[/bold red]")
+        runtime_state.SYSTEM_STATE["status"] = "idle"
         
-        # Wait before polling again based on config
-        console.print(f"[dim]Sleeping for {config.ODATA_POLL_INTERVAL} seconds...[/dim]")
-        time.sleep(config.ODATA_POLL_INTERVAL)
+    while True:
+        # Calculate time until next 9:00 AM and sleep
+        now = datetime.datetime.now()
+        target = now.replace(hour=9, minute=0, second=0, microsecond=0)
+        
+        # If it's already past 9:00 AM today, target is 9:00 AM tomorrow
+        if now >= target:
+            target += datetime.timedelta(days=1)
+            
+        seconds_to_sleep = (target - now).total_seconds()
+        
+        hours = int(seconds_to_sleep // 3600)
+        minutes = int((seconds_to_sleep % 3600) // 60)
+        runtime_state.log_system_event(f"Sleeping until 9:00 AM. Next check scheduled at {target.strftime('%Y-%m-%d %H:%M:%S')} (in {hours}h {minutes}m).")
+        
+        # Sleep until the target time
+        time.sleep(seconds_to_sleep)
+        
+        runtime_state.log_system_event("Daily Scheduled Trigger Initiated!")
+        try:
+            check_sap_breaches()
+        except Exception as e:
+            runtime_state.log_system_event(f"[bold red]Scheduled daily check failed: {e}[/bold red]")
+            runtime_state.SYSTEM_STATE["status"] = "idle"
 
 if __name__ == "__main__":
     try:
         run_orchestrator()
     except KeyboardInterrupt:
-        console.print("\n[bold red]Orchestrator stopped by user.[/bold red]")
+        runtime_state.log_system_event("Orchestrator stopped by user.")

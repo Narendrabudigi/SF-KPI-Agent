@@ -3,507 +3,938 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR KPI Agentic AI — Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>HR KPI Agentic AI — Control Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --white: #ffffff;
-            --bg: #f4f6f8;
-            --border: #e1e4e8;
-            --text: #24292f;
-            --text-secondary: #57606a;
-            --blue: #0969da;
-            --blue-bg: #ddf4ff;
-            --red: #cf222e;
-            --red-bg: #ffebe9;
-            --green: #1a7f37;
-            --green-bg: #dafbe1;
-            --orange: #bf8700;
-            --orange-bg: #fff8c5;
-            --radius: 6px;
+            --bg-dark: #090d16;
+            --panel-bg: #121824;
+            --panel-border: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            
+            --blue: #3b82f6;
+            --blue-glow: rgba(59, 130, 246, 0.15);
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.15);
+            --red: #f43f5e;
+            --red-glow: rgba(244, 63, 94, 0.15);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.15);
+            --purple: #8b5cf6;
+            
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
-        /* ── Navbar ─────────────────────────── */
+        /* ── Header / Navbar ─────────────────── */
         .navbar {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            height: 56px;
+            background: rgba(18, 24, 36, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--panel-border);
+            padding: 12px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: sticky;
             top: 0;
-            z-index: 50;
+            z-index: 100;
         }
         .navbar-brand {
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--text);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
-        .navbar-brand span { color: var(--blue); }
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .brand-title {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .brand-title span {
+            color: var(--blue);
+        }
         .navbar-actions {
             display: flex;
-            gap: 8px;
+            gap: 12px;
         }
 
         /* ── Buttons ────────────────────────── */
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
+            gap: 8px;
+            padding: 8px 16px;
             font-size: 13px;
-            font-weight: 500;
-            font-family: inherit;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--white);
-            color: var(--text);
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--panel-border);
+            background: #1e293b;
+            color: var(--text-primary);
             cursor: pointer;
-            transition: background 0.15s;
+            transition: var(--transition);
         }
-        .btn:hover { background: var(--bg); }
+        .btn:hover {
+            background: #334155;
+            border-color: #475569;
+        }
         .btn-primary {
             background: var(--blue);
-            color: #fff;
             border-color: var(--blue);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
         }
-        .btn-primary:hover { background: #0860ca; }
+        .btn-primary:hover {
+            background: #2563eb;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.45);
+        }
         .btn-danger {
+            background: transparent;
             color: var(--red);
-            border-color: #d1242f33;
+            border-color: rgba(244, 63, 94, 0.3);
         }
-        .btn-danger:hover { background: var(--red-bg); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-danger:hover {
+            background: var(--red-glow);
+            border-color: var(--red);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
         /* ── Layout ─────────────────────────── */
         .container {
-            max-width: 1100px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 24px 16px;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
         }
-        .page-header {
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Glass Panels ───────────────────── */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-        }
-        .page-header h2 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        .status-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: var(--green);
-            background: var(--green-bg);
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-weight: 500;
-        }
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--green);
-            border-radius: 50%;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 12px;
         }
 
-        /* ── Alert Card ─────────────────────── */
-        .alert-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── Live System Status Widget ──────── */
+        .status-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-md);
+            padding: 12px 20px;
+            margin-bottom: 8px;
+        }
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            position: relative;
+        }
+        .status-indicator.pulsing {
+            animation: pulse-glow 1.5s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            from { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 4px var(--glow-color); }
+            to { transform: scale(1.15); opacity: 1; box-shadow: 0 0 12px var(--glow-color); }
+        }
+        .status-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .status-text strong {
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+        .status-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ── Agent Status Grid ──────────────── */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 640px) {
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .agent-card {
+            background: #0f172a;
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .agent-card:hover {
+            transform: translateY(-2px);
+            border-color: #334155;
+            box-shadow: 0 8px 24px -10px rgba(0,0,0,0.6);
+        }
+        .agent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .agent-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .agent-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .agent-card.inactive { border-left: 3px solid var(--text-secondary); }
+        .agent-card.inactive .agent-badge { background: #334155; color: var(--text-secondary); }
+        
+        .agent-card.running { border-left: 3px solid var(--blue); animation: active-glow-blue 1.5s infinite alternate; }
+        .agent-card.running .agent-badge { background: var(--blue-glow); color: var(--blue); }
+        
+        .agent-card.completed { border-left: 3px solid var(--green); }
+        .agent-card.completed .agent-badge { background: var(--green-glow); color: var(--green); }
+        
+        .agent-card.failed { border-left: 3px solid var(--red); }
+        .agent-card.failed .agent-badge { background: var(--red-glow); color: var(--red); }
+
+        @keyframes active-glow-blue {
+            from { box-shadow: inset 0 0 4px var(--blue-glow); }
+            to { box-shadow: inset 0 0 12px var(--blue-glow), 0 0 8px var(--blue-glow); }
+        }
+        .agent-detail {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .agent-detail span strong {
+            color: var(--text-primary);
+        }
+
+        /* ── Monospace Console Terminal ──────── */
+        .terminal {
+            background: #020617;
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-md);
+            height: 250px;
+            overflow-y: auto;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #38bdf8;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+        }
+        .terminal::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 99px;
+        }
+        .terminal-line {
+            line-height: 1.5;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+        .terminal-line.timestamp {
+            color: #64748b;
+        }
+
+        /* ── Running Jobs Monitor ────────────── */
+        .jobs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .job-item {
+            background: #0f172a;
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .job-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .job-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue);
+        }
+        .job-kpi {
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .job-stage {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Alert Cards ────────────────────── */
+        .alerts-section {
+            margin-top: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
             margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+        .alert-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            box-shadow: 0 10px 35px -10px rgba(0,0,0,0.6);
+            overflow: hidden;
         }
         .alert-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--panel-border);
+            background: rgba(30, 41, 59, 0.2);
         }
         .alert-card-header h3 {
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
         }
         .alert-meta {
             font-size: 12px;
             color: var(--text-secondary);
+            margin-top: 4px;
         }
         .severity-badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 10px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 2px 8px;
-            border-radius: var(--radius);
-            background: var(--red-bg);
+            padding: 4px 10px;
+            border-radius: var(--radius-md);
+            background: var(--red-glow);
             color: var(--red);
+            border: 1px solid rgba(244, 63, 94, 0.3);
         }
         .alert-card-body {
-            padding: 20px;
+            padding: 24px;
         }
-
-        /* ── Sections inside card ───────────── */
-        .section-label {
+        .field-label {
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
             color: var(--text-secondary);
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .section-text {
+        .field-content {
             font-size: 14px;
-            color: var(--text);
-            line-height: 1.65;
-            margin-bottom: 20px;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            line-height: 1.6;
         }
         .root-cause-list {
             list-style: none;
-            padding: 0;
-            margin: 0 0 24px 0;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 24px;
         }
         .root-cause-list li {
+            background: #0f172a;
+            border: 1px solid var(--panel-border);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
             display: flex;
-            gap: 10px;
-            font-size: 13px;
-            line-height: 1.55;
-            padding: 10px 12px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            gap: 12px;
+            align-items: flex-start;
         }
-        .root-cause-list li .rc-number {
-            flex-shrink: 0;
+        .rc-number {
             width: 22px;
             height: 22px;
+            background: var(--blue-glow);
+            border: 1px solid var(--blue);
+            color: var(--blue);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 11px;
-            font-weight: 600;
-            background: var(--blue-bg);
-            color: var(--blue);
-            border-radius: 50%;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        /* ── Table ──────────────────────────── */
+        /* ── Table Styling ──────────────────── */
         .table-wrap {
-            overflow-x: auto;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: #0f172a;
+            margin-bottom: 24px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
-            min-width: 580px;
-        }
-        thead { background: var(--bg); }
-        th {
             text-align: left;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+        th {
+            background: rgba(30, 41, 59, 0.4);
             font-weight: 600;
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
-        td {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-        }
-        tr:last-child td { border-bottom: none; }
-        .tcode {
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-            font-size: 12px;
-            background: var(--bg);
-            padding: 2px 6px;
-            border-radius: 3px;
-            border: 1px solid var(--border);
-            white-space: nowrap;
-        }
-        .effort-badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 500;
-            padding: 2px 8px;
-            border-radius: var(--radius);
-            text-transform: capitalize;
-        }
-        .effort-low { background: var(--green-bg); color: var(--green); }
-        .effort-medium { background: var(--orange-bg); color: var(--orange); }
-        .effort-high { background: var(--red-bg); color: var(--red); }
-
-        /* ── Collapsible sections ───────────── */
-        .collapsible-header {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            user-select: none;
-            margin-bottom: 10px;
-        }
-        .collapsible-header .arrow {
-            transition: transform 0.2s;
-            font-size: 10px;
             color: var(--text-secondary);
         }
-        .collapsible-header.open .arrow { transform: rotate(90deg); }
-        .collapsible-body {
-            display: none;
-            padding-left: 4px;
+        tr:last-child td {
+            border-bottom: none;
         }
-        .collapsible-body.open { display: block; }
-        .collapsible-body ul {
-            list-style: disc;
-            padding-left: 20px;
-            margin-bottom: 20px;
+        .tcode {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--purple);
+            background: rgba(139, 92, 246, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
-        .collapsible-body li {
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 6px;
+        .effort-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: var(--radius-md);
+            text-transform: uppercase;
         }
+        .effort-low { background: var(--green-glow); color: var(--green); }
+        .effort-medium { background: var(--orange-glow); color: var(--orange); }
+        .effort-high { background: var(--red-glow); color: var(--red); }
 
-        /* ── Risk Box ──────────────────────── */
         .risk-box {
-            background: var(--red-bg);
-            border: 1px solid #d1242f33;
-            border-radius: var(--radius);
-            padding: 12px 16px;
-            font-size: 13px;
-            line-height: 1.6;
+            background: rgba(244, 63, 94, 0.05);
+            border: 1px dashed rgba(244, 63, 94, 0.3);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            font-size: 13.5px;
+            color: #fda4af;
         }
 
-        /* ── Empty state ────────────────────── */
         .empty-state {
             text-align: center;
-            padding: 80px 20px;
+            padding: 60px 40px;
+            background: var(--panel-bg);
+            border: 1px dashed var(--panel-border);
+            border-radius: var(--radius-lg);
             color: var(--text-secondary);
         }
         .empty-state h3 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
             font-size: 16px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 6px;
         }
-        .empty-state p { font-size: 14px; }
 
-        /* ── Responsive ─────────────────────── */
-        @media (max-width: 640px) {
-            .navbar { padding: 0 12px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
-            .navbar-actions { width: 100%; justify-content: flex-end; }
-            .container { padding: 16px 12px; }
-            .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .alert-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .alert-card-body { padding: 16px; }
+        /* Loading Overlay for Manual Trigger */
+        .loading-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="navbar-brand">
-        <strong style="color:var(--text);">Yash Technologies</strong>
-        <span style="color:var(--border); font-weight:300; margin:0 4px;">|</span>
-        <span>HR KPI Agentic AI</span>
-    </div>
-    <div class="navbar-actions">
-        <button class="btn btn-danger" id="resetBtn" onclick="resetData()">Reset Data</button>
-        <button class="btn btn-primary" id="triggerBtn" onclick="triggerScan()">Trigger HR KPI Scan</button>
-    </div>
-</nav>
+    <!-- ── Navbar ─────────────────────────── -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div class="brand-logo">AI</div>
+            <div class="brand-title">HR KPI Agentic AI <span>Control Center</span></div>
+        </div>
+        <div class="navbar-actions">
+            <button id="btn-trigger" class="btn btn-primary" onclick="triggerScan()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Trigger HR KPI Scan
+            </button>
+            <button id="btn-reset" class="btn btn-danger" onclick="resetDashboard()">Clear Insights</button>
+        </div>
+    </nav>
 
-<div class="container">
-    <div class="page-header">
-        <h2>HR Prescriptive Insights</h2>
-        <div class="status-pill"><span class="status-dot"></span> System Active</div>
-    </div>
-    <div id="dashboard-content">
-        <div class="empty-state">
-            <h3>Loading…</h3>
-            <p>Fetching insights from the backend.</p>
+    <div class="container">
+        <!-- ── Live System Status Banner ──────── -->
+        <div class="status-container">
+            <div class="status-info">
+                <div id="sys-indicator" class="status-indicator"></div>
+                <div class="status-text">SYSTEM STATUS: <strong id="sys-status">LOADING</strong></div>
+            </div>
+            <div class="status-meta">Last checked: <span id="sys-last-check">—</span></div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- ── Left Column: Agent Network Status ── -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        Domain Agent Network Status
+                    </div>
+                </div>
+                
+                <div class="agent-grid">
+                    <!-- Recruitment Agent -->
+                    <div class="agent-card inactive" id="agent-recruitment">
+                        <div class="agent-header">
+                            <span class="agent-name">Recruitment Agent</span>
+                            <span class="agent-badge">INACTIVE</span>
+                        </div>
+                        <div class="agent-detail">
+                            <span>Notebook: <strong>Recruitment_RCA</strong></span>
+                            <span>Target: <strong>recruitment_rca_results</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Onboarding/Offboarding Agent -->
+                    <div class="agent-card inactive" id="agent-onboarding_offboarding">
+                        <div class="agent-header">
+                            <span class="agent-name">Onboarding Agent</span>
+                            <span class="agent-badge">INACTIVE</span>
+                        </div>
+                        <div class="agent-detail">
+                            <span>Notebook: <strong>Onboarding_RCA</strong></span>
+                            <span>Target: <strong>onboarding_dependency</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Employee Central Agent -->
+                    <div class="agent-card inactive" id="agent-employee_central">
+                        <div class="agent-header">
+                            <span class="agent-name">Central Agent</span>
+                            <span class="agent-badge">INACTIVE</span>
+                        </div>
+                        <div class="agent-detail">
+                            <span>Notebook: <strong>Central_RCA</strong></span>
+                            <span>Target: <strong>central_rca_results</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Payroll Agent -->
+                    <div class="agent-card inactive" id="agent-employee_payment">
+                        <div class="agent-header">
+                            <span class="agent-name">Payroll Agent</span>
+                            <span class="agent-badge">INACTIVE</span>
+                        </div>
+                        <div class="agent-detail">
+                            <span>Notebook: <strong>Payroll_RCA</strong></span>
+                            <span>Target: <strong>payment_rca_results</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Right Column: Jobs & Logs ───────── -->
+            <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                <!-- Active Jobs -->
+                <div style="flex-shrink:0;">
+                    <div class="panel-header" style="margin-bottom:12px;">
+                        <div class="panel-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Active Databricks Jobs (<span id="jobs-count">0</span>)
+                        </div>
+                    </div>
+                    <div class="jobs-list" id="active-jobs-list">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Monospace Console Logs -->
+                <div style="flex-grow:1; display:flex; flex-direction:column;">
+                    <div class="panel-header" style="margin-bottom:12px; padding-bottom:8px;">
+                        <div class="panel-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            Live Agent Console Events
+                        </div>
+                    </div>
+                    <div class="terminal" id="terminal-body">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Bottom Alerts Container ────────── -->
+        <div class="alerts-section">
+            <h2 class="section-title">Prescriptive Analysis & RCA Alerts</h2>
+            <div id="alerts-container">
+                <!-- Alerts load here -->
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // ── Reset ──────────────────────────────
-    async function resetData() {
-        if (!confirm('Clear all historical insights? This cannot be undone.')) return;
-        const btn = document.getElementById('resetBtn');
-        btn.disabled = true;
-        btn.textContent = 'Clearing…';
-        try {
-            await fetch('/api/reset', { method: 'POST' });
-            fetchResults();
-        } catch (e) { console.error(e); }
-        finally { btn.disabled = false; btn.textContent = 'Reset Data'; }
-    }
+    <script>
+        const statusColors = {
+            "idle": { color: "#10b981", text: "IDLE" },
+            "fetching": { color: "#f59e0b", text: "FETCHING SAP ODATA" },
+            "analyzing_recruitment": { color: "#3b82f6", text: "ANALYZING RECRUITMENT BREACH" },
+            "analyzing_onboarding_offboarding": { color: "#3b82f6", text: "ANALYZING ONBOARDING BREACH" },
+            "analyzing_employee_central": { color: "#3b82f6", text: "ANALYZING CENTRAL BREACH" },
+            "analyzing_employee_payment": { color: "#3b82f6", text: "ANALYZING PAYROLL BREACH" },
+            "running_stage_1": { color: "#3b82f6", text: "STAGE 1: RUNNING PRIMARY ANALYSES" },
+            "running_stage_2": { color: "#8b5cf6", text: "STAGE 2: RUNNING CASCADING ANALYSES" },
+            "prescribing": { color: "#8b5cf6", text: "STAGE 3: PRESCRIBING RECOMMENDATIONS" },
+            "completed": { color: "#10b981", text: "KPI SCAN COMPLETED" }
+        };
 
-    // ── Trigger ────────────────────────────
-    async function triggerScan() {
-        const btn = document.getElementById('triggerBtn');
-        btn.disabled = true;
-        btn.textContent = 'Scanning…';
-        try {
-            await fetch('/api/trigger', { method: 'POST' });
-            setTimeout(fetchResults, 5000);
-            setTimeout(fetchResults, 10000);
-        } catch (e) { console.error(e); }
-        finally { setTimeout(() => { btn.disabled = false; btn.textContent = 'Trigger HR KPI Scan'; }, 3000); }
-    }
+        let lastResultsCount = -1;
 
-    // ── Helpers ─────────────────────────────
-    function fmtDate(iso) {
-        const d = new Date(iso);
-        return d.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
+        async function fetchSystemState() {
+            try {
+                const res = await fetch('/api/status');
+                if (!res.ok) return;
+                const state = await res.json();
+                
+                // Update system status
+                const indicator = document.getElementById('sys-indicator');
+                const statusEl = document.getElementById('sys-status');
+                const lastCheckEl = document.getElementById('sys-last-check');
+                
+                const currentStatus = state.status || "idle";
+                const config = statusColors[currentStatus] || { color: "#10b981", text: currentStatus };
+                
+                statusEl.textContent = config.text;
+                indicator.style.backgroundColor = config.color;
+                indicator.style.boxShadow = `0 0 12px ${config.color}`;
+                indicator.style.setProperty('--glow-color', config.color);
+                
+                if (currentStatus !== "idle" && currentStatus !== "completed") {
+                    indicator.classList.add('pulsing');
+                } else {
+                    indicator.classList.remove('pulsing');
+                }
+                
+                lastCheckEl.textContent = state.last_checked || "Never";
 
-    function effortClass(e) {
-        if (!e) return '';
-        const l = e.toLowerCase();
-        if (l === 'low') return 'effort-low';
-        if (l === 'medium') return 'effort-medium';
-        return 'effort-high';
-    }
+                // Update Agent Cards
+                const agents = ['recruitment', 'onboarding_offboarding', 'employee_central', 'employee_payment'];
+                agents.forEach(agent => {
+                    const el = document.getElementById(`agent-${agent}`);
+                    if (!el) return;
+                    
+                    const status = (state.agent_statuses && state.agent_statuses[agent]) || "inactive";
+                    
+                    // Reset classes
+                    el.className = 'agent-card';
+                    el.classList.add(status);
+                    
+                    const badge = el.querySelector('.agent-badge');
+                    badge.textContent = status;
+                });
 
-    function toggleSection(id) {
-        const header = document.getElementById('hdr-' + id);
-        const body = document.getElementById('body-' + id);
-        header.classList.toggle('open');
-        body.classList.toggle('open');
-    }
+                // Update Active Jobs
+                const activeJobs = state.active_runs || [];
+                document.getElementById('jobs-count').textContent = activeJobs.length;
+                const jobsListEl = document.getElementById('active-jobs-list');
+                
+                if (activeJobs.length === 0) {
+                    jobsListEl.innerHTML = `<div style="font-size:12px; color:var(--text-secondary); text-align:center; padding:12px; background:#0f172a; border: 1px dashed var(--panel-border); border-radius:var(--radius-md);">No active Databricks jobs.</div>`;
+                } else {
+                    jobsListEl.innerHTML = activeJobs.map(job => `
+                        <div class="job-item">
+                            <div class="job-meta">
+                                <span class="job-kpi">${job.kpi_name}</span>
+                                <span class="job-id">Run ID: ${job.run_id}</span>
+                                <span class="job-stage">${job.stage}</span>
+                            </div>
+                            <div class="spinner"></div>
+                        </div>
+                    `).join('');
+                }
 
-    // ── Render ──────────────────────────────
-    function renderCard(item, idx) {
-        const d = item.data;
-        const rootCauses = d.root_causes || [];
-        const actions = d.immediate_actions || [];
-        const medActions = d.medium_term_actions || [];
-        const longActions = d.long_term_actions || [];
-        const risk = d.risk_assessment || '';
+                // Update Terminal Logs
+                const logs = state.system_logs || [];
+                const terminal = document.getElementById('terminal-body');
+                
+                // Track if we need to auto-scroll (user is already at the bottom)
+                const shouldScroll = terminal.scrollHeight - terminal.scrollTop <= terminal.clientHeight + 40;
+                
+                terminal.innerHTML = logs.map(line => {
+                    // Highlight warnings, errors, successes
+                    let cssStyle = "";
+                    if (line.includes("Failed") || line.includes("failed") || line.includes("Error") || line.includes("Conflict")) {
+                        cssStyle = "color: #f43f5e;";
+                    } else if (line.includes("Successfully") || line.includes("completed") || line.includes("Acquired lock")) {
+                        cssStyle = "color: #10b981;";
+                    } else if (line.includes("Waiting") || line.includes("Sleeping") || line.includes("lock")) {
+                        cssStyle = "color: #f59e0b;";
+                    }
+                    
+                    return `<div class="terminal-line" style="${cssStyle}">${line}</div>`;
+                }).join('');
+                
+                if (shouldScroll && logs.length > 0) {
+                    terminal.scrollTop = terminal.scrollHeight;
+                }
 
-        // Root causes
-        let rcHtml = '';
-        if (Array.isArray(rootCauses) && rootCauses.length) {
-            rcHtml = `<ul class="root-cause-list">${rootCauses.map((rc, i) =>
-                `<li><span class="rc-number">${i + 1}</span><span>${rc}</span></li>`
-            ).join('')}</ul>`;
-        } else if (typeof rootCauses === 'string' && rootCauses) {
-            rcHtml = `<p class="section-text">${rootCauses}</p>`;
-        }
-
-        // Immediate actions table
-        let actionsHtml = '';
-        if (actions.length) {
-            actionsHtml = `
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Action</th><th>Responsible</th><th>SAP T-Code</th><th>Effort</th></tr></thead>
-                        <tbody>${actions.map(a => `
-                            <tr>
-                                <td>${a.action || ''}</td>
-                                <td>${a.responsible_role || ''}</td>
-                                <td><span class="tcode">${a.sap_transaction || '—'}</span></td>
-                                <td><span class="effort-badge ${effortClass(a.effort)}">${a.effort || ''}</span></td>
-                            </tr>`).join('')}
-                        </tbody>
-                    </table>
-                </div>`;
-        }
-
-        // Collapsible sections for medium/long term
-        const uid = `${idx}`;
-        let extraSections = '';
-        if (medActions.length) {
-            extraSections += `
-                <div class="collapsible-header" id="hdr-med-${uid}" onclick="toggleSection('med-${uid}')">
-                    <span class="arrow">▶</span>
-                    <span class="section-label" style="margin:0">Medium-Term Actions (${medActions.length})</span>
-                </div>
-                <div class="collapsible-body" id="body-med-${uid}">
-                    <ul>${medActions.map(a => `<li>${a}</li>`).join('')}</ul>
-                </div>`;
-        }
-        if (longActions.length) {
-            extraSections += `
-                <div class="collapsible-header" id="hdr-long-${uid}" onclick="toggleSection('long-${uid}')">
-                    <span class="arrow">▶</span>
-                    <span class="section-label" style="margin:0">Long-Term Actions (${longActions.length})</span>
-                </div>
-                <div class="collapsible-body" id="body-long-${uid}">
-                    <ul>${longActions.map(a => `<li>${a}</li>`).join('')}</ul>
-                </div>`;
-        }
-
-        let riskHtml = risk ? `<p class="section-label">Risk Assessment</p><div class="risk-box">${risk}</div>` : '';
-
-        return `
-            <div class="alert-card">
-                <div class="alert-card-header">
-                    <div>
-                        <h3>${item.kpi_name}</h3>
-                        <span class="alert-meta">${fmtDate(item.timestamp)}</span>
-                    </div>
-                    <span class="severity-badge">Breach</span>
-                </div>
-                <div class="alert-card-body">
-                    <p class="section-label">Executive Summary</p>
-                    <p class="section-text">${d.executive_summary || ''}</p>
-
-                    <p class="section-label">Root Cause Analysis</p>
-                    ${rcHtml}
-
-                    <p class="section-label">Immediate Actions</p>
-                    ${actionsHtml || '<p class="section-text" style="font-style:italic;">None recommended.</p>'}
-
-                    ${extraSections}
-
-                    ${riskHtml}
-                </div>
-            </div>`;
-    }
-
-    // ── Fetch ───────────────────────────────
-    async function fetchResults() {
-        try {
-            const res = await fetch('/api/results');
-            const data = await res.json();
-            const el = document.getElementById('dashboard-content');
-
-            if (!data.length) {
-                el.innerHTML = `<div class="empty-state"><h3>No Insights Yet</h3><p>Click "Trigger HR KPI Scan" or wait for the background orchestrator to detect a breach.</p></div>`;
-                return;
+            } catch (err) {
+                console.error("Error fetching status:", err);
             }
-            el.innerHTML = data.map((item, i) => renderCard(item, i)).join('');
-        } catch (e) { console.error('Fetch error:', e); }
-    }
+        }
 
-    fetchResults();
-    setInterval(fetchResults, 15000);
-</script>
+        async function triggerScan() {
+            const btn = document.getElementById('btn-trigger');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner" style="width:12px; height:12px; border-width:1.5px; border-top-color:#fff;"></div> Triggering...`;
+            
+            try {
+                const res = await fetch('/api/trigger', { method: 'POST' });
+                const body = await res.json();
+                
+                // Immediately refresh status
+                fetchSystemState();
+            } catch (err) {
+                console.error("Trigger error:", err);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Trigger HR KPI Scan
+                `;
+            }
+        }
+
+        async function resetDashboard() {
+            if (!confirm("Are you sure you want to clear all historical prescriptive insights?")) return;
+            try {
+                await fetch('/api/reset', { method: 'POST' });
+                fetchResults();
+            } catch (err) {
+                console.error("Reset error:", err);
+            }
+        }
+
+        // ── Render Alerts ──────────────────────
+        function effortClass(effort) {
+            if (!effort) return '';
+            const e = effort.toLowerCase();
+            if (e.includes('low')) return 'effort-low';
+            if (e.includes('medium') || e.includes('mod')) return 'effort-medium';
+            if (e.includes('high')) return 'effort-high';
+            return '';
+        }
+
+        function fmtDate(isoStr) {
+            if (!isoStr) return '';
+            const date = new Date(isoStr);
+            return date.toLocaleString();
+        }
+
+        function renderCard(item, idx) {
+            const d = item.data;
+            const rootCauses = d.root_causes || [];
+            const actions = d.immediate_actions || [];
+            const risk = d.risk_assessment || '';
+
+            // Root causes
+            let rcHtml = '';
+            if (Array.isArray(rootCauses) && rootCauses.length) {
+                rcHtml = `<ul class="root-cause-list">${rootCauses.map((rc, i) =>
+                    `<li><span class="rc-number">${i + 1}</span><span>${rc}</span></li>`
+                ).join('')}</ul>`;
+            } else if (typeof rootCauses === 'string' && rootCauses) {
+                rcHtml = `<p class="field-content">${rootCauses}</p>`;
+            }
+
+            // Immediate actions table
+            let actionsHtml = '';
+            if (actions.length) {
+                actionsHtml = `
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Action</th><th>Responsible Role</th><th>SAP T-Code</th><th>Effort</th></tr></thead>
+                            <tbody>${actions.map(a => `
+                                <tr>
+                                    <td>${a.action || ''}</td>
+                                    <td>${a.responsible_role || ''}</td>
+                                    <td><span class="tcode">${a.sap_transaction || '—'}</span></td>
+                                    <td><span class="effort-badge ${effortClass(a.effort)}">${a.effort || ''}</span></td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+            }
+
+            let riskHtml = risk ? `<div class="field-label">Risk Assessment</div><div class="risk-box">${risk}</div>` : '';
+
+            return `
+                <div class="alert-card">
+                    <div class="alert-card-header">
+                        <div>
+                            <h3>${item.kpi_name}</h3>
+                            <div class="alert-meta">Alert Generated: ${fmtDate(item.timestamp)}</div>
+                        </div>
+                        <span class="severity-badge">Breach Detected</span>
+                    </div>
+                    <div class="alert-card-body">
+                        <div class="field-label">Executive Summary</div>
+                        <p class="field-content">${d.executive_summary || ''}</p>
+
+                        <div class="field-label">Root Causes (Top Drivers)</div>
+                        ${rcHtml}
+
+                        <div class="field-label">Immediate Actions (Within 1 week)</div>
+                        ${actionsHtml || '<p class="field-content" style="font-style:italic;">None recommended.</p>'}
+
+                        ${riskHtml}
+                    </div>
+                </div>`;
+        }
+
+        async function fetchResults() {
+            try {
+                const res = await fetch('/api/results');
+                const data = await res.json();
+                
+                if (data.length === lastResultsCount) return; // Skip DOM rebuild if no new data
+                lastResultsCount = data.length;
+                
+                const el = document.getElementById('alerts-container');
+
+                if (!data.length) {
+                    el.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No Prescriptive Insights Yet</h3>
+                            <p>Click "Trigger HR KPI Scan" above or wait for the daily 9:00 AM scan to trigger domain agent calculations.</p>
+                        </div>`;
+                    return;
+                }
+                el.innerHTML = data.map((item, i) => renderCard(item, i)).join('');
+            } catch (e) { 
+                console.error('Fetch results error:', e); 
+            }
+        }
+
+        // Initialize and schedule polling
+        fetchSystemState();
+        fetchResults();
+        
+        // Poll status every 2 seconds for high-fidelity logs
+        setInterval(fetchSystemState, 2000);
+        
+        // Poll results every 5 seconds for new recommendations
+        setInterval(fetchResults, 5000);
+    </script>
 </body>
 </html>
