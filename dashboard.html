@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR KPI Agentic AI — Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --white: #ffffff;
+            --bg: #f4f6f8;
+            --border: #e1e4e8;
+            --text: #24292f;
+            --text-secondary: #57606a;
+            --blue: #0969da;
+            --blue-bg: #ddf4ff;
+            --red: #cf222e;
+            --red-bg: #ffebe9;
+            --green: #1a7f37;
+            --green-bg: #dafbe1;
+            --orange: #bf8700;
+            --orange-bg: #fff8c5;
+            --radius: 6px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Navbar ─────────────────────────── */
+        .navbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar-brand span { color: var(--blue); }
+        .navbar-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* ── Buttons ────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: inherit;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn:hover { background: var(--bg); }
+        .btn-primary {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
+        }
+        .btn-primary:hover { background: #0860ca; }
+        .btn-danger {
+            color: var(--red);
+            border-color: #d1242f33;
+        }
+        .btn-danger:hover { background: var(--red-bg); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── Layout ─────────────────────────── */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--green);
+            background: var(--green-bg);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 500;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+        }
+
+        /* ── Alert Card ─────────────────────── */
+        .alert-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+        }
+        .alert-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .alert-card-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .alert-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .severity-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: var(--radius);
+            background: var(--red-bg);
+            color: var(--red);
+        }
+        .alert-card-body {
+            padding: 20px;
+        }
+
+        /* ── Sections inside card ───────────── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .section-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+        .root-cause-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .root-cause-list li {
+            display: flex;
+            gap: 10px;
+            font-size: 13px;
+            line-height: 1.55;
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .root-cause-list li .rc-number {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--blue-bg);
+            color: var(--blue);
+            border-radius: 50%;
+        }
+
+        /* ── Table ──────────────────────────── */
+        .table-wrap {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 580px;
+        }
+        thead { background: var(--bg); }
+        th {
+            text-align: left;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        .tcode {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-size: 12px;
+            background: var(--bg);
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .effort-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: var(--radius);
+            text-transform: capitalize;
+        }
+        .effort-low { background: var(--green-bg); color: var(--green); }
+        .effort-medium { background: var(--orange-bg); color: var(--orange); }
+        .effort-high { background: var(--red-bg); color: var(--red); }
+
+        /* ── Collapsible sections ───────────── */
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 10px;
+        }
+        .collapsible-header .arrow {
+            transition: transform 0.2s;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        .collapsible-header.open .arrow { transform: rotate(90deg); }
+        .collapsible-body {
+            display: none;
+            padding-left: 4px;
+        }
+        .collapsible-body.open { display: block; }
+        .collapsible-body ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .collapsible-body li {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+
+        /* ── Risk Box ──────────────────────── */
+        .risk-box {
+            background: var(--red-bg);
+            border: 1px solid #d1242f33;
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ── Empty state ────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .empty-state p { font-size: 14px; }
+
+        /* ── Responsive ─────────────────────── */
+        @media (max-width: 640px) {
+            .navbar { padding: 0 12px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+            .navbar-actions { width: 100%; justify-content: flex-end; }
+            .container { padding: 16px 12px; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .alert-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .alert-card-body { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-brand">
+        <strong style="color:var(--text);">Yash Technologies</strong>
+        <span style="color:var(--border); font-weight:300; margin:0 4px;">|</span>
+        <span>HR KPI Agentic AI</span>
+    </div>
+    <div class="navbar-actions">
+        <button class="btn btn-danger" id="resetBtn" onclick="resetData()">Reset Data</button>
+        <button class="btn btn-primary" id="triggerBtn" onclick="triggerScan()">Trigger HR KPI Scan</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h2>HR Prescriptive Insights</h2>
+        <div class="status-pill"><span class="status-dot"></span> System Active</div>
+    </div>
+    <div id="dashboard-content">
+        <div class="empty-state">
+            <h3>Loading…</h3>
+            <p>Fetching insights from the backend.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ── Reset ──────────────────────────────
+    async function resetData() {
+        if (!confirm('Clear all historical insights? This cannot be undone.')) return;
+        const btn = document.getElementById('resetBtn');
+        btn.disabled = true;
+        btn.textContent = 'Clearing…';
+        try {
+            await fetch('/api/reset', { method: 'POST' });
+            fetchResults();
+        } catch (e) { console.error(e); }
+        finally { btn.disabled = false; btn.textContent = 'Reset Data'; }
+    }
+
+    // ── Trigger ────────────────────────────
+    async function triggerScan() {
+        const btn = document.getElementById('triggerBtn');
+        btn.disabled = true;
+        btn.textContent = 'Scanning…';
+        try {
+            await fetch('/api/trigger', { method: 'POST' });
+            setTimeout(fetchResults, 5000);
+            setTimeout(fetchResults, 10000);
+        } catch (e) { console.error(e); }
+        finally { setTimeout(() => { btn.disabled = false; btn.textContent = 'Trigger HR KPI Scan'; }, 3000); }
+    }
+
+    // ── Helpers ─────────────────────────────
+    function fmtDate(iso) {
+        const d = new Date(iso);
+        return d.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function effortClass(e) {
+        if (!e) return '';
+        const l = e.toLowerCase();
+        if (l === 'low') return 'effort-low';
+        if (l === 'medium') return 'effort-medium';
+        return 'effort-high';
+    }
+
+    function toggleSection(id) {
+        const header = document.getElementById('hdr-' + id);
+        const body = document.getElementById('body-' + id);
+        header.classList.toggle('open');
+        body.classList.toggle('open');
+    }
+
+    // ── Render ──────────────────────────────
+    function renderCard(item, idx) {
+        const d = item.data;
+        const rootCauses = d.root_causes || [];
+        const actions = d.immediate_actions || [];
+        const medActions = d.medium_term_actions || [];
+        const longActions = d.long_term_actions || [];
+        const risk = d.risk_assessment || '';
+
+        // Root causes
+        let rcHtml = '';
+        if (Array.isArray(rootCauses) && rootCauses.length) {
+            rcHtml = `<ul class="root-cause-list">${rootCauses.map((rc, i) =>
+                `<li><span class="rc-number">${i + 1}</span><span>${rc}</span></li>`
+            ).join('')}</ul>`;
+        } else if (typeof rootCauses === 'string' && rootCauses) {
+            rcHtml = `<p class="section-text">${rootCauses}</p>`;
+        }
+
+        // Immediate actions table
+        let actionsHtml = '';
+        if (actions.length) {
+            actionsHtml = `
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Action</th><th>Responsible</th><th>SAP T-Code</th><th>Effort</th></tr></thead>
+                        <tbody>${actions.map(a => `
+                            <tr>
+                                <td>${a.action || ''}</td>
+                                <td>${a.responsible_role || ''}</td>
+                                <td><span class="tcode">${a.sap_transaction || '—'}</span></td>
+                                <td><span class="effort-badge ${effortClass(a.effort)}">${a.effort || ''}</span></td>
+                            </tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+        }
+
+        // Collapsible sections for medium/long term
+        const uid = `${idx}`;
+        let extraSections = '';
+        if (medActions.length) {
+            extraSections += `
+                <div class="collapsible-header" id="hdr-med-${uid}" onclick="toggleSection('med-${uid}')">
+                    <span class="arrow">▶</span>
+                    <span class="section-label" style="margin:0">Medium-Term Actions (${medActions.length})</span>
+                </div>
+                <div class="collapsible-body" id="body-med-${uid}">
+                    <ul>${medActions.map(a => `<li>${a}</li>`).join('')}</ul>
+                </div>`;
+        }
+        if (longActions.length) {
+            extraSections += `
+                <div class="collapsible-header" id="hdr-long-${uid}" onclick="toggleSection('long-${uid}')">
+                    <span class="arrow">▶</span>
+                    <span class="section-label" style="margin:0">Long-Term Actions (${longActions.length})</span>
+                </div>
+                <div class="collapsible-body" id="body-long-${uid}">
+                    <ul>${longActions.map(a => `<li>${a}</li>`).join('')}</ul>
+                </div>`;
+        }
+
+        let riskHtml = risk ? `<p class="section-label">Risk Assessment</p><div class="risk-box">${risk}</div>` : '';
+
+        return `
+            <div class="alert-card">
+                <div class="alert-card-header">
+                    <div>
+                        <h3>${item.kpi_name}</h3>
+                        <span class="alert-meta">${fmtDate(item.timestamp)}</span>
+                    </div>
+                    <span class="severity-badge">Breach</span>
+                </div>
+                <div class="alert-card-body">
+                    <p class="section-label">Executive Summary</p>
+                    <p class="section-text">${d.executive_summary || ''}</p>
+
+                    <p class="section-label">Root Cause Analysis</p>
+                    ${rcHtml}
+
+                    <p class="section-label">Immediate Actions</p>
+                    ${actionsHtml || '<p class="section-text" style="font-style:italic;">None recommended.</p>'}
+
+                    ${extraSections}
+
+                    ${riskHtml}
+                </div>
+            </div>`;
+    }
+
+    // ── Fetch ───────────────────────────────
+    async function fetchResults() {
+        try {
+            const res = await fetch('/api/results');
+            const data = await res.json();
+            const el = document.getElementById('dashboard-content');
+
+            if (!data.length) {
+                el.innerHTML = `<div class="empty-state"><h3>No Insights Yet</h3><p>Click "Trigger HR KPI Scan" or wait for the background orchestrator to detect a breach.</p></div>`;
+                return;
+            }
+            el.innerHTML = data.map((item, i) => renderCard(item, i)).join('');
+        } catch (e) { console.error('Fetch error:', e); }
+    }
+
+    fetchResults();
+    setInterval(fetchResults, 15000);
+</script>
+</body>
+</html>

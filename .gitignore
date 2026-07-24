@@ -1,0 +1,20 @@
+# Environment & secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Runtime state
+run_state.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

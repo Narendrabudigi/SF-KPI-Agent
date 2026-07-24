@@ -1,0 +1,12 @@
+# Ignore Python build artifacts and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.env
+.env.*
+.DS_Store
+
+# Ignore git data
+.git/
