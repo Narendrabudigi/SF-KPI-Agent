@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR KPI Agentic AI — Control Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         :root {
             --bg-dark: #090d16;
@@ -14,7 +23,7 @@
             --panel-border: #1e293b;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            
+
             --blue: #3b82f6;
             --blue-glow: rgba(59, 130, 246, 0.15);
             --green: #10b981;
@@ -24,7 +33,7 @@
             --orange: #f59e0b;
             --orange-glow: rgba(245, 158, 11, 0.15);
             --purple: #8b5cf6;
-            
+
             --radius-lg: 12px;
             --radius-md: 8px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,7 +45,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
             background-attachment: fixed;
@@ -55,11 +64,13 @@
             top: 0;
             z-index: 100;
         }
+
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
+
         .brand-logo {
             width: 32px;
             height: 32px;
@@ -72,14 +83,17 @@
             color: #fff;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
+
         .brand-title {
             font-size: 16px;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
+
         .brand-title span {
             color: var(--blue);
         }
+
         .navbar-actions {
             display: flex;
             gap: 12px;
@@ -100,28 +114,34 @@
             cursor: pointer;
             transition: var(--transition);
         }
+
         .btn:hover {
             background: #334155;
             border-color: #475569;
         }
+
         .btn-primary {
             background: var(--blue);
             border-color: var(--blue);
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
         }
+
         .btn-primary:hover {
             background: #2563eb;
             box-shadow: 0 4px 20px rgba(59, 130, 246, 0.45);
         }
+
         .btn-danger {
             background: transparent;
             color: var(--red);
             border-color: rgba(244, 63, 94, 0.3);
         }
+
         .btn-danger:hover {
             background: var(--red-glow);
             border-color: var(--red);
         }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -136,7 +156,7 @@
             grid-template-columns: 1fr;
             gap: 24px;
         }
-        
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.5fr 1fr;
@@ -156,9 +176,9 @@
             border-radius: var(--radius-lg);
             padding: 20px;
             position: relative;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
-        
+
         .panel-header {
             display: flex;
             justify-content: space-between;
@@ -189,11 +209,13 @@
             padding: 12px 20px;
             margin-bottom: 8px;
         }
+
         .status-info {
             display: flex;
             align-items: center;
             gap: 12px;
         }
+
         .status-indicator {
             width: 10px;
             height: 10px;
@@ -202,22 +224,36 @@
             box-shadow: 0 0 10px var(--green);
             position: relative;
         }
+
         .status-indicator.pulsing {
             animation: pulse-glow 1.5s infinite alternate;
         }
+
         @keyframes pulse-glow {
-            from { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 4px var(--glow-color); }
-            to { transform: scale(1.15); opacity: 1; box-shadow: 0 0 12px var(--glow-color); }
+            from {
+                transform: scale(0.9);
+                opacity: 0.6;
+                box-shadow: 0 0 4px var(--glow-color);
+            }
+
+            to {
+                transform: scale(1.15);
+                opacity: 1;
+                box-shadow: 0 0 12px var(--glow-color);
+            }
         }
+
         .status-text {
             font-size: 13px;
             font-weight: 600;
             color: var(--text-secondary);
         }
+
         .status-text strong {
             color: var(--text-primary);
             text-transform: uppercase;
         }
+
         .status-meta {
             font-size: 12px;
             color: var(--text-secondary);
@@ -229,11 +265,13 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
         }
+
         @media (max-width: 640px) {
             .agent-grid {
                 grid-template-columns: 1fr;
             }
         }
+
         .agent-card {
             background: #0f172a;
             border: 1px solid var(--panel-border);
@@ -244,20 +282,24 @@
             flex-direction: column;
             gap: 10px;
         }
+
         .agent-card:hover {
             transform: translateY(-2px);
             border-color: #334155;
-            box-shadow: 0 8px 24px -10px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.6);
         }
+
         .agent-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .agent-name {
             font-size: 14px;
             font-weight: 700;
         }
+
         .agent-badge {
             font-size: 10px;
             font-weight: 700;
@@ -266,22 +308,54 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .agent-card.inactive { border-left: 3px solid var(--text-secondary); }
-        .agent-card.inactive .agent-badge { background: #334155; color: var(--text-secondary); }
-        
-        .agent-card.running { border-left: 3px solid var(--blue); animation: active-glow-blue 1.5s infinite alternate; }
-        .agent-card.running .agent-badge { background: var(--blue-glow); color: var(--blue); }
-        
-        .agent-card.completed { border-left: 3px solid var(--green); }
-        .agent-card.completed .agent-badge { background: var(--green-glow); color: var(--green); }
-        
-        .agent-card.failed { border-left: 3px solid var(--red); }
-        .agent-card.failed .agent-badge { background: var(--red-glow); color: var(--red); }
+
+        .agent-card.inactive {
+            border-left: 3px solid var(--text-secondary);
+        }
+
+        .agent-card.inactive .agent-badge {
+            background: #334155;
+            color: var(--text-secondary);
+        }
+
+        .agent-card.running {
+            border-left: 3px solid var(--blue);
+            animation: active-glow-blue 1.5s infinite alternate;
+        }
+
+        .agent-card.running .agent-badge {
+            background: var(--blue-glow);
+            color: var(--blue);
+        }
+
+        .agent-card.completed {
+            border-left: 3px solid var(--green);
+        }
+
+        .agent-card.completed .agent-badge {
+            background: var(--green-glow);
+            color: var(--green);
+        }
+
+        .agent-card.failed {
+            border-left: 3px solid var(--red);
+        }
+
+        .agent-card.failed .agent-badge {
+            background: var(--red-glow);
+            color: var(--red);
+        }
 
         @keyframes active-glow-blue {
-            from { box-shadow: inset 0 0 4px var(--blue-glow); }
-            to { box-shadow: inset 0 0 12px var(--blue-glow), 0 0 8px var(--blue-glow); }
+            from {
+                box-shadow: inset 0 0 4px var(--blue-glow);
+            }
+
+            to {
+                box-shadow: inset 0 0 12px var(--blue-glow), 0 0 8px var(--blue-glow);
+            }
         }
+
         .agent-detail {
             font-size: 11px;
             color: var(--text-secondary);
@@ -289,6 +363,7 @@
             flex-direction: column;
             gap: 2px;
         }
+
         .agent-detail span strong {
             color: var(--text-primary);
         }
@@ -307,20 +382,24 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
         }
+
         .terminal::-webkit-scrollbar {
             width: 6px;
         }
+
         .terminal::-webkit-scrollbar-thumb {
             background: #1e293b;
             border-radius: 99px;
         }
+
         .terminal-line {
             line-height: 1.5;
             word-break: break-all;
             white-space: pre-wrap;
         }
+
         .terminal-line.timestamp {
             color: #64748b;
         }
@@ -331,6 +410,7 @@
             flex-direction: column;
             gap: 10px;
         }
+
         .job-item {
             background: #0f172a;
             border: 1px solid var(--panel-border);
@@ -340,26 +420,31 @@
             align-items: center;
             justify-content: space-between;
         }
+
         .job-meta {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
+
         .job-id {
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
             font-weight: 600;
             color: var(--blue);
         }
+
         .job-kpi {
             font-size: 12px;
             color: var(--text-primary);
             font-weight: 600;
         }
+
         .job-stage {
             font-size: 11px;
             color: var(--text-secondary);
         }
+
         .spinner {
             width: 18px;
             height: 18px;
@@ -368,28 +453,34 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ── Alert Cards ────────────────────── */
         .alerts-section {
             margin-top: 12px;
         }
+
         .section-title {
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 16px;
             letter-spacing: -0.3px;
         }
+
         .alert-card {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
             border-radius: var(--radius-lg);
             margin-bottom: 20px;
-            box-shadow: 0 10px 35px -10px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 35px -10px rgba(0, 0, 0, 0.6);
             overflow: hidden;
         }
+
         .alert-card-header {
             display: flex;
             justify-content: space-between;
@@ -398,16 +489,19 @@
             border-bottom: 1px solid var(--panel-border);
             background: rgba(30, 41, 59, 0.2);
         }
+
         .alert-card-header h3 {
             font-size: 16px;
             font-weight: 700;
             letter-spacing: -0.2px;
         }
+
         .alert-meta {
             font-size: 12px;
             color: var(--text-secondary);
             margin-top: 4px;
         }
+
         .severity-badge {
             font-size: 10px;
             font-weight: 700;
@@ -419,9 +513,11 @@
             color: var(--red);
             border: 1px solid rgba(244, 63, 94, 0.3);
         }
+
         .alert-card-body {
             padding: 24px;
         }
+
         .field-label {
             font-size: 11px;
             font-weight: 700;
@@ -433,12 +529,14 @@
             align-items: center;
             gap: 6px;
         }
+
         .field-content {
             font-size: 14px;
             color: var(--text-primary);
             margin-bottom: 24px;
             line-height: 1.6;
         }
+
         .root-cause-list {
             list-style: none;
             display: flex;
@@ -446,6 +544,7 @@
             gap: 10px;
             margin-bottom: 24px;
         }
+
         .root-cause-list li {
             background: #0f172a;
             border: 1px solid var(--panel-border);
@@ -456,6 +555,7 @@
             gap: 12px;
             align-items: flex-start;
         }
+
         .rc-number {
             width: 22px;
             height: 22px;
@@ -480,24 +580,30 @@
             background: #0f172a;
             margin-bottom: 24px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
             font-size: 13px;
         }
-        th, td {
+
+        th,
+        td {
             padding: 12px 16px;
             border-bottom: 1px solid var(--panel-border);
         }
+
         th {
             background: rgba(30, 41, 59, 0.4);
             font-weight: 600;
             color: var(--text-secondary);
         }
+
         tr:last-child td {
             border-bottom: none;
         }
+
         .tcode {
             font-family: 'JetBrains Mono', monospace;
             color: var(--purple);
@@ -505,6 +611,7 @@
             padding: 2px 6px;
             border-radius: 4px;
         }
+
         .effort-badge {
             font-size: 11px;
             font-weight: 600;
@@ -512,9 +619,21 @@
             border-radius: var(--radius-md);
             text-transform: uppercase;
         }
-        .effort-low { background: var(--green-glow); color: var(--green); }
-        .effort-medium { background: var(--orange-glow); color: var(--orange); }
-        .effort-high { background: var(--red-glow); color: var(--red); }
+
+        .effort-low {
+            background: var(--green-glow);
+            color: var(--green);
+        }
+
+        .effort-medium {
+            background: var(--orange-glow);
+            color: var(--orange);
+        }
+
+        .effort-high {
+            background: var(--red-glow);
+            color: var(--red);
+        }
 
         .risk-box {
             background: rgba(244, 63, 94, 0.05);
@@ -533,6 +652,7 @@
             border-radius: var(--radius-lg);
             color: var(--text-secondary);
         }
+
         .empty-state h3 {
             color: var(--text-primary);
             margin-bottom: 8px;
@@ -544,19 +664,27 @@
             position: relative;
             overflow: hidden;
         }
+
         .loading-shimmer::after {
             content: '';
             position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
             transform: translateX(-100%);
             animation: shimmer 1.5s infinite;
         }
+
         @keyframes shimmer {
-            100% { transform: translateX(100%); }
+            100% {
+                transform: translateX(100%);
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ── Navbar ─────────────────────────── -->
@@ -567,7 +695,12 @@
         </div>
         <div class="navbar-actions">
             <button id="btn-trigger" class="btn btn-primary" onclick="triggerScan()">
-                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
                 Trigger HR KPI Scan
             </button>
             <button id="btn-reset" class="btn btn-danger" onclick="resetDashboard()">Clear Insights</button>
@@ -589,11 +722,16 @@
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
                         Domain Agent Network Status
                     </div>
                 </div>
-                
+
                 <div class="agent-grid">
                     <!-- Recruitment Agent -->
                     <div class="agent-card inactive" id="agent-recruitment">
@@ -651,7 +789,11 @@
                 <div style="flex-shrink:0;">
                     <div class="panel-header" style="margin-bottom:12px;">
                         <div class="panel-title">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                             Active Databricks Jobs (<span id="jobs-count">0</span>)
                         </div>
                     </div>
@@ -664,7 +806,12 @@
                 <div style="flex-grow:1; display:flex; flex-direction:column;">
                     <div class="panel-header" style="margin-bottom:12px; padding-bottom:8px;">
                         <div class="panel-title">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
                             Live Agent Console Events
                         </div>
                     </div>
@@ -705,26 +852,26 @@
                 const res = await fetch('/api/status');
                 if (!res.ok) return;
                 const state = await res.json();
-                
+
                 // Update system status
                 const indicator = document.getElementById('sys-indicator');
                 const statusEl = document.getElementById('sys-status');
                 const lastCheckEl = document.getElementById('sys-last-check');
-                
+
                 const currentStatus = state.status || "idle";
                 const config = statusColors[currentStatus] || { color: "#10b981", text: currentStatus };
-                
+
                 statusEl.textContent = config.text;
                 indicator.style.backgroundColor = config.color;
                 indicator.style.boxShadow = `0 0 12px ${config.color}`;
                 indicator.style.setProperty('--glow-color', config.color);
-                
+
                 if (currentStatus !== "idle" && currentStatus !== "completed") {
                     indicator.classList.add('pulsing');
                 } else {
                     indicator.classList.remove('pulsing');
                 }
-                
+
                 lastCheckEl.textContent = state.last_checked || "Never";
 
                 // Update Agent Cards
@@ -732,13 +879,13 @@
                 agents.forEach(agent => {
                     const el = document.getElementById(`agent-${agent}`);
                     if (!el) return;
-                    
+
                     const status = (state.agent_statuses && state.agent_statuses[agent]) || "inactive";
-                    
+
                     // Reset classes
                     el.className = 'agent-card';
                     el.classList.add(status);
-                    
+
                     const badge = el.querySelector('.agent-badge');
                     badge.textContent = status;
                 });
@@ -747,7 +894,7 @@
                 const activeJobs = state.active_runs || [];
                 document.getElementById('jobs-count').textContent = activeJobs.length;
                 const jobsListEl = document.getElementById('active-jobs-list');
-                
+
                 if (activeJobs.length === 0) {
                     jobsListEl.innerHTML = `<div style="font-size:12px; color:var(--text-secondary); text-align:center; padding:12px; background:#0f172a; border: 1px dashed var(--panel-border); border-radius:var(--radius-md);">No active Databricks jobs.</div>`;
                 } else {
@@ -766,10 +913,10 @@
                 // Update Terminal Logs
                 const logs = state.system_logs || [];
                 const terminal = document.getElementById('terminal-body');
-                
+
                 // Track if we need to auto-scroll (user is already at the bottom)
                 const shouldScroll = terminal.scrollHeight - terminal.scrollTop <= terminal.clientHeight + 40;
-                
+
                 terminal.innerHTML = logs.map(line => {
                     // Highlight warnings, errors, successes
                     let cssStyle = "";
@@ -780,10 +927,10 @@
                     } else if (line.includes("Waiting") || line.includes("Sleeping") || line.includes("lock")) {
                         cssStyle = "color: #f59e0b;";
                     }
-                    
+
                     return `<div class="terminal-line" style="${cssStyle}">${line}</div>`;
                 }).join('');
-                
+
                 if (shouldScroll && logs.length > 0) {
                     terminal.scrollTop = terminal.scrollHeight;
                 }
@@ -797,11 +944,11 @@
             const btn = document.getElementById('btn-trigger');
             btn.disabled = true;
             btn.innerHTML = `<div class="spinner" style="width:12px; height:12px; border-width:1.5px; border-top-color:#fff;"></div> Triggering...`;
-            
+
             try {
                 const res = await fetch('/api/trigger', { method: 'POST' });
                 const body = await res.json();
-                
+
                 // Immediately refresh status
                 fetchSystemState();
             } catch (err) {
@@ -906,10 +1053,10 @@
             try {
                 const res = await fetch('/api/results');
                 const data = await res.json();
-                
+
                 if (data.length === lastResultsCount) return; // Skip DOM rebuild if no new data
                 lastResultsCount = data.length;
-                
+
                 const el = document.getElementById('alerts-container');
 
                 if (!data.length) {
@@ -921,20 +1068,21 @@
                     return;
                 }
                 el.innerHTML = data.map((item, i) => renderCard(item, i)).join('');
-            } catch (e) { 
-                console.error('Fetch results error:', e); 
+            } catch (e) {
+                console.error('Fetch results error:', e);
             }
         }
 
         // Initialize and schedule polling
         fetchSystemState();
         fetchResults();
-        
+
         // Poll status every 2 seconds for high-fidelity logs
-        setInterval(fetchSystemState, 2000);
-        
+        setInterval(fetchSystemState, 200000);
+
         // Poll results every 5 seconds for new recommendations
         setInterval(fetchResults, 5000);
     </script>
 </body>
+
 </html>
