@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: kpi-agentic-ai
+  - name: SF-kpi-agentic-ai
     memory: 512M
     disk_quota: 1G
     buildpacks:

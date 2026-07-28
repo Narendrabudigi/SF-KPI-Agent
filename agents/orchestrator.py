@@ -26,27 +26,27 @@ DOMAIN_LOCKS = {
 
 def get_domain_key(kpi_name):
     kpi_lower = kpi_name.lower()
-    if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower:
+    if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower or kpi_lower == "tth":
         return "recruitment"
-    elif "onboarding" in kpi_lower or "offboarding" in kpi_lower:
+    elif "onboarding" in kpi_lower or "offboarding" in kpi_lower or kpi_lower == "oct" or kpi_lower == "oft":
         return "onboarding_offboarding"
-    elif "attrition" in kpi_lower:
+    elif "attrition" in kpi_lower or kpi_lower == "ear":
         return "employee_central"
-    elif "payroll" in kpi_lower:
+    elif "payroll" in kpi_lower or kpi_lower == "per":
         return "employee_payment"
     return None
 
 def resolve_agent_info(kpi_name):
     kpi_lower = kpi_name.lower()
-    if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower:
+    if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower or kpi_lower == "tth":
         return recruitment_agent, config.RECRUITMENT_RESULTS_TABLE
-    elif "onboarding" in kpi_lower:
+    elif "onboarding" in kpi_lower or kpi_lower == "oct":
         return onboarding_offboarding_agent, config.ONBOARDING_OFFBOARDING_RESULTS_TABLE
-    elif "offboarding" in kpi_lower:
+    elif "offboarding" in kpi_lower or kpi_lower == "oft":
         return onboarding_offboarding_agent, config.ONBOARDING_OFFBOARDING_RESULTS_TABLE
-    elif "attrition" in kpi_lower:
+    elif "attrition" in kpi_lower or kpi_lower == "ear":
         return employee_central_agent, config.EMPLOYEE_CENTRAL_RESULTS_TABLE
-    elif "payroll" in kpi_lower:
+    elif "payroll" in kpi_lower or kpi_lower == "per":
         return employee_payment_agent, config.EMPLOYEE_PAYMENT_RESULTS_TABLE
     return None, None
 
@@ -93,6 +93,13 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             runtime_state.SYSTEM_STATE["active_runs"].append({
                 "run_id": run_id,
                 "kpi_name": primary_kpi_name,
+                "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_module.__name__ else (
+                    config.ONBOARDING_OFFBOARDING_NOTEBOOK_PATH if "onboarding" in agent_module.__name__ else (
+                        config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_module.__name__ else (
+                            config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_module.__name__ else "Unknown"
+                        )
+                    )
+                ),
                 "stage": "Stage 1 (Primary Analysis)"
             })
     else:
@@ -173,6 +180,13 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                         runtime_state.SYSTEM_STATE["active_runs"].append({
                             "run_id": run_id,
                             "kpi_name": target_kpi,
+                            "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_mod.__name__ else (
+                                config.ONBOARDING_OFFBOARDING_NOTEBOOK_PATH if "onboarding" in agent_mod.__name__ else (
+                                    config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_mod.__name__ else (
+                                        config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_mod.__name__ else "Unknown"
+                                    )
+                                )
+                            ),
                             "stage": "Stage 2 (Dependency Analysis)"
                         })
                 else:
@@ -233,20 +247,24 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
 
 def route_kpi_breach(kpi_name, severity, year, month, **extra_params):
     """Wrapper to start the incident workflow."""
+    if not kpi_name:
+        runtime_state.log_system_event("[bold red]Error: Received empty or invalid KPI Name to route[/bold red]")
+        return
+        
     # Normalize KPI Name
     kpi_name_clean = kpi_name.strip()
     kpi_lower = kpi_name_clean.lower()
     
     # Map common variations to standard matrix/config keys
-    if "time to hire" in kpi_lower or "time-to-hire" in kpi_lower:
+    if "time to hire" in kpi_lower or "time-to-hire" in kpi_lower or kpi_lower == "tth":
         kpi_name_clean = "Time-to-Hire"
-    elif "onboarding" in kpi_lower:
+    elif "onboarding" in kpi_lower or kpi_lower == "oct":
         kpi_name_clean = "Onboarding Completion Time"
-    elif "offboarding" in kpi_lower:
+    elif "offboarding" in kpi_lower or kpi_lower == "oft":
         kpi_name_clean = "Offboarding Completion Time"
-    elif "attrition" in kpi_lower:
+    elif "attrition" in kpi_lower or kpi_lower == "ear":
         kpi_name_clean = "Employee Attrition Rate"
-    elif "payroll" in kpi_lower:
+    elif "payroll" in kpi_lower or kpi_lower == "per":
         kpi_name_clean = "Payroll Error Rate"
         
     domain_key = get_domain_key(kpi_name_clean)

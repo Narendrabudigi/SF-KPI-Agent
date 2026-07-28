@@ -24,6 +24,13 @@
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
 
+            --nav-bg: rgba(18, 24, 36, 0.8);
+            --card-inner-bg: #0f172a;
+            --terminal-bg: #020617;
+            --terminal-text: #38bdf8;
+            --alert-header-bg: rgba(30, 41, 59, 0.2);
+            --table-th-bg: rgba(30, 41, 59, 0.4);
+
             --blue: #3b82f6;
             --blue-glow: rgba(59, 130, 246, 0.15);
             --green: #10b981;
@@ -37,6 +44,30 @@
             --radius-lg: 12px;
             --radius-md: 8px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-radial: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                         radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+        }
+
+        body.light-theme {
+            --bg-dark: #f8fafc;
+            --panel-bg: #ffffff;
+            --panel-border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --card-inner-bg: #f1f5f9;
+            --terminal-bg: #f8fafc;
+            --terminal-text: #0284c7;
+            --alert-header-bg: rgba(226, 232, 240, 0.4);
+            --table-th-bg: rgba(226, 232, 240, 0.6);
+
+            --blue-glow: rgba(59, 130, 246, 0.08);
+            --green-glow: rgba(16, 185, 129, 0.08);
+            --red-glow: rgba(244, 63, 94, 0.08);
+            --orange-glow: rgba(245, 158, 11, 0.08);
+            --bg-radial: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 40%),
+                         radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 40%);
         }
 
         body {
@@ -45,15 +76,14 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+            background-image: var(--bg-radial);
             background-attachment: fixed;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         /* ── Header / Navbar ─────────────────── */
         .navbar {
-            background: rgba(18, 24, 36, 0.8);
+            background: var(--nav-bg);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--panel-border);
             padding: 12px 32px;
@@ -63,35 +93,41 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background 0.25s ease, border-color 0.25s ease;
         }
 
         .navbar-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
         .brand-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            border-radius: 50%;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .brand-logo img {
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
         }
 
         .brand-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
         .brand-title span {
             color: var(--blue);
+            font-weight: 400;
+            font-size: 14px;
+            margin-left: 8px;
+            border-left: 1px solid var(--panel-border);
+            padding-left: 8px;
         }
 
         .navbar-actions {
@@ -177,6 +213,7 @@
             padding: 20px;
             position: relative;
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         .panel-header {
@@ -203,11 +240,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #0f172a;
+            background: var(--card-inner-bg);
             border: 1px solid var(--panel-border);
             border-radius: var(--radius-md);
             padding: 12px 20px;
             margin-bottom: 8px;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         .status-info {
@@ -273,11 +311,11 @@
         }
 
         .agent-card {
-            background: #0f172a;
+            background: var(--card-inner-bg);
             border: 1px solid var(--panel-border);
             border-radius: var(--radius-md);
             padding: 16px;
-            transition: var(--transition);
+            transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -373,7 +411,7 @@
             background: #020617;
             border: 1px solid var(--panel-border);
             border-radius: var(--radius-md);
-            height: 250px;
+            height: 350px;
             overflow-y: auto;
             padding: 16px;
             font-family: 'JetBrains Mono', monospace;
@@ -381,7 +419,7 @@
             color: #38bdf8;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
@@ -395,13 +433,30 @@
         }
 
         .terminal-line {
-            line-height: 1.5;
+            line-height: 1.6;
             word-break: break-all;
             white-space: pre-wrap;
+            border-bottom: 1px dashed rgba(30, 41, 59, 0.2);
+            padding-bottom: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
         }
 
-        .terminal-line.timestamp {
+        .terminal-line .log-time {
             color: #64748b;
+            font-size: 11px;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .terminal-line .log-icon {
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+
+        .terminal-line .log-content {
+            flex-grow: 1;
         }
 
         /* ── Running Jobs Monitor ────────────── */
@@ -412,13 +467,14 @@
         }
 
         .job-item {
-            background: #0f172a;
+            background: var(--card-inner-bg);
             border: 1px solid var(--panel-border);
             border-radius: var(--radius-md);
             padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         .job-meta {
@@ -546,7 +602,7 @@
         }
 
         .root-cause-list li {
-            background: #0f172a;
+            background: var(--card-inner-bg);
             border: 1px solid var(--panel-border);
             padding: 12px 16px;
             border-radius: var(--radius-md);
@@ -554,6 +610,7 @@
             display: flex;
             gap: 12px;
             align-items: flex-start;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         .rc-number {
@@ -577,8 +634,9 @@
             border: 1px solid var(--panel-border);
             border-radius: var(--radius-md);
             overflow: hidden;
-            background: #0f172a;
+            background: var(--card-inner-bg);
             margin-bottom: 24px;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         table {
@@ -690,10 +748,16 @@
     <!-- ── Navbar ─────────────────────────── -->
     <nav class="navbar">
         <div class="navbar-brand">
-            <div class="brand-logo">AI</div>
-            <div class="brand-title">HR KPI Agentic AI <span>Control Center</span></div>
+            <div class="brand-logo">
+                <img src="/Yash.png" alt="Yash Technologies Logo">
+            </div>
+            <div class="brand-title">Yash Technologies <span>HR KPI Agentic AI Control Center</span></div>
         </div>
         <div class="navbar-actions">
+            <button id="btn-theme-toggle" class="btn" onclick="toggleTheme()" aria-label="Toggle Theme" style="padding: 8px 12px;">
+                <svg id="theme-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                </svg>
+            </button>
             <button id="btn-trigger" class="btn btn-primary" onclick="triggerScan()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -896,14 +960,15 @@
                 const jobsListEl = document.getElementById('active-jobs-list');
 
                 if (activeJobs.length === 0) {
-                    jobsListEl.innerHTML = `<div style="font-size:12px; color:var(--text-secondary); text-align:center; padding:12px; background:#0f172a; border: 1px dashed var(--panel-border); border-radius:var(--radius-md);">No active Databricks jobs.</div>`;
+                    jobsListEl.innerHTML = `<div style="font-size:12px; color:var(--text-secondary); text-align:center; padding:12px; background:var(--card-inner-bg); border: 1px dashed var(--panel-border); border-radius:var(--radius-md);">No active Databricks jobs.</div>`;
                 } else {
                     jobsListEl.innerHTML = activeJobs.map(job => `
                         <div class="job-item">
                             <div class="job-meta">
                                 <span class="job-kpi">${job.kpi_name}</span>
                                 <span class="job-id">Run ID: ${job.run_id}</span>
-                                <span class="job-stage">${job.stage}</span>
+                                <span class="job-id" style="color: var(--text-secondary); font-size: 11px; word-break: break-all; margin-top: 2px;">Notebook: ${job.notebook_path || 'N/A'}</span>
+                                <span class="job-stage" style="margin-top: 4px;">${job.stage}</span>
                             </div>
                             <div class="spinner"></div>
                         </div>
@@ -918,17 +983,37 @@
                 const shouldScroll = terminal.scrollHeight - terminal.scrollTop <= terminal.clientHeight + 40;
 
                 terminal.innerHTML = logs.map(line => {
-                    // Highlight warnings, errors, successes
-                    let cssStyle = "";
-                    if (line.includes("Failed") || line.includes("failed") || line.includes("Error") || line.includes("Conflict")) {
-                        cssStyle = "color: #f43f5e;";
-                    } else if (line.includes("Successfully") || line.includes("completed") || line.includes("Acquired lock")) {
-                        cssStyle = "color: #10b981;";
-                    } else if (line.includes("Waiting") || line.includes("Sleeping") || line.includes("lock")) {
-                        cssStyle = "color: #f59e0b;";
+                    const match = line.match(/^\[([^\]]+)\]\s*(.*)$/);
+                    let time = "";
+                    let msg = line;
+                    if (match) {
+                        time = match[1];
+                        msg = match[2];
                     }
 
-                    return `<div class="terminal-line" style="${cssStyle}">${line}</div>`;
+                    // Highlight warnings, errors, successes
+                    let cssStyle = "";
+                    let icon = "⚙️";
+                    if (msg.includes("Failed") || msg.includes("failed") || msg.includes("Error") || msg.includes("Conflict") || msg.includes("!!")) {
+                        cssStyle = "color: #f43f5e; background: rgba(244, 63, 94, 0.03); border-left: 2px solid #f43f5e; padding-left: 8px;";
+                        icon = "🚨";
+                    } else if (msg.includes("Successfully") || msg.includes("completed") || msg.includes("Acquired lock") || msg.includes("completed!")) {
+                        cssStyle = "color: #10b981; background: rgba(16, 185, 129, 0.03); border-left: 2px solid #10b981; padding-left: 8px;";
+                        icon = "✅";
+                    } else if (msg.includes("Waiting") || msg.includes("Sleeping") || msg.includes("lock") || msg.includes("Triggering")) {
+                        cssStyle = "color: #f59e0b; background: rgba(245, 158, 11, 0.03); border-left: 2px solid #f59e0b; padding-left: 8px;";
+                        icon = "⏳";
+                    } else {
+                        cssStyle = "color: #38bdf8;";
+                    }
+
+                    return `
+                        <div class="terminal-line" style="${cssStyle}">
+                            <span class="log-time">[${time}]</span>
+                            <span class="log-icon">${icon}</span>
+                            <span class="log-content">${msg}</span>
+                        </div>
+                    `;
                 }).join('');
 
                 if (shouldScroll && logs.length > 0) {
@@ -1078,10 +1163,43 @@
         fetchResults();
 
         // Poll status every 2 seconds for high-fidelity logs
-        setInterval(fetchSystemState, 200000);
+        setInterval(fetchSystemState, 2000);
 
         // Poll results every 5 seconds for new recommendations
         setInterval(fetchResults, 5000);
+
+        // Theme Switcher Logic
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+            }
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            const theme = isLight ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const svg = document.getElementById('theme-icon');
+            if (theme === 'light') {
+                svg.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m9.75-9h-2.25m-13.5 0H3m16.035-6.785l-1.59 1.59M6.343 17.657l-1.59 1.59m12.728 0l-1.59-1.59M6.343 6.343L4.753 4.753M12 9.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
+                `;
+            } else {
+                svg.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                `;
+            }
+        }
+
+        initTheme();
     </script>
 </body>
 

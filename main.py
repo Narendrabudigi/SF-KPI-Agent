@@ -42,6 +42,13 @@ def get_dashboard():
             return HTMLResponse(content=f.read())
     return HTMLResponse(content="<h1>Dashboard not found. Run the setup script.</h1>", status_code=404)
 
+@app.get("/Yash.png")
+def get_yash_logo():
+    logo_path = os.path.join(BASE_DIR, "Yash.png")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path)
+    return JSONResponse(content={"error": "Logo not found"}, status_code=404)
+
 @app.get("/api/results")
 def get_results():
     """Returns the latest historical AI insights for the dashboard."""
