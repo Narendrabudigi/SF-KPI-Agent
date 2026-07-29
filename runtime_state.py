@@ -10,9 +10,10 @@ SYSTEM_STATE = {
     "last_checked": None,
     "current_breaches": [],        # list of active breaches being processed
     "active_runs": [],             # list of active Databricks job runs with ID, KPI, and stage
-    "agent_statuses": {            # recruitment, onboarding_offboarding, central, payment
+    "agent_statuses": {            # recruitment, onboarding, offboarding, central, payment
         "recruitment": "inactive", # inactive, running, completed, failed
-        "onboarding_offboarding": "inactive",
+        "onboarding": "inactive",
+        "offboarding": "inactive",
         "employee_central": "inactive",
         "employee_payment": "inactive"
     },

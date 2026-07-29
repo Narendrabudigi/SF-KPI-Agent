@@ -809,15 +809,27 @@
                         </div>
                     </div>
 
-                    <!-- Onboarding/Offboarding Agent -->
-                    <div class="agent-card inactive" id="agent-onboarding_offboarding">
+                    <!-- Onboarding Agent -->
+                    <div class="agent-card inactive" id="agent-onboarding">
                         <div class="agent-header">
                             <span class="agent-name">Onboarding Agent</span>
                             <span class="agent-badge">INACTIVE</span>
                         </div>
                         <div class="agent-detail">
                             <span>Notebook: <strong>Onboarding_RCA</strong></span>
-                            <span>Target: <strong>onboarding_dependency</strong></span>
+                            <span>Target: <strong>onboarding_rca_results</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Offboarding Agent -->
+                    <div class="agent-card inactive" id="agent-offboarding">
+                        <div class="agent-header">
+                            <span class="agent-name">Offboarding Agent</span>
+                            <span class="agent-badge">INACTIVE</span>
+                        </div>
+                        <div class="agent-detail">
+                            <span>Notebook: <strong>Offboarding_RCA</strong></span>
+                            <span>Target: <strong>offboarding_rca_results</strong></span>
                         </div>
                     </div>
 
@@ -900,7 +912,8 @@
             "idle": { color: "#10b981", text: "IDLE" },
             "fetching": { color: "#f59e0b", text: "FETCHING SAP ODATA" },
             "analyzing_recruitment": { color: "#3b82f6", text: "ANALYZING RECRUITMENT BREACH" },
-            "analyzing_onboarding_offboarding": { color: "#3b82f6", text: "ANALYZING ONBOARDING BREACH" },
+            "analyzing_onboarding": { color: "#3b82f6", text: "ANALYZING ONBOARDING BREACH" },
+            "analyzing_offboarding": { color: "#3b82f6", text: "ANALYZING OFFBOARDING BREACH" },
             "analyzing_employee_central": { color: "#3b82f6", text: "ANALYZING CENTRAL BREACH" },
             "analyzing_employee_payment": { color: "#3b82f6", text: "ANALYZING PAYROLL BREACH" },
             "running_stage_1": { color: "#3b82f6", text: "STAGE 1: RUNNING PRIMARY ANALYSES" },
@@ -939,7 +952,7 @@
                 lastCheckEl.textContent = state.last_checked || "Never";
 
                 // Update Agent Cards
-                const agents = ['recruitment', 'onboarding_offboarding', 'employee_central', 'employee_payment'];
+                const agents = ['recruitment', 'onboarding', 'offboarding', 'employee_central', 'employee_payment'];
                 agents.forEach(agent => {
                     const el = document.getElementById(`agent-${agent}`);
                     if (!el) return;

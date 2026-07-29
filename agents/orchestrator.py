@@ -10,7 +10,8 @@ import runtime_state
 
 # Relative imports for other agents in the same folder
 from agents import recruitment_agent
-from agents import onboarding_offboarding_agent
+from agents import onboarding_agent
+from agents import offboarding_agent
 from agents import employee_central_agent
 from agents import employee_payment_agent
 from agents import coordinator_agent
@@ -19,7 +20,8 @@ from agents import prescriptive_agent
 # Threading locks to serialize writes to the same Databricks tables per domain
 DOMAIN_LOCKS = {
     "recruitment": threading.Lock(),
-    "onboarding_offboarding": threading.Lock(),
+    "onboarding": threading.Lock(),
+    "offboarding": threading.Lock(),
     "employee_central": threading.Lock(),
     "employee_payment": threading.Lock()
 }
@@ -28,8 +30,10 @@ def get_domain_key(kpi_name):
     kpi_lower = kpi_name.lower()
     if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower or kpi_lower == "tth":
         return "recruitment"
-    elif "onboarding" in kpi_lower or "offboarding" in kpi_lower or kpi_lower == "oct" or kpi_lower == "oft":
-        return "onboarding_offboarding"
+    elif "onboarding" in kpi_lower or kpi_lower == "oct":
+        return "onboarding"
+    elif "offboarding" in kpi_lower or kpi_lower == "oft":
+        return "offboarding"
     elif "attrition" in kpi_lower or kpi_lower == "ear":
         return "employee_central"
     elif "payroll" in kpi_lower or kpi_lower == "per":
@@ -41,14 +45,15 @@ def resolve_agent_info(kpi_name):
     if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower or kpi_lower == "tth":
         return recruitment_agent, config.RECRUITMENT_RESULTS_TABLE
     elif "onboarding" in kpi_lower or kpi_lower == "oct":
-        return onboarding_offboarding_agent, config.ONBOARDING_OFFBOARDING_RESULTS_TABLE
+        return onboarding_agent, config.ONBOARDING_RESULTS_TABLE
     elif "offboarding" in kpi_lower or kpi_lower == "oft":
-        return onboarding_offboarding_agent, config.ONBOARDING_OFFBOARDING_RESULTS_TABLE
+        return offboarding_agent, config.OFFBOARDING_RESULTS_TABLE
     elif "attrition" in kpi_lower or kpi_lower == "ear":
         return employee_central_agent, config.EMPLOYEE_CENTRAL_RESULTS_TABLE
     elif "payroll" in kpi_lower or kpi_lower == "per":
         return employee_payment_agent, config.EMPLOYEE_PAYMENT_RESULTS_TABLE
     return None, None
+
 
 def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params):
     """
@@ -94,9 +99,11 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                 "run_id": run_id,
                 "kpi_name": primary_kpi_name,
                 "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_module.__name__ else (
-                    config.ONBOARDING_OFFBOARDING_NOTEBOOK_PATH if "onboarding" in agent_module.__name__ else (
-                        config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_module.__name__ else (
-                            config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_module.__name__ else "Unknown"
+                    config.ONBOARDING_NOTEBOOK_PATH if "onboarding" in agent_module.__name__ else (
+                        config.OFFBOARDING_NOTEBOOK_PATH if "offboarding" in agent_module.__name__ else (
+                            config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_module.__name__ else (
+                                config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_module.__name__ else "Unknown"
+                            )
                         )
                     )
                 ),
@@ -164,8 +171,10 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                     if run_id:
                         # Dynamically determine the D table name based on agent domain
                         d_table = "workspace.default.recruitment_dependency_results"
-                        if "onboarding_offboarding" in agent_mod.__name__:
-                            d_table = "workspace.default.onboarding_offboarding_dependency_results"
+                        if "onboarding" in agent_mod.__name__:
+                            d_table = "workspace.default.onboarding_dependency_results"
+                        elif "offboarding" in agent_mod.__name__:
+                            d_table = "workspace.default.offboarding_dependency_results"
                         elif "employee_central" in agent_mod.__name__:
                             d_table = "workspace.default.employee_central_dependency_results"
                         elif "employee_payment" in agent_mod.__name__:
@@ -181,9 +190,11 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                             "run_id": run_id,
                             "kpi_name": target_kpi,
                             "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_mod.__name__ else (
-                                config.ONBOARDING_OFFBOARDING_NOTEBOOK_PATH if "onboarding" in agent_mod.__name__ else (
-                                    config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_mod.__name__ else (
-                                        config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_mod.__name__ else "Unknown"
+                                config.ONBOARDING_NOTEBOOK_PATH if "onboarding" in agent_mod.__name__ else (
+                                    config.OFFBOARDING_NOTEBOOK_PATH if "offboarding" in agent_mod.__name__ else (
+                                        config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_mod.__name__ else (
+                                            config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_mod.__name__ else "Unknown"
+                                        )
                                     )
                                 )
                             ),

@@ -51,12 +51,14 @@ EXISTING_CLUSTER_ID = os.getenv("EXISTING_CLUSTER_ID")
 # Domain Agent Specific Configuration
 # ---------------------------------------------------------------------------
 RECRUITMENT_NOTEBOOK_PATH = os.getenv("RECRUITMENT_NOTEBOOK_PATH")
-ONBOARDING_OFFBOARDING_NOTEBOOK_PATH = os.getenv("ONBOARDING_OFFBOARDING_NOTEBOOK_PATH")
+ONBOARDING_NOTEBOOK_PATH = os.getenv("ONBOARDING_NOTEBOOK_PATH")
+OFFBOARDING_NOTEBOOK_PATH = os.getenv("OFFBOARDING_NOTEBOOK_PATH")
 EMPLOYEE_CENTRAL_NOTEBOOK_PATH = os.getenv("EMPLOYEE_CENTRAL_NOTEBOOK_PATH")
 EMPLOYEE_PAYMENT_NOTEBOOK_PATH = os.getenv("EMPLOYEE_PAYMENT_NOTEBOOK_PATH")
 
 RECRUITMENT_RESULTS_TABLE = os.getenv("RECRUITMENT_RESULTS_TABLE")
-ONBOARDING_OFFBOARDING_RESULTS_TABLE = os.getenv("ONBOARDING_OFFBOARDING_RESULTS_TABLE")
+ONBOARDING_RESULTS_TABLE = os.getenv("ONBOARDING_RESULTS_TABLE")
+OFFBOARDING_RESULTS_TABLE = os.getenv("OFFBOARDING_RESULTS_TABLE")
 EMPLOYEE_CENTRAL_RESULTS_TABLE = os.getenv("EMPLOYEE_CENTRAL_RESULTS_TABLE")
 EMPLOYEE_PAYMENT_RESULTS_TABLE = os.getenv("EMPLOYEE_PAYMENT_RESULTS_TABLE")
 
@@ -69,7 +71,7 @@ DATABRICKS_SQL_HTTP_PATH: str = os.getenv("DATABRICKS_SQL_HTTP_PATH", "")
 # ---------------------------------------------------------------------------
 INTERDEPENDENCY_MATRIX = {
     "Time-to-Hire": {
-        "affected_by": ["Employee Attrition Rate"],
+        "affected_by": ["Payroll Error Rate"],
         "affects": ["Onboarding Completion Time"],
         "correlated_with": ["Employee Attrition Rate"]
     },
@@ -80,7 +82,7 @@ INTERDEPENDENCY_MATRIX = {
     },
     "Employee Attrition Rate": {
         "affected_by": ["Onboarding Completion Time", "Payroll Error Rate"],
-        "affects": ["Offboarding Completion Time", "Time-to-Hire"],
+        "affects": ["Offboarding Completion Time"],
         "correlated_with": ["Payroll Error Rate", "Time-to-Hire"]
     },
     "Offboarding Completion Time": {
@@ -90,10 +92,11 @@ INTERDEPENDENCY_MATRIX = {
     },
     "Payroll Error Rate": {
         "affected_by": ["Offboarding Completion Time"],
-        "affects": ["Employee Attrition Rate"],
+        "affects": ["Employee Attrition Rate", "Time-to-Hire"],
         "correlated_with": ["Employee Attrition Rate"]
     }
 }
+
 
 # OData Configuration
 ODATA_URL = os.getenv("ODATA_URL")
