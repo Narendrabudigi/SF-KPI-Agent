@@ -84,59 +84,66 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     
     mb_run_info_list = []
     agent_module, table_name = resolve_agent_info(primary_kpi_name)
+    mb_context = None
     
     if agent_module:
-        run_id = agent_module.run_agent(primary_kpi_name, severity, year, month, primary_kpi=primary_kpi_name, **extra_params)
-        if run_id:
-            mb_run_info_list.append({
-                "run_id": run_id,
-                "table_name": table_name, # R table
-                "kpi_name": primary_kpi_name,
-                "is_primary": True
-            })
-            # Add to active runs state
-            runtime_state.SYSTEM_STATE["active_runs"].append({
-                "run_id": run_id,
-                "kpi_name": primary_kpi_name,
-                "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_module.__name__ else (
-                    config.ONBOARDING_NOTEBOOK_PATH if "onboarding" in agent_module.__name__ else (
-                        config.OFFBOARDING_NOTEBOOK_PATH if "offboarding" in agent_module.__name__ else (
-                            config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_module.__name__ else (
-                                config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_module.__name__ else "Unknown"
+        # Acquire primary domain lock for the duration of the Stage 1 Databricks job run
+        primary_lock = DOMAIN_LOCKS.get(domain_key)
+        if primary_lock:
+            runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Acquiring primary lock for domain: [cyan]{domain_key}[/cyan]...")
+            primary_lock.acquire()
+            
+        run_id = None
+        try:
+            run_id = agent_module.run_agent(primary_kpi_name, severity, year, month, primary_kpi=primary_kpi_name, **extra_params)
+            if run_id:
+                mb_run_info_list.append({
+                    "run_id": run_id,
+                    "table_name": table_name, # R table
+                    "kpi_name": primary_kpi_name,
+                    "is_primary": True
+                })
+                # Add to active runs state
+                runtime_state.SYSTEM_STATE["active_runs"].append({
+                    "run_id": run_id,
+                    "kpi_name": primary_kpi_name,
+                    "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_module.__name__ else (
+                        config.ONBOARDING_NOTEBOOK_PATH if "onboarding" in agent_module.__name__ else (
+                            config.OFFBOARDING_NOTEBOOK_PATH if "offboarding" in agent_module.__name__ else (
+                                config.EMPLOYEE_CENTRAL_NOTEBOOK_PATH if "central" in agent_module.__name__ else (
+                                    config.EMPLOYEE_PAYMENT_NOTEBOOK_PATH if "payment" in agent_module.__name__ else "Unknown"
+                                )
                             )
                         )
-                    )
-                ),
-                "stage": "Stage 1 (Primary Analysis)"
-            })
+                    ),
+                    "stage": "Stage 1 (Primary Analysis)"
+                })
+                
+                runtime_state.log_system_event(f"[bold cyan]STAGE 1:[/bold cyan] Waiting for Main Breach job to complete...")
+                mb_context = coordinator_agent.wait_and_fetch_results_batch(
+                    mb_run_info_list, 
+                    primary_kpi_name, 
+                    severity, 
+                    year, 
+                    month
+                )
+        finally:
+            if run_id:
+                # Remove from active runs
+                runtime_state.SYSTEM_STATE["active_runs"] = [
+                    r for r in runtime_state.SYSTEM_STATE["active_runs"] if r["run_id"] != run_id
+                ]
+            if primary_lock:
+                runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing primary lock for domain: [cyan]{domain_key}[/cyan]")
+                primary_lock.release()
     else:
         runtime_state.log_system_event(f"[bold red]Failed to find primary agent mapped for {primary_kpi_name}[/bold red]")
         if domain_key:
             runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
         return
         
-    if not mb_run_info_list:
-        runtime_state.log_system_event("[red]Failed to trigger primary Databricks job.[/red]")
-        if domain_key:
-            runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
-        return
-        
-    runtime_state.log_system_event(f"[bold cyan]STAGE 1:[/bold cyan] Waiting for Main Breach job to complete...")
-    mb_context = coordinator_agent.wait_and_fetch_results_batch(
-        mb_run_info_list, 
-        primary_kpi_name, 
-        severity, 
-        year, 
-        month
-    )
-    
-    # Remove from active runs
-    runtime_state.SYSTEM_STATE["active_runs"] = [
-        r for r in runtime_state.SYSTEM_STATE["active_runs"] if r["run_id"] != run_id
-    ]
-    
-    if not mb_context:
-        runtime_state.log_system_event("[red]Main Breach execution failed. Aborting dependency cascade.[/red]")
+    if not mb_run_info_list or not mb_context:
+        runtime_state.log_system_event("[red]Main Breach execution failed or timed out. Aborting dependency cascade.[/red]")
         if domain_key:
             runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
         return
@@ -147,24 +154,24 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     # -------------------------------------------------------------------------
     # STAGE 2: Dependency Breach (DB)
     # -------------------------------------------------------------------------
-    db_run_info_list = []
+    db_context = ""
     if affects:
         runtime_state.log_system_event(f"[bold cyan]STAGE 2 (Dependency):[/bold cyan] Triggering {len(affects)} Dependency Notebooks simultaneously...")
         
-        # Acquire locks for each dependency domain before running
-        dep_locks_acquired = []
-        for dep_kpi in affects:
-            dep_domain = get_domain_key(dep_kpi)
+        dependency_contexts = []
+        dependency_contexts_lock = threading.Lock()
+        
+        def trigger_dependency_agent(target_kpi):
+            dep_domain = get_domain_key(target_kpi)
             d_lock = DOMAIN_LOCKS.get(dep_domain)
             if d_lock:
                 runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Acquiring dependency lock for domain: [cyan]{dep_domain}[/cyan]...")
                 d_lock.acquire()
-                dep_locks_acquired.append((dep_domain, d_lock))
                 if dep_domain:
                     runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "running"
-                
-        try:
-            def trigger_dependency_agent(target_kpi):
+            
+            run_info = None
+            try:
                 agent_mod, _ = resolve_agent_info(target_kpi)
                 if agent_mod:
                     run_id = agent_mod.run_agent(target_kpi, "CASCADING_ANALYSIS", year, month, primary_kpi=primary_kpi_name, **extra_params)
@@ -180,13 +187,14 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                         elif "employee_payment" in agent_mod.__name__:
                             d_table = "workspace.default.employee_payment_dependency_results"
                             
-                        db_run_info_list.append({
+                        run_info = {
                             "run_id": run_id,
                             "table_name": d_table, # D table
                             "kpi_name": target_kpi,
                             "is_primary": False
-                        })
-                        runtime_state.SYSTEM_STATE["active_runs"].append({
+                        }
+                        
+                        active_run_entry = {
                             "run_id": run_id,
                             "kpi_name": target_kpi,
                             "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_mod.__name__ else (
@@ -199,45 +207,43 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                                 )
                             ),
                             "stage": "Stage 2 (Dependency Analysis)"
-                        })
-                else:
-                    runtime_state.log_system_event(f"[yellow]Warning: No agent mapped for dependency {target_kpi}[/yellow]")
+                        }
+                        runtime_state.SYSTEM_STATE["active_runs"].append(active_run_entry)
+                        
+                        # Wait and fetch results for this dependency run
+                        res_context = coordinator_agent.wait_and_fetch_results_batch(
+                            [run_info], 
+                            primary_kpi_name, 
+                            severity, 
+                            year, 
+                            month
+                        )
+                        if res_context:
+                            with dependency_contexts_lock:
+                                dependency_contexts.append(res_context)
+            finally:
+                if run_info:
+                    runtime_state.SYSTEM_STATE["active_runs"] = [
+                        r for r in runtime_state.SYSTEM_STATE["active_runs"] if r["run_id"] != run_info["run_id"]
+                    ]
+                if d_lock:
+                    runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing dependency lock for domain: [cyan]{dep_domain}[/cyan]")
+                    if runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] == "running":
+                        runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "completed"
+                    d_lock.release()
                     
-            threads = []
-            for dep_kpi in affects:
-                t = threading.Thread(target=trigger_dependency_agent, args=(dep_kpi,))
-                t.start()
-                threads.append(t)
-                
-            for t in threads:
-                t.join()
-                
-            if db_run_info_list:
-                runtime_state.log_system_event(f"[bold cyan]STAGE 2:[/bold cyan] Waiting for {len(db_run_info_list)} Dependency jobs to complete...")
-                db_context = coordinator_agent.wait_and_fetch_results_batch(
-                    db_run_info_list, 
-                    primary_kpi_name, 
-                    severity, 
-                    year, 
-                    month
-                )
-            else:
-                db_context = ""
-        finally:
-            # Remove all Stage 2 runs from active runs status
-            for run_info in db_run_info_list:
-                runtime_state.SYSTEM_STATE["active_runs"] = [
-                    r for r in runtime_state.SYSTEM_STATE["active_runs"] if r["run_id"] != run_info["run_id"]
-                ]
-                
-            # Release dependency locks
-            for dep_domain, d_lock in dep_locks_acquired:
-                runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing dependency lock for domain: [cyan]{dep_domain}[/cyan]")
-                if runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] == "running":
-                    runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "completed"
-                d_lock.release()
+        threads = []
+        for dep_kpi in affects:
+            t = threading.Thread(target=trigger_dependency_agent, args=(dep_kpi,))
+            t.start()
+            threads.append(t)
+            
+        for t in threads:
+            t.join()
+            
+        if dependency_contexts:
+            db_context = "\n\n".join(dependency_contexts)
     else:
-        db_context = ""
         runtime_state.log_system_event("[dim]No dependencies to trigger for this KPI.[/dim]")
         
     # -------------------------------------------------------------------------
@@ -278,19 +284,7 @@ def route_kpi_breach(kpi_name, severity, year, month, **extra_params):
     elif "payroll" in kpi_lower or kpi_lower == "per":
         kpi_name_clean = "Payroll Error Rate"
         
-    domain_key = get_domain_key(kpi_name_clean)
-    lock = DOMAIN_LOCKS.get(domain_key)
-    
-    if lock:
-        runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Waiting to acquire lock for domain: [cyan]{domain_key}[/cyan]...")
-        lock.acquire()
-        
-    try:
-        handle_rca_workflow(kpi_name_clean, severity, year, month, **extra_params)
-    finally:
-        if lock:
-            runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing lock for domain: [cyan]{domain_key}[/cyan]")
-            lock.release()
+    handle_rca_workflow(kpi_name_clean, severity, year, month, **extra_params)
 
 def check_sap_breaches():
     """
