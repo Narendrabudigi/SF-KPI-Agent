@@ -1,5 +1,74 @@
 [
     {
+        "id": "1785734947.258064",
+        "timestamp": "2026-08-03T10:59:07.258078",
+        "kpi_name": "Time-to-Hire",
+        "data": {
+            "executive_summary": "The primary breach of Time-to-Hire, with a severity of Critical in May 2025, is attributed to several factors including low Auto Funnel Rate 5 Conducted, a high Number of Applications Withdrawn, and low Auto Funnel Rate 1 Rejected. Immediate actions are required to rectify these issues and improve the hiring process. Historically correlated with Employee Attrition Rate, addressing these factors can also potentially mitigate future attrition.",
+            "root_causes": [
+                "Low Auto Funnel Rate 5 Conducted (0.0%) caused 30.8% of the delay",
+                "High Number of Applications Withdrawn (5) caused 28.5% of the delay",
+                "Low Auto Funnel Rate 1 Rejected (0.0%) caused 9.0% of the delay",
+                "Low Number of Offers Accepted (2) caused 9.0% of the delay",
+                "The retrospective model predicted a Time-to-Hire of 49 days, but it took 53 days"
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Review and adjust the job requirement and interview process for REQ500037 to increase Auto Funnel Rate 5 Conducted",
+                    "responsible_role": "Hiring Manager and Recruiter",
+                    "sap_transaction": "Update Job Requisition",
+                    "expected_impact": "20% reduction in Time-to-Hire",
+                    "effort": "medium"
+                },
+                {
+                    "action": "Implement a more engaging candidate experience to reduce the Number of Applications Withdrawn",
+                    "responsible_role": "Recruiter and HR",
+                    "sap_transaction": "Utilize SAP SuccessFactors Recruitment Marketing",
+                    "expected_impact": "15% decrease in application withdrawals",
+                    "effort": "low"
+                },
+                {
+                    "action": "Streamline the recruitment process to improve Auto Funnel Rate 1 Rejected",
+                    "responsible_role": "Recruiter and Hiring Manager",
+                    "sap_transaction": "Optimize the Candidate Selection Process",
+                    "expected_impact": "10% increase in qualified candidates moving forward",
+                    "effort": "medium"
+                }
+            ],
+            "medium_term_actions": [
+                "Regularly review recruitment metrics to identify trends and areas for improvement",
+                "Develop a comprehensive candidate experience strategy",
+                "Enhance the interview process to better assess candidate fit"
+            ],
+            "long_term_actions": [
+                "Invest in predictive analytics tools to better forecast hiring needs",
+                "Develop a talent pipeline to reduce time-to-hire for critical roles",
+                "Continuously train and develop the recruitment team on best practices"
+            ],
+            "expected_impact": "By addressing the root causes and implementing these actions, we expect a 30% reduction in Time-to-Hire, which can also positively impact Employee Attrition Rate by improving the quality of hires and overall candidate experience.",
+            "risk_assessment": "Failure to address these issues may lead to continued delays in hiring, potentially resulting in missed business opportunities and increased attrition rates.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach occurred due to inefficiencies in the recruitment process, specifically low auto funnel rates and a high number of application withdrawals. The retrospective model predicted a quicker Time-to-Hire, indicating that the actual process took longer than expected.",
+                "responsible_parties": "The breach is attributed to the hiring manager (EMP101314), recruiter (EMP101621), and HR partner (EMP100065) for REQ500037. Their roles in managing the recruitment process and candidate experience contribute to the delay.",
+                "affected_records": [
+                    {
+                        "record_id": "REQ500037",
+                        "reason_for_delay": "Inefficient recruitment process and poor candidate experience",
+                        "responsible_person": "Hiring Manager (EMP101314) and Recruiter (EMP101621)"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and update job requirements to ensure they are accurate and appealing",
+                "Implement a candidate feedback mechanism to improve the application and interview process"
+            ],
+            "future_solutions": [
+                "Utilize AI-powered recruitment tools to streamline the hiring process",
+                "Develop a comprehensive diversity and inclusion strategy to attract a broader pool of candidates"
+            ]
+        }
+    },
+    {
         "id": "1785499741.433755",
         "timestamp": "2026-07-31T17:39:01.433774",
         "kpi_name": "Time-to-Hire",

@@ -80,11 +80,13 @@ def _clean_json_response(raw_response: str) -> str:
         
     return cleaned.strip()
 
-def run_prescriptive_analysis(ml_context: str, kpi_name: str, correlated_with: list = None):
+def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: list = None):
     """
-    Takes the ML findings from Databricks and passes them to the LLM
-    to generate prescriptive business recommendations.
+    Takes the incident ID, retrieves the ML findings context from the MCP memory,
+    and passes them to the LLM to generate prescriptive business recommendations.
     """
+    from mcp_client import mcp_client
+    ml_context = mcp_client.call_tool("get_incident_context", {"incident_id": incident_id})
     console.print(Panel(f"[bold magenta]Starting Prescriptive Analysis for Primary Incident: {kpi_name}...[/bold magenta]", border_style="magenta"))
     
     correlation_text = ""

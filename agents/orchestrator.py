@@ -7,6 +7,7 @@ from rich.panel import Panel
 import config
 from clients import odata_client
 import runtime_state
+from mcp_client import mcp_client
 
 # Relative imports for other agents in the same folder
 from agents import recruitment_agent
@@ -95,7 +96,15 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             
         run_id = None
         try:
-            run_id = agent_module.run_agent(primary_kpi_name, severity, year, month, primary_kpi=primary_kpi_name, **extra_params)
+            run_id_str = mcp_client.call_tool("execute_domain_agent", {
+                "domain": domain_key,
+                "kpi_name": primary_kpi_name,
+                "severity": severity,
+                "year": str(year),
+                "month": str(month),
+                "primary_kpi": primary_kpi_name
+            })
+            run_id = int(run_id_str) if (isinstance(run_id_str, str) and run_id_str.isdigit()) else run_id_str
             if run_id:
                 mb_run_info_list.append({
                     "run_id": run_id,
@@ -174,7 +183,15 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             try:
                 agent_mod, _ = resolve_agent_info(target_kpi)
                 if agent_mod:
-                    run_id = agent_mod.run_agent(target_kpi, "CASCADING_ANALYSIS", year, month, primary_kpi=primary_kpi_name, **extra_params)
+                    run_id_str = mcp_client.call_tool("execute_domain_agent", {
+                        "domain": dep_domain,
+                        "kpi_name": target_kpi,
+                        "severity": "CASCADING_ANALYSIS",
+                        "year": str(year),
+                        "month": str(month),
+                        "primary_kpi": primary_kpi_name
+                    })
+                    run_id = int(run_id_str) if (isinstance(run_id_str, str) and run_id_str.isdigit()) else run_id_str
                     if run_id:
                         # Dynamically determine the D table name based on agent domain
                         d_table = "workspace.default.recruitment_dependency_results"
@@ -252,8 +269,12 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     runtime_state.SYSTEM_STATE["status"] = "prescribing"
     full_combined_context = f"{mb_context}\n\n{db_context}" if db_context else mb_context
     
+    # Store incident context in MCP Memory
+    incident_id = f"{primary_kpi_name.replace(' ', '_')}_{year}_{month}"
+    mcp_client.call_tool("store_incident_context", {"incident_id": incident_id, "context_data": full_combined_context})
+    
     prescriptive_agent.run_prescriptive_analysis(
-        full_combined_context, 
+        incident_id, 
         primary_kpi_name,
         correlated_with=correlated_with
     )
