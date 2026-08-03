@@ -7,7 +7,7 @@ from rich.panel import Panel
 import config
 from clients import odata_client
 import runtime_state
-from mcp_client import mcp_client
+from clients.mcp_client import mcp_client
 
 # Relative imports for other agents in the same folder
 from agents import recruitment_agent

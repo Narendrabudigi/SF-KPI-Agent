@@ -85,7 +85,7 @@ def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: 
     Takes the incident ID, retrieves the ML findings context from the MCP memory,
     and passes them to the LLM to generate prescriptive business recommendations.
     """
-    from mcp_client import mcp_client
+    from clients.mcp_client import mcp_client
     ml_context = mcp_client.call_tool("get_incident_context", {"incident_id": incident_id})
     console.print(Panel(f"[bold magenta]Starting Prescriptive Analysis for Primary Incident: {kpi_name}...[/bold magenta]", border_style="magenta"))
     

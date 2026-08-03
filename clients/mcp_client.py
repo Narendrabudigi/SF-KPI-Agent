@@ -16,7 +16,7 @@ class MCPClient:
         """
         Looks up the registered tool function in mcp_server and executes it.
         """
-        import mcp_server
+        import agents.mcp_server as mcp_server
         arguments = arguments or {}
 
         if hasattr(mcp_server, tool_name):
