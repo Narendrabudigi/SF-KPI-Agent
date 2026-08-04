@@ -121,14 +121,20 @@ def _format_teams_markdown(data: dict, kpi_name: str) -> str:
     md += f"\n**⚠️ Risk Assessment:** {data.get('risk_assessment', '')}"
     return md
 
-def distribute_recommendations(data: dict, kpi_name: str):
+def distribute_recommendations(data: dict, kpi_name: str, severity: str = "Critical", row: dict = None):
     """
     Takes the JSON recommendations from the LLM and distributes them to the
     Notification Layer (Email, Teams, SAP Action Center, Dashboard).
+    
+    Args:
+        data: The LLM-generated prescriptive JSON recommendations
+        kpi_name: The breached KPI name
+        severity: Breach severity ('Critical' or 'Warning')
+        row: The original OData SAP row dict (used to record breach in active_breaches.json)
     """
     console.print(Panel(f"[bold blue]Distributing Prescriptive Recommendations for: {kpi_name}[/bold blue]", border_style="blue"))
     
-    stakeholder_email = _get_stakeholder_email(kpi_name)
+    stakeholder_email = _get_stakeholder_email(kpi_name, severity)
     subject = f"ACTION REQUIRED: AI Prescriptive Analysis for {kpi_name} Breach"
     
     # 1. Send Email via SMTP
@@ -141,5 +147,13 @@ def distribute_recommendations(data: dict, kpi_name: str):
     
     # 3. Save to Dashboard
     _save_to_dashboard(data, kpi_name)
+    
+    # 4. Record active breach in breach_tracker so active_breaches.json is updated
+    try:
+        import breach_tracker
+        recorded_id = breach_tracker.record_breach_notification(kpi_name, severity=severity, row=row)
+        console.print(f"[bold green]📌 Recorded active breach: '{recorded_id}' in active_breaches.json[/bold green]")
+    except Exception as e:
+        console.print(f"[yellow]⚠️  Failed to update breach tracker: {e}[/yellow]")
     
     console.print("[bold green]✅ Notification Routing & Dashboard Update Complete![/bold green]")

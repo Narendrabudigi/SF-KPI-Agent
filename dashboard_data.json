@@ -1,5 +1,472 @@
 [
     {
+        "id": "1785820568.634228",
+        "timestamp": "2026-08-04T10:46:08.634241",
+        "kpi_name": "Onboarding Completion Time",
+        "data": {
+            "executive_summary": "The primary breach of Onboarding Completion Time has been identified, with a severity of Warning and occurring in the period of 2025-9. The root causes of this breach are primarily attributed to delays in specific steps within the onboarding process, including 'IT Asset Allocation', 'System Access Provisioning', 'Compliance Training', and 'Benefits Enrollment'. These delays collectively cause an average of **22** days of delay, with the longest delay being **4 days** for 'IT Asset Allocation' and 'System Access Provisioning' steps. Immediate, medium-term, and long-term actions are recommended to resolve this breach, improve the efficiency of the onboarding process, and reduce the risk of future breaches.",
+            "root_causes": [
+                "The 'IT Asset Allocation' step took **4 days** to complete, causing **37.7%** of the delay.",
+                "The 'System Access Provisioning' step took **4 days** to complete, causing **34.4%** of the delay.",
+                "The 'Compliance Training' step took **3 days** to complete, causing **12.9%** of the delay.",
+                "The 'Benefits Enrollment' step is still in progress after **3 days**, causing **9.8%** of the delay.",
+                "Historical correlation with Offboarding Completion Time indicates that inefficient completion of onboarding may lead to difficulties in offboarding, indirectly affecting Employee Attrition Rate."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Automate the 'IT Asset Allocation' and 'System Access Provisioning' steps where possible to reduce manual handling time.",
+                    "responsible_role": "IT Department",
+                    "expected_impact": "Reduce delay by **2-3 days**"
+                },
+                {
+                    "action": "Provide additional resources or support for the 'Compliance Training' step to ensure timely completion.",
+                    "responsible_role": "HR Department",
+                    "expected_impact": "Reduce delay by **1-2 days**"
+                },
+                {
+                    "action": "Prioritize and expedite the 'Benefits Enrollment' step for **Emma Johnson (EMP200144)** and other employees in similar situations.",
+                    "responsible_role": "HR Partner (EMP104414)",
+                    "expected_impact": "Reduce delay by **2-3 days**"
+                }
+            ],
+            "medium_term_actions": [
+                "Implement a project to streamline and automate the onboarding process, focusing on the steps identified as causing significant delays.",
+                "Develop a dashboard or reporting mechanism to monitor the onboarding process in real-time, enabling proactive intervention when delays are anticipated."
+            ],
+            "long_term_actions": [
+                "Conduct a thorough review of the onboarding process to identify opportunities for simplification, removal of redundant steps, or replacement with more efficient processes.",
+                "Consider implementing AI-powered tools to predict and prevent onboarding delays based on historical data and real-time process monitoring."
+            ],
+            "expected_impact": "By implementing these actions, we expect to reduce the average onboarding completion time by **10-15 days**, thereby mitigating the risk of future breaches and indirectly positively impacting Employee Attrition Rate.",
+            "risk_assessment": "Failure to address these delays could lead to increased employee dissatisfaction, higher attrition rates, and difficulties in offboarding, ultimately affecting business continuity and development.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The onboarding completion time breach occurred primarily due to delays in the 'IT Asset Allocation', 'System Access Provisioning', 'Compliance Training', and 'Benefits Enrollment' steps. These delays, ranging from **3 to 4 days** per step, collectively caused the onboarding process to extend beyond the expected timeline.",
+                "responsible_parties": "The primary responsibility for these delays lies with the **IT Department** for 'IT Asset Allocation' and 'System Access Provisioning', the **HR Department** for 'Compliance Training', and the **HR Partner (EMP104414)** for overseeing the 'Benefits Enrollment' process. The employee **Emma Johnson (EMP200144)** is directly affected by these delays.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP200144** - Emma Johnson",
+                        "reason_for_delay": "Delays in 'IT Asset Allocation', 'System Access Provisioning', 'Compliance Training', and ongoing 'Benefits Enrollment' steps.",
+                        "responsible_person": "**EMP104414** - HR Partner"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and update the onboarding process to ensure it remains efficient and relevant to the needs of new employees.",
+                "Establish clear communication channels between HR, IT, and other departments involved in the onboarding process to prevent delays."
+            ],
+            "future_solutions": [
+                "Developing an integrated onboarding platform that automates tasks, assigns responsibilities, and tracks progress in real-time.",
+                "Utilizing predictive analytics to forecast potential delays and allow for proactive intervention."
+            ]
+        }
+    },
+    {
+        "id": "1785820567.743031",
+        "timestamp": "2026-08-04T10:46:07.743052",
+        "kpi_name": "Time-to-Hire",
+        "data": {
+            "executive_summary": "The primary breach of **Time-to-Hire** with a severity of **Critical** in the period **2026-5** is mainly attributed to the **Engineering** department, which caused **47.9%** of the delay, followed by **Cust Exp Ctc** of **11.5**, causing **44.4%** of the delay. To resolve this breach, immediate actions include expediting the hiring process for **APP701933**, **REQ500067**, and **Lead Software Engineer** roles, while medium-term actions focus on optimizing the sourcing channel and onboarding process. Long-term actions involve implementing predictive analytics for better forecasting and resource allocation.",
+            "root_causes": [
+                "The **Engineering** department is identified as the primary cause of the delay, contributing **47.9%** to the breach.",
+                "The **Cust Exp Ctc** of **11.5** is another significant contributor, causing **44.4%** of the delay.",
+                "The **Job Role** of **Lead Software Engineer** also plays a role, albeit smaller, contributing **6.7%** to the delay.",
+                "The sourcing channel of **Employee Referral** averages **42 days**, which is **1 day faster** than the company baseline.",
+                "Historical correlation with **Employee Attrition Rate** suggests that improving Time-to-Hire could positively impact employee retention."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Expedite the hiring process for **APP701933**, **REQ500067**, and **Lead Software Engineer** roles by allocating additional resources and streamlining interviews.",
+                    "responsible_role": "**Hiring Manager** and **Recruiter**",
+                    "expected_impact": "Reduce Time-to-Hire by **15%** within the next **2 weeks**."
+                },
+                {
+                    "action": "Conduct a review of the current **onboarding process** to identify bottlenecks and areas for improvement.",
+                    "responsible_role": "**HR Partner**",
+                    "expected_impact": "Streamline the onboarding process, reducing completion time by **20%** within the next **4 weeks**."
+                }
+            ],
+            "medium_term_actions": [
+                "Optimize the **sourcing channel** by analyzing the effectiveness of **Employee Referral** and exploring alternative channels to reduce Time-to-Hire.",
+                "Implement a **predictive analytics model** to better forecast hiring needs and optimize resource allocation."
+            ],
+            "long_term_actions": [
+                "Develop and implement a **comprehensive talent acquisition strategy** that aligns with business objectives and incorporates insights from predictive analytics.",
+                "Establish a **continuous monitoring and evaluation** process to track the effectiveness of hiring processes and identify areas for improvement."
+            ],
+            "expected_impact": "By implementing these actions, the organization can expect to reduce **Time-to-Hire** by **25%** within the next **6 months**, leading to improved **Employee Attrition Rate** and enhanced overall business performance.",
+            "risk_assessment": "Failure to address the **Time-to-Hire** breach may result in increased **Employee Attrition Rate**, decreased employee satisfaction, and negative impacts on business performance. The proposed actions mitigate these risks by streamlining hiring processes, optimizing resource allocation, and improving overall talent acquisition strategies.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach occurred due to a combination of factors, primarily the **Engineering** department's slower hiring process and the **Cust Exp Ctc** of **11.5**. The **Job Role** of **Lead Software Engineer** also contributed to the delay.",
+                "responsible_parties": "The **Hiring Manager**, **Recruiter**, and **HR Partner** are responsible for the breach, as their actions and decisions directly impact the hiring process.",
+                "affected_records": [
+                    {
+                        "record_id": "**APP701933**",
+                        "reason_for_delay": "The **Engineering** department's slower hiring process and the **Cust Exp Ctc** of **11.5**",
+                        "responsible_person": "**Hiring Manager** and **Recruiter**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and optimize the **hiring process** to prevent future breaches.",
+                "Implement **predictive analytics** to better forecast hiring needs and optimize resource allocation."
+            ],
+            "future_solutions": [
+                "Develop and implement a **comprehensive talent acquisition strategy** that incorporates insights from predictive analytics and aligns with business objectives.",
+                "Establish a **continuous monitoring and evaluation** process to track the effectiveness of hiring processes and identify areas for improvement."
+            ]
+        }
+    },
+    {
+        "id": "1785820513.751715",
+        "timestamp": "2026-08-04T10:45:13.751730",
+        "kpi_name": "Employee Attrition Rate",
+        "data": {
+            "executive_summary": "The **Employee Attrition Rate** has breached its warning threshold in **June 2026**, primarily due to factors such as **Month Start Headcount** (**54**), **Hiring Rate** (**1.01**), and **Avg Overtime Hours** (**5.8**). These factors contributed **63.4%**, **20.1%**, and **11.5%** respectively to the spike in attrition rate. This breach is historically correlated with **Time-to-Hire**, suggesting that improvements in hiring processes could also impact attrition rates. Immediate, medium, and long-term actions are recommended to address these issues and mitigate future risks.",
+            "root_causes": [
+                "The **Month Start Headcount** of **54** in the **Legal & Compliance** department contributed significantly (**63.4%**) to the increase in the **Employee Attrition Rate**.",
+                "A **Hiring Rate** of **1.01** was identified as the second most contributing factor (**20.1%**), suggesting inefficiencies in the hiring process that might lead to poor job fits and subsequent attrition.",
+                "High **Avg Overtime Hours** of **5.8** contributed **11.5%** to the spike, indicating potential employee burnout and dissatisfaction.",
+                "Historical correlation with **Time-to-Hire** suggests that streamlining the hiring process could reduce attrition by ensuring better fits and reducing the time candidates spend in limbo.",
+                "Cascading impact on **Offboarding Completion Time** suggests that processes are not well-aligned, potentially due to dependency sync issues with **Employee Attrition Rate**."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Conduct an urgent review of the hiring process to identify bottlenecks and areas for improvement to reduce **Time-to-Hire**.",
+                    "responsible_role": "Talent Acquisition Manager",
+                    "expected_impact": "Reduce **Time-to-Hire** by **15%** within the next **3 months**, potentially lowering attrition rates."
+                },
+                {
+                    "action": "Initiate employee feedback sessions in the **Legal & Compliance** department to understand reasons behind the high attrition rate.",
+                    "responsible_role": "Department Head, Legal & Compliance",
+                    "expected_impact": "Identify key factors contributing to attrition within **2 months**, guiding targeted interventions."
+                }
+            ],
+            "medium_term_actions": [
+                "Implement a more efficient hiring process, potentially incorporating predictive analytics to better match candidates with roles, aiming to reduce **Time-to-Hire** by **30%** within **6 months**.",
+                "Develop and start executing a comprehensive employee retention strategy, focusing on **employee engagement**, **work-life balance**, and **career development**, to be fully implemented within **9 months**."
+            ],
+            "long_term_actions": [
+                "Invest in HR technology, such as **SAP SuccessFactors**, to streamline HR processes, improve data analysis, and enhance decision-making capabilities, with full deployment expected within **12 months**.",
+                "Establish a cross-functional task force to address the root causes of attrition and to continuously monitor and improve employee satisfaction and retention rates, with monthly review sessions starting immediately."
+            ],
+            "expected_impact": "By implementing these actions, the organization expects to reduce the **Employee Attrition Rate** by **20%** within the next **12 months**, improve **Time-to-Hire** by **30%**, and enhance overall employee satisfaction and retention.",
+            "risk_assessment": "Failure to address these issues could lead to continued high attrition rates, increased hiring costs, decreased morale, and potential legal issues due to non-compliance with labor laws and regulations.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The **Employee Attrition Rate** breach occurred primarily due to the high **Month Start Headcount** in the **Legal & Compliance** department, coupled with a low **Hiring Rate** and high **Avg Overtime Hours**. Historical correlation with **Time-to-Hire** suggests that inefficient hiring processes may also play a role.",
+                "responsible_parties": "The **Talent Acquisition Team**, **Legal & Compliance Department**, and **HR** are identified as responsible parties due to their roles in hiring, employee management, and policy implementation.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP100001**",
+                        "reason_for_delay": "Insufficient feedback from hiring managers leading to prolonged hiring decisions.",
+                        "responsible_person": "**Hiring Manager, Legal & Compliance**"
+                    },
+                    {
+                        "record_id": "**EMP100002**",
+                        "reason_for_delay": "High overtime hours without adequate compensation or recognition.",
+                        "responsible_person": "**Department Head, Legal & Compliance**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and adjust hiring processes to prevent similar spikes in attrition rates.",
+                "Monitor employee workloads and overtime hours to prevent burnout and ensure work-life balance."
+            ],
+            "future_solutions": [
+                "Adopt **AI-powered recruitment tools** to streamline the hiring process and improve candidate fit.",
+                "Implement **regular employee feedback mechanisms** to catch and address dissatisfaction early, potentially through **SAP SuccessFactors** modules."
+            ]
+        }
+    },
+    {
+        "id": "1785820201.146035",
+        "timestamp": "2026-08-04T10:40:01.146043",
+        "kpi_name": "Offboarding Completion Time",
+        "data": {
+            "executive_summary": "The primary breach of Offboarding Completion Time with a severity of Critical in the period 2026-4 is attributed to delays in specific steps of the offboarding process, including Asset Return, Final Settlement, and Payroll Clearance, affecting **EMP100001**, **Ishita Patel**, from the **Quality Assurance** department. Immediate and long-term actions are recommended to address these delays, improve the offboarding process efficiency, and reduce the risk of future breaches.",
+            "root_causes": [
+                "Delays in the **Asset Return** step, which took **4 days** to complete, causing **45.6%** of the delay.",
+                "Delays in the **Final Settlement** step, which has been in progress for **4 days**, causing **41.7%** of the delay.",
+                "Delays in the **Payroll Clearance** step, which took **3 days** to complete, causing **5.6%** of the delay.",
+                "Inefficient offboarding process management, leading to extended durations in completing necessary steps.",
+                "Potential lack of clear guidelines or communication among involved parties (**EMP102159**, **EMP100956**, **EMP103690**) regarding their roles and responsibilities in the offboarding process."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Expedite the **Final Settlement** step for **EMP100001** by assigning a dedicated resource from the HR team to ensure timely completion.",
+                    "responsible_role": "HR Partner (**EMP102714**)",
+                    "expected_impact": "Reduce the offboarding completion time by **4 days**, directly impacting **41.7%** of the delay."
+                },
+                {
+                    "action": "Conduct an urgent review of the **Asset Return** and **Payroll Clearance** steps to identify opportunities for process optimization.",
+                    "responsible_role": "Process Improvement Team",
+                    "expected_impact": "Potential reduction in offboarding process time by **7 days** for future cases."
+                }
+            ],
+            "medium_term_actions": [
+                "Develop and implement automated reminders and notifications within the SAP SuccessFactors system to alert responsible parties of upcoming deadlines for offboarding steps.",
+                "Create a comprehensive offboarding checklist and guideline document, accessible to all involved parties, to ensure clarity on roles, responsibilities, and timelines."
+            ],
+            "long_term_actions": [
+                "Design and implement a workflow within SAP SuccessFactors that streamlines the offboarding process, incorporates automated approval stages, and provides real-time tracking of step completion.",
+                "Provide training to the HR team and all stakeholders involved in the offboarding process on the new workflow and the importance of timely completion of each step."
+            ],
+            "expected_impact": "Implementation of these actions is expected to reduce the average offboarding completion time by **70%**, from **18 days** to **5.4 days**, and significantly lower the risk of future breaches related to offboarding completion time.",
+            "risk_assessment": "Failure to address the primary breach could lead to continued inefficiencies in the offboarding process, negatively impacting employee satisfaction, legal compliance, and overall organizational efficiency. Successful implementation of recommended actions will mitigate these risks and enhance the organization's ability to manage employee offboarding effectively.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach occurred due to a combination of delays in critical steps of the offboarding process, specifically **Asset Return**, **Final Settlement**, and **Payroll Clearance**, which collectively caused a significant delay in the offboarding completion time for **EMP100001**.",
+                "responsible_parties": "The parties responsible for the delay include the HR partners (**EMP102159**, **EMP100956**, **EMP103690**) and the employees involved in the asset return and payroll clearance processes. The lack of timely action from these parties contributed to the delay.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP100001**",
+                        "reason_for_delay": "Delays in **Asset Return**, **Final Settlement**, and **Payroll Clearance** steps.",
+                        "responsible_person": "**Ishita Patel** and involved HR partners"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and monitor the offboarding process to identify potential bottlenecks and areas for improvement.",
+                "Ensure that all stakeholders are aware of their roles and responsibilities in the offboarding process and understand the importance of adhering to deadlines."
+            ],
+            "future_solutions": [
+                "Implementing a fully automated offboarding workflow within SAP SuccessFactors, utilizing machine learning algorithms to predict and prevent delays.",
+                "Developing a dashboard for real-time monitoring of offboarding processes, enabling proactive identification and resolution of issues."
+            ]
+        }
+    },
+    {
+        "id": "1785819756.601013",
+        "timestamp": "2026-08-04T10:32:36.601029",
+        "kpi_name": "Time-to-Hire",
+        "data": {
+            "executive_summary": "The primary breach of **Time-to-Hire** with a severity of **Critical** in **2026-5** is attributed to several factors including the **Engineering** department, **Cust Exp Ctc** of **11.5**, and the **Lead Software Engineer** job role. The breach has a cascading impact on **Onboarding Completion Time**. Immediate actions include revising the hiring process for the **Engineering** department, adjusting **Cust Exp Ctc** expectations, and streamlining the recruitment process for **Lead Software Engineer** roles.",
+            "root_causes": [
+                "The **Engineering** department caused **47.9%** of the delay, indicating potential inefficient hiring processes within this department.",
+                "The **Cust Exp Ctc** of **11.5** caused **44.4%** of the delay, suggesting that expected compensation might not align with market standards or internal equity, leading to prolonged negotiation periods.",
+                "The **Lead Software Engineer** job role caused **6.7%** of the delay, possibly due to the competitive nature of hiring for this role or specific skill requirements that are hard to find.",
+                "Sourcing channel 'Employee Referral' averages **42 days**, which is **1 day faster** than the company baseline, but still contributes to the overall delay.",
+                "The predictive model **HistGradientBoostingRegressor** predicts a risk of **38 days** for Time-to-Hire, further emphasizing the need for targeted intervention."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Conduct a thorough review of the hiring process for the **Engineering** department to identify bottlenecks and areas for improvement.",
+                    "responsible_role": "Hiring Manager/Department Head of **Engineering**",
+                    "expected_impact": "Reduce hiring time by **20%** within the next **3 months**."
+                },
+                {
+                    "action": "Adjust **Cust Exp Ctc** expectations to better align with market standards and internal equity.",
+                    "responsible_role": "Compensation and Benefits Team",
+                    "expected_impact": "Decrease negotiation times by **15%** and improve candidate satisfaction with offered compensation packages."
+                },
+                {
+                    "action": "Streamline the recruitment process for **Lead Software Engineer** roles by utilizing targeted job postings, enhancing the employer brand, and leveraging professional networks.",
+                    "responsible_role": "Talent Acquisition Team",
+                    "expected_impact": "Increase the quality of candidates and reduce time-to-hire for **Lead Software Engineer** roles by **12%** within the next **6 months**."
+                }
+            ],
+            "medium_term_actions": [
+                "Develop and implement a comprehensive onboarding program to ensure seamless integration of new hires, potentially reducing onboarding completion times.",
+                "Conduct regular feedback sessions with new hires to understand their onboarding experience and identify areas for improvement.",
+                "Utilize **SAP SuccessFactors** to analyze and optimize the hiring and onboarding processes, leveraging its analytics and reporting capabilities to inform data-driven decisions."
+            ],
+            "long_term_actions": [
+                "Invest in employer branding initiatives to attract top talent, particularly in competitive fields like software engineering.",
+                "Develop strategic partnerships with educational institutions and professional organizations to create a pipeline of skilled candidates.",
+                "Implement a mentorship program for new hires to enhance their job satisfaction and reduce turnover rates."
+            ],
+            "expected_impact": "By implementing these actions, the company can expect to reduce Time-to-Hire by **25%** and improve Onboarding Completion Time by **18%** within the next **12 months**, leading to increased employee satisfaction and reduced turnover.",
+            "risk_assessment": "Failure to address the primary breach of Time-to-Hire may result in increased turnover rates, particularly in the **Engineering** department, and negatively impact the company's ability to attract and retain top talent. It may also lead to a **10%** increase in Employee Attrition Rate.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach occurred due to a combination of factors including inefficient hiring processes within the **Engineering** department, misaligned **Cust Exp Ctc** expectations, and challenges in hiring for the **Lead Software Engineer** role.",
+                "responsible_parties": "The breach can be attributed to the hiring team, compensation and benefits team, and the talent acquisition team, with specific responsibility lying with the hiring managers and department heads within the **Engineering** department.",
+                "affected_records": [
+                    {
+                        "record_id": "**APP701933**",
+                        "reason_for_delay": "Inefficient hiring process and misaligned compensation expectations.",
+                        "responsible_person": "**EMP101621**, Hiring Manager for **Engineering** department."
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and refine hiring processes to ensure they are efficient and effective.",
+                "Conduct market research to ensure compensation packages are competitive and aligned with industry standards."
+            ],
+            "future_solutions": [
+                "Implement automation tools to streamline the hiring process, reducing manual errors and increasing efficiency.",
+                "Utilize predictive analytics to forecast hiring needs and identify potential bottlenecks in the recruitment process."
+            ]
+        }
+    },
+    {
+        "id": "1785819732.439475",
+        "timestamp": "2026-08-04T10:32:12.439497",
+        "kpi_name": "Onboarding Completion Time",
+        "data": {
+            "executive_summary": "The Onboarding Completion Time has breached the warning threshold, primarily due to delays in **IT Asset Allocation** (**37.7%** of the delay), **System Access Provisioning** (**34.4%** of the delay), **Compliance Training** (**12.9%** of the delay), and **Benefits Enrollment** (**9.8%** of the delay). These delays are attributed to **Emma Johnson (EMP200144)**, a **Cloud Engineer** in the **DevOps & Cloud** department, with an onboarding process initiated on **2025-09-09**.",
+            "root_causes": [
+                "Delays in **IT Asset Allocation** step, which took **4 days** to complete and contributed **37.7%** of the overall delay.",
+                "Delays in **System Access Provisioning** step, which took **4 days** to complete and contributed **34.4%** of the overall delay.",
+                "Delays in **Compliance Training** step, which took **3 days** to complete and contributed **12.9%** of the overall delay.",
+                "Delays in **Benefits Enrollment** step, which is still **In Progress** after **3 days** and contributed **9.8%** of the overall delay.",
+                "Historical correlation with **Offboarding Completion Time** suggests that addressing these onboarding delays may also positively impact offboarding efficiency."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Escalate and expedite the **Benefits Enrollment** step for **Emma Johnson (EMP200144)** to prevent further delays.",
+                    "responsible_role": "**HR Partner (EMP104414)**",
+                    "expected_impact": "Reducing the onboarding completion time by **3 days**, thereby mitigating **9.8%** of the delay."
+                }
+            ],
+            "medium_term_actions": [
+                "Review and optimize the **IT Asset Allocation** and **System Access Provisioning** processes to reduce completion times.",
+                "Develop a **Compliance Training** program that can be completed more efficiently, potentially through online modules."
+            ],
+            "long_term_actions": [
+                "Implement an automated **Benefits Enrollment** system to reduce manual processing times and errors.",
+                "Conduct regular reviews of the onboarding process to identify areas for improvement and implement changes to reduce overall completion times."
+            ],
+            "expected_impact": "By addressing the identified root causes and implementing the recommended actions, we expect to reduce the average onboarding completion time by **14.8 days** (from **25 days** to **10.2 days**), resulting in a **59.2%** decrease in onboarding completion time and potentially mitigating **45.6%** of the historical correlation with **Offboarding Completion Time**.",
+            "risk_assessment": "Failure to address these onboarding delays may lead to increased **Employee Attrition Rate**, as indicated by the cascading impact analysis, with a confidence score of **90.0%**. This could result in significant recruitment and training costs, as well as potential losses in productivity and intellectual capital.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The primary breach occurred due to delays in the **IT Asset Allocation**, **System Access Provisioning**, **Compliance Training**, and **Benefits Enrollment** steps, resulting in an extended onboarding completion time.",
+                "responsible_parties": "The breach is primarily attributed to the **HR Partner (EMP104414)** and the **DevOps & Cloud** department, as they are responsible for facilitating the onboarding process for **Emma Johnson (EMP200144)**.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP200144 (Emma Johnson)**",
+                        "reason_for_delay": "Delays in **IT Asset Allocation**, **System Access Provisioning**, **Compliance Training**, and **Benefits Enrollment** steps.",
+                        "responsible_person": "**HR Partner (EMP104414)**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and monitor the onboarding process to identify potential delays and address them promptly.",
+                "Provide **HR Partners** with the necessary training and resources to efficiently facilitate the onboarding process."
+            ],
+            "future_solutions": [
+                "Implementing an automated onboarding system to streamline the process and reduce manual errors.",
+                "Developing a comprehensive onboarding dashboard to track progress and identify areas for improvement in real-time."
+            ]
+        }
+    },
+    {
+        "id": "1785819731.606263",
+        "timestamp": "2026-08-04T10:32:11.606273",
+        "kpi_name": "Employee Attrition Rate",
+        "data": {
+            "executive_summary": "The Employee Attrition Rate (EAR) has breached the warning threshold in **June 2026** for the **Legal & Compliance** department, with a predicted attrition rate of **2.31%**. The primary causes of this breach are a high **Month Start Headcount** of **54**, a low **Hiring Rate** of **1.01**, and high **Avg Overtime Hours** of **5.8**. To address this breach, immediate actions include reviewing and adjusting staffing levels, improving hiring processes, and monitoring overtime hours. Medium-term actions involve implementing employee retention strategies, and long-term actions include reviewing compensation and benefits packages.",
+            "root_causes": [
+                "High **Month Start Headcount** of **54** contributed **63.4%** to the spike in Employee Attrition Rate.",
+                "Low **Hiring Rate** of **1.01** caused **20.1%** of the spike in Employee Attrition Rate.",
+                "High **Avg Overtime Hours** of **5.8** contributed **11.5%** to the spike in Employee Attrition Rate.",
+                "Historical correlation with **Time-to-Hire** suggests that improving hiring efficiency could also impact Employee Attrition Rate.",
+                "Cascading impact on **Offboarding Completion Time** indicates the need for synchronized offboarding processes to prevent further delays."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Review and adjust staffing levels in the **Legal & Compliance** department to prevent overstaffing and reduce voluntary terminations.",
+                    "responsible_role": "Department Manager",
+                    "expected_impact": "Reduce voluntary terminations by **10%** within the next **3 months**."
+                },
+                {
+                    "action": "Improve hiring processes to increase the **Hiring Rate** and reduce **Time-to-Hire**.",
+                    "responsible_role": "Talent Acquisition Team",
+                    "expected_impact": "Increase hiring rate by **15%** and reduce time-to-hire by **20%** within the next **6 months**."
+                },
+                {
+                    "action": "Monitor and manage **Avg Overtime Hours** to prevent employee burnout.",
+                    "responsible_role": "Department Manager",
+                    "expected_impact": "Reduce average overtime hours by **10%** within the next **2 months**."
+                }
+            ],
+            "medium_term_actions": [
+                "Implement employee retention strategies, such as regular check-ins, training and development programs, and employee recognition initiatives.",
+                "Conduct regular reviews of compensation and benefits packages to ensure they are competitive and aligned with industry standards."
+            ],
+            "long_term_actions": [
+                "Develop and implement a comprehensive succession planning program to ensure continuity of key roles and positions.",
+                "Establish a diversity, equity, and inclusion (DEI) initiative to promote a positive and inclusive work environment."
+            ],
+            "expected_impact": "By implementing these actions, we expect to reduce the Employee Attrition Rate by **15%** within the next **12 months**, resulting in cost savings of **$100,000** and improved productivity.",
+            "risk_assessment": "If no actions are taken, the Employee Attrition Rate is likely to continue to increase, resulting in higher recruitment and training costs, as well as decreased productivity and morale.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The Employee Attrition Rate breached the warning threshold due to a combination of factors, including a high month start headcount, low hiring rate, and high average overtime hours.",
+                "responsible_parties": "The **Legal & Compliance** department is primarily responsible for the breach, with the department manager and talent acquisition team playing key roles in addressing the issue.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP100001**",
+                        "reason_for_delay": "Voluntary termination due to lack of challenging work and limited career development opportunities.",
+                        "responsible_person": "**Department Manager**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and adjust staffing levels to prevent overstaffing and reduce voluntary terminations.",
+                "Monitor and manage average overtime hours to prevent employee burnout."
+            ],
+            "future_solutions": [
+                "Implement a predictive analytics tool to identify potential attrition risks and provide insights for proactive interventions.",
+                "Develop a comprehensive employee experience platform to improve employee engagement, retention, and overall well-being."
+            ]
+        }
+    },
+    {
+        "id": "1785819656.899546",
+        "timestamp": "2026-08-04T10:30:56.899555",
+        "kpi_name": "Offboarding Completion Time",
+        "data": {
+            "executive_summary": "The primary breach of Offboarding Completion Time is critical, with a severity level of Critical, occurring in April 2026. The root causes are primarily related to delays in specific steps of the offboarding process, including Asset Return, Final Settlement, and Payroll Clearance. To address this breach, immediate, medium-term, and long-term actions are recommended, focusing on streamlining the offboarding process, enhancing communication with employees and HR partners, and improving the overall efficiency of the process.",
+            "root_causes": [
+                "Delay in the 'Asset Return' step, which took **4 days** and caused **45.6%** of the delay.",
+                "Delay in the 'Final Settlement' step, which is still **In Progress** after **4 days** and is causing **41.7%** of the delay.",
+                "Delay in the 'Payroll Clearance' step, which took **3 days** and caused **5.6%** of the delay.",
+                "Inefficient communication and coordination between HR partners and employees, leading to delays in the offboarding process.",
+                "Lack of automation and streamlining in the offboarding process, resulting in manual errors and delays."
+            ],
+            "immediate_actions": [
+                {
+                    "action": "Assign a dedicated HR partner to oversee the offboarding process for **EMP100001** and ensure timely completion of all steps.",
+                    "responsible_role": "HR Partner (**EMP102714**)",
+                    "expected_impact": "Reduce the offboarding completion time by **30%**"
+                },
+                {
+                    "action": "Implement a automated reminder system to notify HR partners and employees of upcoming deadlines and tasks in the offboarding process.",
+                    "responsible_role": "HR System Administrator",
+                    "expected_impact": "Reduce delays by **20%**"
+                }
+            ],
+            "medium_term_actions": [
+                "Conduct a thorough review of the offboarding process to identify areas for improvement and implement changes to streamline the process.",
+                "Provide training to HR partners on the efficient use of SAP SuccessFactors to manage the offboarding process.",
+                "Develop a dashboard to track key performance indicators (KPIs) related to the offboarding process and provide real-time insights for improvement."
+            ],
+            "long_term_actions": [
+                "Implement a fully automated offboarding process using SAP SuccessFactors, with integrated workflows and approval processes.",
+                "Develop a comprehensive onboarding and offboarding program to ensure a seamless transition for employees and HR partners.",
+                "Establish a feedback mechanism to continuously monitor and improve the offboarding process."
+            ],
+            "expected_impact": "By implementing these recommendations, we expect to reduce the offboarding completion time by **50%**, improve the overall efficiency of the process, and enhance the employee experience.",
+            "risk_assessment": "If these recommendations are not implemented, the offboarding process may continue to experience delays, resulting in increased costs, decreased employee satisfaction, and potential regulatory non-compliance.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach occurred due to delays in specific steps of the offboarding process, including Asset Return, Final Settlement, and Payroll Clearance. The delays were caused by inefficient communication and coordination between HR partners and employees, as well as a lack of automation and streamlining in the offboarding process.",
+                "responsible_parties": "The breach was caused by the HR partners (**EMP102714**, **EMP100956**, **EMP103690**) responsible for overseeing the offboarding process, as well as the employee (**EMP100001**) who was being offboarded.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP100001**",
+                        "reason_for_delay": "Delays in the 'Asset Return', 'Final Settlement', and 'Payroll Clearance' steps.",
+                        "responsible_person": "**Ishita Patel**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and update the offboarding process to ensure it remains efficient and effective.",
+                "Provide ongoing training and support to HR partners to ensure they are equipped to manage the offboarding process effectively."
+            ],
+            "future_solutions": [
+                "Implement a predictive analytics tool to identify potential delays in the offboarding process and provide proactive recommendations for improvement.",
+                "Develop a mobile app to facilitate communication and coordination between HR partners and employees during the offboarding process."
+            ]
+        }
+    },
+    {
         "id": "1785771535.342128",
         "timestamp": "2026-08-03T21:08:55.342136",
         "kpi_name": "Onboarding Completion Time",

@@ -80,22 +80,47 @@ def _clean_json_response(raw_response: str) -> str:
         
     return cleaned.strip()
 
-def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: list = None):
+def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: list = None, severity: str = "Critical", row: dict = None):
     """
     Takes the incident ID, retrieves the ML findings context from the MCP memory,
     and passes them to the LLM to generate prescriptive business recommendations.
+    
+    Args:
+        incident_id: Unique breach incident key used to retrieve context from MCP memory
+        kpi_name: The primary breached KPI name
+        correlated_with: List of historically correlated KPI names
+        severity: Breach severity ('Critical' or 'Warning') — forwarded to notification routing
+        row: The original OData SAP row dict — stored in MCP memory and used to identify specific records
     """
     from clients.mcp_client import mcp_client
     ml_context = mcp_client.call_tool("get_incident_context", {"incident_id": incident_id})
     console.print(Panel(f"[bold magenta]Starting Prescriptive Analysis for Primary Incident: {kpi_name}...[/bold magenta]", border_style="magenta"))
     
+    # Retrieve the original OData SAP row (employee/candidate level detail from SuccessFactors)
+    # This enriches the LLM prompt with actual record-level context — who caused the breach, which dept, etc.
+    odata_row_str = mcp_client.call_tool("get_odata_row", {"incident_id": incident_id})
+    odata_context = ""
+    if odata_row_str and "No OData row found" not in odata_row_str:
+        try:
+            import json as _json
+            odata_row = _json.loads(odata_row_str)
+            odata_context = (
+                f"\n\n--- ORIGINAL SAP OData BREACH ROW ---\n"
+                f"(Employee/Candidate Level Detail from SuccessFactors — use this to identify WHO caused the breach)\n"
+                f"{_json.dumps(odata_row, indent=2)}\n"
+            )
+            console.print(f"[dim]📎 OData row context injected into LLM prompt ({len(odata_row)} fields)[/dim]")
+        except Exception:
+            odata_context = f"\n\nSAP OData Row (raw): {odata_row_str}\n"
+
     correlation_text = ""
     if correlated_with:
         correlation_text = f"\nFYI: This breach is historically correlated with the following KPIs: {', '.join(correlated_with)}. Keep this in mind during your analysis.\n"
         
-    # Construct User Prompt
+    # Construct User Prompt — includes Databricks ML results + OData row detail + correlation context
     user_prompt = f"""Based on the following ML Root Cause Findings, provide your prescriptive recommendations to solve the primary breach of {kpi_name}:
 {correlation_text}
+{odata_context}
 {ml_context}
 """
     
@@ -142,8 +167,8 @@ def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: 
         
         console.print("[bold green]✅ Prescriptive Analysis Complete![/bold green]")
         
-        # Trigger Downstream Notifications
-        notification_agent.distribute_recommendations(data, kpi_name)
+        # Trigger Downstream Notifications (pass severity and original row for breach recording)
+        notification_agent.distribute_recommendations(data, kpi_name, severity=severity, row=row)
         
     except json.JSONDecodeError as e:
         console.print(f"[bold red]Failed to parse LLM response as JSON: {e}[/bold red]")

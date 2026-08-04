@@ -1,3 +1,4 @@
+import json
 import time
 import datetime
 import threading
@@ -8,6 +9,7 @@ import config
 from clients import odata_client
 import runtime_state
 from clients.mcp_client import mcp_client
+import breach_tracker
 
 # Relative imports for other agents in the same folder
 from agents import recruitment_agent
@@ -28,30 +30,30 @@ DOMAIN_LOCKS = {
 }
 
 def get_domain_key(kpi_name):
-    kpi_lower = kpi_name.lower()
-    if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower or kpi_lower == "tth":
+    normalized = breach_tracker.normalize_kpi_name(kpi_name)
+    if normalized == "Time-to-Hire":
         return "recruitment"
-    elif "onboarding" in kpi_lower or kpi_lower == "oct":
+    elif normalized == "Onboarding Completion Time":
         return "onboarding"
-    elif "offboarding" in kpi_lower or kpi_lower == "oft":
+    elif normalized == "Offboarding Completion Time":
         return "offboarding"
-    elif "attrition" in kpi_lower or kpi_lower == "ear":
+    elif normalized == "Employee Attrition Rate":
         return "employee_central"
-    elif "payroll" in kpi_lower or kpi_lower == "per":
+    elif normalized == "Payroll Error Rate":
         return "employee_payment"
     return None
 
 def resolve_agent_info(kpi_name):
-    kpi_lower = kpi_name.lower()
-    if "time-to-hire" in kpi_lower or "time to hire" in kpi_lower or kpi_lower == "tth":
+    normalized = breach_tracker.normalize_kpi_name(kpi_name)
+    if normalized == "Time-to-Hire":
         return recruitment_agent, config.RECRUITMENT_RESULTS_TABLE
-    elif "onboarding" in kpi_lower or kpi_lower == "oct":
+    elif normalized == "Onboarding Completion Time":
         return onboarding_agent, config.ONBOARDING_RESULTS_TABLE
-    elif "offboarding" in kpi_lower or kpi_lower == "oft":
+    elif normalized == "Offboarding Completion Time":
         return offboarding_agent, config.OFFBOARDING_RESULTS_TABLE
-    elif "attrition" in kpi_lower or kpi_lower == "ear":
+    elif normalized == "Employee Attrition Rate":
         return employee_central_agent, config.EMPLOYEE_CENTRAL_RESULTS_TABLE
-    elif "payroll" in kpi_lower or kpi_lower == "per":
+    elif normalized == "Payroll Error Rate":
         return employee_payment_agent, config.EMPLOYEE_PAYMENT_RESULTS_TABLE
     return None, None
 
@@ -96,19 +98,29 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             primary_lock.acquire()
             
         run_id = None
-        kpi_id = (
-            extra_params.get("KPI_ID") or 
-            extra_params.get("KPI_Id") or 
-            extra_params.get("kpi_id") or 
-            extra_params.get("Kpi_Id") or 
-            extra_params.get("KPI_ID_Col") or
-            extra_params.get("OFFBOARDING_PROCESS_ID") or
-            extra_params.get("ONBOARDING_PROCESS_ID") or
-            extra_params.get("JOB_REQ_ID")
-        )
-        import json
-        extra_params_json = json.dumps(extra_params) if extra_params else None
         try:
+            # Build incident_id for MCP memory keying
+            incident_id = f"{primary_kpi_name.replace(' ', '_')}_{year}_{month}"
+
+            # Store the raw OData row in MCP memory so prescriptive agent can enrich LLM prompt
+            if extra_params:
+                mcp_client.call_tool("store_odata_row", {
+                    "incident_id": incident_id,
+                    "row_data": json.dumps(extra_params)
+                })
+
+            kpi_id = (
+                extra_params.get("KPI_ID") or
+                extra_params.get("KPI_Id") or
+                extra_params.get("kpi_id") or
+                extra_params.get("Kpi_Id") or
+                extra_params.get("KPI_ID_Col") or
+                extra_params.get("OFFBOARDING_PROCESS_ID") or
+                extra_params.get("ONBOARDING_PROCESS_ID") or
+                extra_params.get("JOB_REQ_ID")
+            )
+            extra_params_json = json.dumps(extra_params) if extra_params else None
+
             run_id_str = mcp_client.call_tool("execute_domain_agent", {
                 "domain": domain_key,
                 "kpi_name": primary_kpi_name,
@@ -292,7 +304,9 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     prescriptive_agent.run_prescriptive_analysis(
         incident_id, 
         primary_kpi_name,
-        correlated_with=correlated_with
+        correlated_with=correlated_with,
+        severity=severity,
+        row=extra_params if extra_params else None
     )
     
     # Remove from active breaches
@@ -305,22 +319,7 @@ def route_kpi_breach(kpi_name, severity, year, month, **extra_params):
         runtime_state.log_system_event("[bold red]Error: Received empty or invalid KPI Name to route[/bold red]")
         return
         
-    # Normalize KPI Name
-    kpi_name_clean = kpi_name.strip()
-    kpi_lower = kpi_name_clean.lower()
-    
-    # Map common variations to standard matrix/config keys
-    if "time to hire" in kpi_lower or "time-to-hire" in kpi_lower or kpi_lower == "tth":
-        kpi_name_clean = "Time-to-Hire"
-    elif "onboarding" in kpi_lower or kpi_lower == "oct":
-        kpi_name_clean = "Onboarding Completion Time"
-    elif "offboarding" in kpi_lower or kpi_lower == "oft":
-        kpi_name_clean = "Offboarding Completion Time"
-    elif "attrition" in kpi_lower or kpi_lower == "ear":
-        kpi_name_clean = "Employee Attrition Rate"
-    elif "payroll" in kpi_lower or kpi_lower == "per":
-        kpi_name_clean = "Payroll Error Rate"
-        
+    kpi_name_clean = breach_tracker.normalize_kpi_name(kpi_name)
     handle_rca_workflow(kpi_name_clean, severity, year, month, **extra_params)
 
 def check_sap_breaches():
@@ -337,6 +336,7 @@ def check_sap_breaches():
     
     if kpi_data:
         breach_found = False
+        current_active_ids = set()  # Track all active breach IDs for reconciliation
         
         # Sort the kpi_data so Critical breaches (Critical=1) are processed first
         sorted_kpi_data = sorted(
@@ -347,15 +347,28 @@ def check_sap_breaches():
         
         threads = []
         for row in sorted_kpi_data:
-            kpi_name = row.get("KPI_Name")
+            raw_kpi = row.get("KPI_Name")
+            kpi_name = breach_tracker.normalize_kpi_name(raw_kpi)
             
             # Check for the breach field (supporting both 'Breach' and 'KPI_Breach')
             breach_val = row.get("Breach") or row.get("KPI_Breach")
             if breach_val == "X":
                 breach_found = True
                 
+                # Generate a unique KPI-aware breach ID and register it as active
+                bid = breach_tracker.generate_breach_id(kpi_name, row)
+                current_active_ids.add(bid)
+
+                # Check cooldown — skip if we already notified for this breach recently
+                in_cd, last_notified, remaining = breach_tracker.is_in_cooldown(bid)
+                if in_cd:
+                    runtime_state.log_system_event(
+                        f"[yellow]⏳ Breach '{bid}' is in cooldown window ({remaining}m remaining). Skipping duplicate alert.[/yellow]"
+                    )
+                    continue
+                
                 # Determine Severity based on fields
-                is_critical = str(row.get("Critical")) == "1" or str(row.get("Severity")).lower() == "critical"
+                is_critical = str(row.get("Critical")) == "1" or str(row.get("Severity", "")).lower() == "critical"
                 severity = "Critical" if is_critical else "Warning"
                 
                 year = row.get("Year") or row.get("Posting_Year")
@@ -378,6 +391,11 @@ def check_sap_breaches():
         # Wait for all simultaneous breach threads to finish before returning.
         for t in threads:
             t.join()
+
+        # Reconcile: purge any previously-active breaches that are no longer in OData
+        purged = breach_tracker.reconcile_active_breaches(current_active_ids)
+        if purged:
+            runtime_state.log_system_event(f"[green]🧹 Purged {len(purged)} resolved breach(es) from active_breaches.json: {purged}[/green]")
                 
         if not breach_found:
             runtime_state.log_system_event("[dim]No breaches detected in this cycle.[/dim]")

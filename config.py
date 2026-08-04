@@ -103,12 +103,17 @@ INTERDEPENDENCY_MATRIX = {
 ODATA_URL = os.getenv("ODATA_URL")
 
 # OAuth2 Configuration (for SAP Datasphere API Access)
-OAUTH_TOKEN_URL = os.getenv("OAUTH_TOKEN_URL")
-OAUTH_CLIENT_ID = os.getenv("OAUTH_CLIENT_ID")
-OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
+# .strip() prevents errors caused by accidental quotes/spaces in .env file values
+OAUTH_TOKEN_URL = os.getenv("OAUTH_TOKEN_URL", "").strip().strip('"').strip("'")
+OAUTH_CLIENT_ID = os.getenv("OAUTH_CLIENT_ID", "").strip().strip('"').strip("'")
+OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET", "").strip().strip('"').strip("'")
 
 # Path to the shared state file that both agents read/write
 STATE_FILE: Path = _project_root / "run_state.json"
+
+# Active breach tracking
+ACTIVE_BREACHES_FILE: Path = _project_root / "active_breaches.json"
+NOTIFICATION_COOLDOWN_MINUTES: int = int(os.getenv("NOTIFICATION_COOLDOWN_MINUTES", "1440"))  # Default: 24 hours
 
 # LLM Configuration
 # ---------------------------------------------------------------------------
