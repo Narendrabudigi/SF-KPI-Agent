@@ -68,6 +68,7 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     domain_key = get_domain_key(primary_kpi_name)
     if domain_key:
         runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "running"
+        runtime_state.SYSTEM_STATE["primary_agent"] = domain_key
     
     runtime_state.SYSTEM_STATE["status"] = f"analyzing_{domain_key}" if domain_key else "running_stage_1"
     breach_key = f"{primary_kpi_name} ({year}-{month})"
@@ -95,6 +96,18 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             primary_lock.acquire()
             
         run_id = None
+        kpi_id = (
+            extra_params.get("KPI_ID") or 
+            extra_params.get("KPI_Id") or 
+            extra_params.get("kpi_id") or 
+            extra_params.get("Kpi_Id") or 
+            extra_params.get("KPI_ID_Col") or
+            extra_params.get("OFFBOARDING_PROCESS_ID") or
+            extra_params.get("ONBOARDING_PROCESS_ID") or
+            extra_params.get("JOB_REQ_ID")
+        )
+        import json
+        extra_params_json = json.dumps(extra_params) if extra_params else None
         try:
             run_id_str = mcp_client.call_tool("execute_domain_agent", {
                 "domain": domain_key,
@@ -102,7 +115,9 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                 "severity": severity,
                 "year": str(year),
                 "month": str(month),
-                "primary_kpi": primary_kpi_name
+                "primary_kpi": primary_kpi_name,
+                "kpi_id": str(kpi_id) if kpi_id else None,
+                "extra_params_json": extra_params_json
             })
             run_id = int(run_id_str) if (isinstance(run_id_str, str) and run_id_str.isdigit()) else run_id_str
             if run_id:
@@ -189,7 +204,8 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                         "severity": "CASCADING_ANALYSIS",
                         "year": str(year),
                         "month": str(month),
-                        "primary_kpi": primary_kpi_name
+                        "primary_kpi": primary_kpi_name,
+                        "extra_params_json": extra_params_json
                     })
                     run_id = int(run_id_str) if (isinstance(run_id_str, str) and run_id_str.isdigit()) else run_id_str
                     if run_id:
@@ -312,6 +328,7 @@ def check_sap_breaches():
     Fetches KPI data from SAP and routes any breaches to the correct domain agent.
     Can be run once manually or in a loop.
     """
+    runtime_state.SYSTEM_STATE["primary_agent"] = None
     runtime_state.SYSTEM_STATE["status"] = "fetching"
     runtime_state.SYSTEM_STATE["last_checked"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     runtime_state.log_system_event("Checking OData endpoint for active breaches...")
@@ -369,6 +386,18 @@ def check_sap_breaches():
     time.sleep(2)
     runtime_state.SYSTEM_STATE["status"] = "idle"
 
+def reset_memory_file():
+    import os
+    import json
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    MEMORY_FILE = os.path.join(BASE_DIR, "mcp_memory.json")
+    try:
+        with open(MEMORY_FILE, "w") as f:
+            json.dump({}, f, indent=4)
+        runtime_state.log_system_event("MCP Memory file successfully reset at 8:50 AM.")
+    except Exception as e:
+        runtime_state.log_system_event(f"[bold red]Failed to reset memory file: {e}[/bold red]")
+
 def run_orchestrator():
     """
     Master Orchestrator Loop:
@@ -385,23 +414,33 @@ def run_orchestrator():
         runtime_state.SYSTEM_STATE["status"] = "idle"
         
     while True:
-        # Calculate time until next 9:00 AM and sleep
+        # Sleep until 8:50 AM first
         now = datetime.datetime.now()
-        target = now.replace(hour=9, minute=0, second=0, microsecond=0)
-        
-        # If it's already past 9:00 AM today, target is 9:00 AM tomorrow
-        if now >= target:
-            target += datetime.timedelta(days=1)
+        target_reset = now.replace(hour=8, minute=50, second=0, microsecond=0)
+        if now >= target_reset:
+            target_reset += datetime.timedelta(days=1)
             
-        seconds_to_sleep = (target - now).total_seconds()
+        seconds_to_sleep_reset = (target_reset - now).total_seconds()
+        hours_reset = int(seconds_to_sleep_reset // 3600)
+        minutes_reset = int((seconds_to_sleep_reset % 3600) // 60)
+        runtime_state.log_system_event(f"Sleeping until 8:50 AM to reset memory. Next reset scheduled at {target_reset.strftime('%Y-%m-%d %H:%M:%S')} (in {hours_reset}h {minutes_reset}m).")
         
-        hours = int(seconds_to_sleep // 3600)
-        minutes = int((seconds_to_sleep % 3600) // 60)
-        runtime_state.log_system_event(f"Sleeping until 9:00 AM. Next check scheduled at {target.strftime('%Y-%m-%d %H:%M:%S')} (in {hours}h {minutes}m).")
+        # Sleep until 8:50 AM
+        time.sleep(seconds_to_sleep_reset)
         
-        # Sleep until the target time
-        time.sleep(seconds_to_sleep)
+        # Reset memory file
+        reset_memory_file()
         
+        # Sleep remaining 10 minutes until 9:00 AM
+        now = datetime.datetime.now()
+        target_run = now.replace(hour=9, minute=0, second=0, microsecond=0)
+        if now >= target_run:
+            target_run += datetime.timedelta(days=1)
+            
+        seconds_to_sleep_run = (target_run - now).total_seconds()
+        if seconds_to_sleep_run > 0:
+            time.sleep(seconds_to_sleep_run)
+            
         runtime_state.log_system_event("Daily Scheduled Trigger Initiated!")
         try:
             check_sap_breaches()

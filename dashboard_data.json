@@ -1,1264 +1,245 @@
 [
     {
-        "id": "1785734947.258064",
-        "timestamp": "2026-08-03T10:59:07.258078",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach of Time-to-Hire, with a severity of Critical in May 2025, is attributed to several factors including low Auto Funnel Rate 5 Conducted, a high Number of Applications Withdrawn, and low Auto Funnel Rate 1 Rejected. Immediate actions are required to rectify these issues and improve the hiring process. Historically correlated with Employee Attrition Rate, addressing these factors can also potentially mitigate future attrition.",
-            "root_causes": [
-                "Low Auto Funnel Rate 5 Conducted (0.0%) caused 30.8% of the delay",
-                "High Number of Applications Withdrawn (5) caused 28.5% of the delay",
-                "Low Auto Funnel Rate 1 Rejected (0.0%) caused 9.0% of the delay",
-                "Low Number of Offers Accepted (2) caused 9.0% of the delay",
-                "The retrospective model predicted a Time-to-Hire of 49 days, but it took 53 days"
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Review and adjust the job requirement and interview process for REQ500037 to increase Auto Funnel Rate 5 Conducted",
-                    "responsible_role": "Hiring Manager and Recruiter",
-                    "sap_transaction": "Update Job Requisition",
-                    "expected_impact": "20% reduction in Time-to-Hire",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Implement a more engaging candidate experience to reduce the Number of Applications Withdrawn",
-                    "responsible_role": "Recruiter and HR",
-                    "sap_transaction": "Utilize SAP SuccessFactors Recruitment Marketing",
-                    "expected_impact": "15% decrease in application withdrawals",
-                    "effort": "low"
-                },
-                {
-                    "action": "Streamline the recruitment process to improve Auto Funnel Rate 1 Rejected",
-                    "responsible_role": "Recruiter and Hiring Manager",
-                    "sap_transaction": "Optimize the Candidate Selection Process",
-                    "expected_impact": "10% increase in qualified candidates moving forward",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "Regularly review recruitment metrics to identify trends and areas for improvement",
-                "Develop a comprehensive candidate experience strategy",
-                "Enhance the interview process to better assess candidate fit"
-            ],
-            "long_term_actions": [
-                "Invest in predictive analytics tools to better forecast hiring needs",
-                "Develop a talent pipeline to reduce time-to-hire for critical roles",
-                "Continuously train and develop the recruitment team on best practices"
-            ],
-            "expected_impact": "By addressing the root causes and implementing these actions, we expect a 30% reduction in Time-to-Hire, which can also positively impact Employee Attrition Rate by improving the quality of hires and overall candidate experience.",
-            "risk_assessment": "Failure to address these issues may lead to continued delays in hiring, potentially resulting in missed business opportunities and increased attrition rates.",
-            "detailed_breach_analysis": {
-                "breach_reason": "The breach occurred due to inefficiencies in the recruitment process, specifically low auto funnel rates and a high number of application withdrawals. The retrospective model predicted a quicker Time-to-Hire, indicating that the actual process took longer than expected.",
-                "responsible_parties": "The breach is attributed to the hiring manager (EMP101314), recruiter (EMP101621), and HR partner (EMP100065) for REQ500037. Their roles in managing the recruitment process and candidate experience contribute to the delay.",
-                "affected_records": [
-                    {
-                        "record_id": "REQ500037",
-                        "reason_for_delay": "Inefficient recruitment process and poor candidate experience",
-                        "responsible_person": "Hiring Manager (EMP101314) and Recruiter (EMP101621)"
-                    }
-                ]
-            },
-            "precautions": [
-                "Regularly review and update job requirements to ensure they are accurate and appealing",
-                "Implement a candidate feedback mechanism to improve the application and interview process"
-            ],
-            "future_solutions": [
-                "Utilize AI-powered recruitment tools to streamline the hiring process",
-                "Develop a comprehensive diversity and inclusion strategy to attract a broader pool of candidates"
-            ]
-        }
-    },
-    {
-        "id": "1785499741.433755",
-        "timestamp": "2026-07-31T17:39:01.433774",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The critical Time-to-Hire breach in May 2025, specifically for application ID 5015885 in the Engineering department, was primarily driven by issues related to the proposed salary range, resulting in a 100-day hiring cycle. This extended duration significantly contributed to the candidate's rejection and has a cascading negative impact on Onboarding Completion Time and historical correlation with Employee Attrition Rate. Immediate intervention is required to streamline salary approval workflows and improve collaboration between recruitment and the Engineering department.",
-            "root_causes": [
-                "Excessive Time-to-Hire (100 days actual vs. 93 days predicted) for a specific Engineering role (application ID 5015885, jobReqId 100781), ultimately leading to candidate rejection.",
-                "High impact of specified \"salaryMax\" (39.2% contribution to delay) and \"salaryMin\" (36.5% contribution to delay) values, indicating challenges in aligning candidate expectations, market rates, or internal budget approvals for the role.",
-                "Delays attributed to the 'Engineering' department (13.5% impact), suggesting bottlenecks in candidate review, interview scheduling, or decision-making processes within that department.",
-                "Ineffective leveraging of the 'Employee Referral' sourcing channel for this specific role, as despite its historical average of 42 days (0 days faster than baseline), this application took 100 days, indicating that the sourcing channel itself wasn't the root cause of the specific delay in this instance.",
-                "The extended recruitment cycle led to a rejected candidate, indicating a mismatch in expectations or a prolonged process that deterred the candidate."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Review and expedite the current status of all open requisitions in the Engineering department that have exceeded the average Time-to-Hire for their respective sourcing channels, focusing on those with high salary ranges. Engage directly with Hiring Managers and candidates.",
-                    "responsible_role": "Recruitment Lead, Engineering Hiring Managers",
-                    "sap_transaction": "SAP SF Recruiting: Job Requisition Status / Candidate Application Review",
-                    "expected_impact": "Reduce immediate delays, potentially save critical candidates, and prevent further rejections. Expected to reduce Time-to-Hire by 10-15% for identified stalled applications.",
-                    "effort": "high"
-                },
-                {
-                    "action": "Initiate an urgent discussion with the Engineering department leadership and Finance to understand the specific bottlenecks related to high-salary requisitions. Clarify budget constraints and approval matrices.",
-                    "responsible_role": "Head of HR, Finance Business Partner, Engineering Leadership",
-                    "sap_transaction": "SAP SF Comp & Benefits: Budget Overview / Role-based Permissions for Approvals (if applicable for salary overrides)",
-                    "expected_impact": "Clarify immediate blockers for salary-related delays, leading to quicker decision-making for ongoing requisitions. Expected to resolve salary approval delays by 20-30% in the short term.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Conduct a post-mortem for application ID 5015885 with the Recruitment Specialist and Hiring Manager to identify the exact point of failure and specific reasons for the 100-day delay and eventual rejection.",
-                    "responsible_role": "Recruitment Specialist, Engineering Hiring Manager",
-                    "sap_transaction": "SAP SF Recruiting: Candidate Workbench / Interview Central (review history)",
-                    "expected_impact": "Provide granular insights to prevent recurrence for similar high-salary, Engineering roles. Immediate learning for active requisitions. Expected to yield actionable insights within 1-2 weeks.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement a structured 'High-Salary Requisition' workflow in SAP SuccessFactors Recruiting, routing high-value offers through an accelerated, multi-level approval process with clear SLAs, potentially leveraging custom fields for 'Executive Approval Required' flags.",
-                "Provide targeted training to Engineering Hiring Managers and Recruiters on effective salary negotiation strategies, market compensation trends for technical roles, and efficient use of SAP SuccessFactors for candidate progression and feedback.",
-                "Establish monthly joint review meetings between Recruitment and Engineering leadership to proactively review talent pipelines, discuss difficult-to-fill roles, and address potential salary-related challenges before they cause significant delays.",
-                "Develop and communicate clear guidelines and benchmarks for salary ranges for critical Engineering roles, ensuring they are competitive and aligned with internal budget realities to minimize discrepancies during the offer stage."
-            ],
-            "long_term_actions": [
-                "Leverage SAP SuccessFactors Compensation module to integrate real-time market data into the job requisition creation process, allowing Hiring Managers to set realistic salary ranges upfront and obtain pre-approvals for high-salary bands.",
-                "Automate reminders and notifications within SAP SuccessFactors for overdue tasks in the recruitment workflow, particularly for interview scheduling, feedback submission, and offer approvals for Engineering roles.",
-                "Implement AI-powered candidate matching tools within SAP SuccessFactors Recruiting to identify candidates whose salary expectations are more aligned with the budget, reducing time spent on unsuitable profiles.",
-                "Regularly review and optimize recruitment process steps and SLAs within SAP SuccessFactors for critical departments like Engineering, ensuring unnecessary steps are eliminated and approval chains are streamlined."
-            ],
-            "expected_impact": "Addressing these issues will significantly reduce Time-to-Hire for critical roles, particularly within Engineering, by an estimated 20-30% within 6 months. This reduction will improve candidate experience, reduce the likelihood of candidate dropout/rejection, and positively impact Employee Attrition Rate by ensuring better quality hires are made more efficiently. It will also reduce cascading delays in Onboarding Completion Time.",
-            "risk_assessment": "Failure to address salary-related delays and departmental bottlenecks will lead to continued high Time-to-Hire, increased candidate attrition and rejection rates, and a detrimental impact on talent acquisition for critical Engineering roles. This could lead to project delays, competitive disadvantage, and higher costs associated with repeated recruitment efforts. Cascading impacts on Onboarding Completion Time will also persist, further straining HR operations.",
-            "detailed_breach_analysis": {
-                "breach_reason": "The Time-to-Hire for application ID 5015885, a candidate for Job Requisition 100781 in the Engineering department, extended to an unacceptable 100 days. This was significantly higher than the average for the 'Employee Referral' source (42 days) and even exceeded the predicted duration of 93 days. The primary factors contributing to this extreme delay were the high specified \"salaryMax\" and \"salaryMin\" values, which created significant friction (combined 75.7% impact) likely due to prolonged negotiation, budget alignment issues, or extensive internal approval processes. The Engineering department itself also played a role in the delay (13.5% impact), indicating internal process inefficiencies or decision-making bottlenecks. Ultimately, after 100 days, the candidate was rejected, suggesting a critical mismatch or process failure that took too long to surface.",
-                "responsible_parties": "The primary responsible parties include the Recruitment Team (for managing the overall process and candidate communication), the Engineering Department (specifically the Hiring Manager for Job Requisition 100781, for candidate review, interview progression, and offer approval), and potentially the Finance Department (for salary budget approvals related to high-value offers). The data points to process inefficiencies within the Engineering department and challenges in aligning candidate salary expectations with internal capabilities/approvals.",
-                "affected_records": [
-                    {
-                        "record_id": "Application ID 5015885 (Candidate for Job Req 100781)",
-                        "reason_for_delay": "Extended time due to high \"salaryMax\" and \"salaryMin\" values leading to prolonged negotiation/approval, and general departmental delays within Engineering. The candidate was eventually rejected after 100 days.",
-                        "responsible_person": "Hiring Manager (Engineering, Job Req 100781), Recruitment Specialist, Salary Approval Authority (Finance/Leadership)"
-                    }
-                ]
-            },
-            "precautions": [
-                "Implement a mandatory 'Salary Range Review' step at the job requisition creation stage for all roles with salaries exceeding a predefined threshold, requiring sign-off from Finance and relevant departmental leadership before posting.",
-                "Establish clear, published SLAs for each stage of the recruitment process, particularly for high-impact activities like interview scheduling, feedback submission, and offer approvals, with automated reminders for overdue tasks.",
-                "Conduct regular calibration sessions between Recruitment and Hiring Managers, especially in departments like Engineering, to align on candidate quality, market expectations, and compensation strategies.",
-                "Utilize SAP SuccessFactors' reporting capabilities to proactively monitor Time-to-Hire for individual requisitions against benchmarks and identify early warning signs of delays based on specific root cause features (e.g., high salary ranges)."
-            ],
-            "future_solutions": [
-                "Integrate external market salary data providers directly into SAP SuccessFactors Compensation module to provide real-time competitive compensation insights during job requisition creation and offer generation.",
-                "Develop an 'Accelerated Offer Approval' workflow in SAP SuccessFactors, triggered for high-priority or critical roles, which reduces the number of approval steps or ensures faster review by designated approvers.",
-                "Leverage SAP SuccessFactors Intelligent Services to automatically trigger alerts to recruiters and hiring managers when a requisition or candidate application has been stagnant for an unusual duration or reached a critical stage without progression.",
-                "Implement candidate experience surveys within SAP SuccessFactors Recruiting to gather feedback on the hiring process, including salary negotiation and communication, to identify systemic issues and improve satisfaction, thereby reducing attrition risk."
-            ]
-        }
-    },
-    {
-        "id": "1785491089.600007",
-        "timestamp": "2026-07-31T15:14:49.600040",
+        "id": "1785771535.342128",
+        "timestamp": "2026-08-03T21:08:55.342136",
         "kpi_name": "Onboarding Completion Time",
         "data": {
-            "executive_summary": "The primary breach in Onboarding Completion Time for October 2023, specifically highlighted by the case of Shreya Mishra, is predominantly driven by significant bottlenecks in the 'Pre-boarding Documentation' step and persistent 'Document Pending Issues.' This delay of 6.3 days above the department baseline (16.9 days) for the Operations department not only impacts immediate HR efficiency but also carries a severe cascading risk to Employee Attrition Rate, as indicated by historical correlations and predictive models. Addressing these documentation challenges and streamlining the initial onboarding workflow within SAP SuccessFactors is critical to improving candidate experience and overall talent retention.",
+            "executive_summary": "The primary breach of Onboarding Completion Time is due to delays in several steps of the onboarding process, including IT Asset Allocation, System Access Provisioning, Compliance Training, and Benefits Enrollment. The root cause analysis reveals that these steps took longer than expected, causing a total delay of **22 days**. To address this breach, immediate actions will focus on expediting the remaining steps, while medium-term and long-term actions will aim to optimize the onboarding process, reduce dependencies, and improve automation.",
             "root_causes": [
-                "The 'Pre-boarding Documentation' step is the primary bottleneck, contributing 85.6% of the time variance in onboarding completion for the specific incident.",
-                "Persistent 'Document Pending Issues' directly prolonged the pre-boarding phase, as evidenced by `RAW_IS_DOCUMENT_PENDING: True` for the identified bottleneck step, driving 4.0% of the time variance.",
-                "The overall onboarding duration (23 days) for the 'Process Associate' role in the 'Operations' department significantly exceeded the department's baseline of 16.9 days, indicating process inefficiencies.",
-                "Historical correlation with Offboarding Completion Time suggests underlying systemic issues in document management or HR process execution that affect both new hires and departing employees.",
-                "Delays in onboarding, particularly in critical initial stages, have a direct cascading negative impact on Employee Attrition Rate, underscoring the urgency of resolution."
+                "Delays in IT Asset Allocation (**4 days**, **37.7%** of the delay) and System Access Provisioning (**4 days**, **34.4%** of the delay) were the primary causes of the breach.",
+                "Compliance Training (**3 days**, **12.9%** of the delay) and Benefits Enrollment (**3 days**, **9.8%** of the delay) also contributed to the delay.",
+                "The onboarding process was initiated on **2025-09-09** and was expected to be completed within a shorter timeframe.",
+                "The breach has a cascading impact on Employee Attrition Rate, with a confidence score of **90.0%**.",
+                "The analysis model used was HistGradientBoostingRegressor and HistGradientBoostingRegressor_SHAP, which provided a confidence score of **92.01%** and **37.74%** respectively."
             ],
             "immediate_actions": [
                 {
-                    "action": "Identify specific pending documents for Shreya Mishra and other impacted candidates from October 2023 through the Onboarding dashboard.",
-                    "responsible_role": "HR Partner / Onboarding Specialist",
-                    "sap_transaction": "Access Onboarding Dashboard (e.g., Manage Onboarding Tasks)",
-                    "expected_impact": "Immediately unblock current stalled onboarding processes, reducing completion time for active cases.",
-                    "effort": "low"
+                    "action": "Expedite the Benefits Enrollment step for **EMP200144**",
+                    "responsible_role": "HR Partner (**EMP104414**)",
+                    "expected_impact": "Reduce the overall onboarding time by **3 days**"
                 },
                 {
-                    "action": "Proactively contact candidates and relevant HR/hiring managers via email/phone for urgent submission or clarification of outstanding pre-boarding documentation.",
-                    "responsible_role": "HR Partner / Onboarding Specialist",
-                    "sap_transaction": "N/A (manual outreach based on SF data)",
-                    "expected_impact": "Accelerate document collection, potentially cutting 1-2 days from affected onboarding processes.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Conduct a quick review of the 'Pre-boarding Documentation' step configuration in SAP SuccessFactors Onboarding for the Operations department to check for misconfigurations or unclear instructions.",
-                    "responsible_role": "HRIS Analyst / HR Process Owner",
-                    "sap_transaction": "Admin Center > Onboarding > Manage Onboarding Process Flows",
-                    "expected_impact": "Identify and rectify immediate process friction points, preventing future identical delays.",
-                    "effort": "medium"
+                    "action": "Review and optimize the IT Asset Allocation and System Access Provisioning steps",
+                    "responsible_role": "IT Department",
+                    "expected_impact": "Reduce the time taken for these steps by **2 days**"
                 }
             ],
             "medium_term_actions": [
-                "Optimize the 'Pre-boarding Documentation' step within SAP SuccessFactors Onboarding by streamlining the number of required documents, clarifying instructions, and leveraging digital forms where possible. Review task owners and due dates for realism.",
-                "Implement and configure automated reminder notifications within SAP SuccessFactors Onboarding for candidates and responsible HR partners/hiring managers regarding pending documents and overdue tasks. This should be configured to escalate after certain periods.",
-                "Conduct targeted training sessions for HR Partners, particularly those supporting the Operations, Sales, and Engineering departments, on efficient document collection, verification, and proactive use of SAP SuccessFactors Onboarding features to manage bottlenecks. Focus on common issues and best practices.",
-                "Standardize and centralize pre-boarding document templates and requirements in a readily accessible SuccessFactors Content Library, ensuring all candidates receive consistent and clear guidance.",
-                "Analyze the departmental baseline for Onboarding Completion Time for Operations (and other identified departments like Sales/Engineering) to understand underlying structural reasons for higher baselines or deviations, and develop specific departmental process improvements."
+                "Automate the Compliance Training step using SAP SuccessFactors",
+                "Implement a dashboard to track the onboarding process and identify bottlenecks",
+                "Provide training to HR Partners on the new onboarding process"
             ],
             "long_term_actions": [
-                "Evaluate and implement SAP SuccessFactors DocuSign integration for all mandatory pre-boarding documentation to enable fully digital signatures and submission, eliminating physical document handling and accelerating the process significantly.",
-                "Conduct a comprehensive review and re-engineering of both Onboarding and Offboarding processes, given their historical correlation. Identify commonalities in documentation, task management, and system handoffs to implement unified best practices and improve overall transition experiences.",
-                "Explore advanced SAP SuccessFactors capabilities or integrations for initial automated document validation (e.g., leveraging AI/ML features for document type recognition and basic data extraction) to reduce manual review effort and speed up verification.",
-                "Establish a cross-functional governance committee involving HR, IT, and departmental leadership (e.g., Operations, Sales, Engineering) to continuously monitor HR KPI performance, address systemic process inefficiencies, and drive innovation in talent management processes.",
-                "Develop an onboarding experience survey to gather continuous feedback from new hires regarding the documentation process, leveraging insights to iterate and further refine the workflow for improved candidate satisfaction and reduced time-to-productivity."
+                "Conduct a thorough review of the onboarding process to identify areas for improvement",
+                "Develop a strategic plan to reduce the onboarding time by **50%**",
+                "Implement a feedback mechanism to continuously monitor and improve the onboarding process"
             ],
-            "expected_impact": "Implementation of these recommendations is expected to reduce the Onboarding Completion Time by 15-25% within the next 6-12 months, bringing average completion times closer to or below departmental baselines. This will result in a significantly improved new hire experience, a measurable reduction in early employee attrition, and an increase in HR operational efficiency by minimizing manual follow-ups and reactive problem-solving.",
-            "risk_assessment": "Failure to address the 'Pre-boarding Documentation' bottleneck and 'Document Pending Issues' carries high risks. This includes continued prolonged onboarding times, leading to a negative candidate experience and potential withdrawal of job offers. The cascading impact on Employee Attrition Rate will likely worsen, increasing recruitment costs and impacting organizational productivity. Furthermore, inefficiencies can lead to increased HR workload, potential compliance risks with delayed document collection, and a negative perception of the HR function within the organization."
+            "expected_impact": "The expected impact of the immediate actions is a reduction of **5 days** in the onboarding time, while the medium-term and long-term actions are expected to reduce the onboarding time by **10 days** and **15 days** respectively.",
+            "risk_assessment": "The risk of not addressing the breach is a potential increase in Employee Attrition Rate, which could lead to **10%** of new hires leaving the company within the first **6 months**.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach occurred due to delays in several steps of the onboarding process, including IT Asset Allocation, System Access Provisioning, Compliance Training, and Benefits Enrollment. The root cause analysis reveals that these steps took longer than expected, causing a total delay of **22 days**.",
+                "responsible_parties": "The responsible parties for the breach are the HR Partner (**EMP104414**) and the IT Department, who are responsible for the onboarding process.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP200144**",
+                        "reason_for_delay": "Delays in IT Asset Allocation, System Access Provisioning, Compliance Training, and Benefits Enrollment",
+                        "responsible_person": "**EMP104414**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and monitor the onboarding process to identify bottlenecks",
+                "Provide training to HR Partners on the new onboarding process",
+                "Continuously monitor and improve the onboarding process"
+            ],
+            "future_solutions": [
+                "Implementing AI-powered automation tools to streamline the onboarding process",
+                "Developing a mobile app for new hires to complete the onboarding process",
+                "Using predictive analytics to identify potential bottlenecks in the onboarding process"
+            ]
         }
     },
     {
-        "id": "1785490997.645463",
-        "timestamp": "2026-07-31T15:13:17.645474",
-        "kpi_name": "Payroll Error Rate",
-        "data": {
-            "executive_summary": "The primary breach of Payroll Error Rate is caused by no data found in the CSV file for the payroll area, resulting in a warning severity for the period 2025-4. This breach has cascading impacts on Employee Attrition Rate and Time-to-Hire.",
-            "root_causes": [
-                "No data found in CSV file for payroll area",
-                "Potential issues with data import or payroll area configuration",
-                "Inadequate data validation or error handling",
-                "Insufficient training or support for payroll teams",
-                "Lack of automation or integration with other HR systems"
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Verify and update payroll area data in the CSV file",
-                    "responsible_role": "Payroll Administrator",
-                    "sap_transaction": "Payroll Control Record (PC00_M00_PCR)",
-                    "expected_impact": "Reduce payroll error rate by 20%",
-                    "effort": "low"
-                },
-                {
-                    "action": "Run data validation reports to identify and correct errors",
-                    "responsible_role": "HR Analyst",
-                    "sap_transaction": "Data Validation Report (HCM_DV_REPORT)",
-                    "expected_impact": "Improve data accuracy by 15%",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement automated data import and validation processes",
-                "Develop and provide training for payroll teams on data management and error handling",
-                "Configure and enable payroll area configuration and data validation in SAP SuccessFactors"
-            ],
-            "long_term_actions": [
-                "Integrate payroll system with other HR systems for seamless data exchange and automation",
-                "Develop and implement a comprehensive data governance and quality framework",
-                "Regularly review and refine payroll processes and procedures to minimize errors and improve efficiency"
-            ],
-            "expected_impact": "Reducing payroll error rate by 30% and improving data accuracy by 20% within the next 6 months, resulting in a positive impact on Employee Attrition Rate and Time-to-Hire",
-            "risk_assessment": "High risk of continued payroll errors and cascading impacts on other HR KPIs if immediate and medium-term actions are not taken; medium risk of data security and compliance issues if long-term actions are not implemented"
-        }
-    },
-    {
-        "id": "1785490995.621831",
-        "timestamp": "2026-07-31T15:13:15.621870",
+        "id": "1785771530.277438",
+        "timestamp": "2026-08-03T21:08:50.277448",
         "kpi_name": "Time-to-Hire",
         "data": {
-            "executive_summary": "The primary incident of Time-to-Hire breach is caused by multiple factors including salaryMax, salaryMin, department, and sourcing channel. Immediate actions are required to reduce the Time-to-Hire by optimizing the salary range and streamlining the recruitment process.",
+            "executive_summary": "The primary breach of Time-to-Hire (TTH) is critically impacting the organization, with a severity level of Critical and a breach year of 2026. The root causes of this breach are predominantly attributed to the **Engineering** department, which caused **47.9%** of the delay, followed by **Cust Exp Ctc** with a value of **11.5**, contributing to **44.4%** of the delay. To resolve this breach, immediate actions involve reviewing and optimizing the hiring process for the **Engineering** department, particularly for the **Lead Software Engineer** role.",
             "root_causes": [
-                "SalaryMax is 1.73 times the expected value, leading to a 39.2% increase in delay",
-                "SalaryMin is 2.17 times the expected value, leading to a 36.5% increase in delay",
-                "Department Engineering has a 13.5% increase in delay",
-                "Sourcing channel 'Employee Referral' has no significant impact on delay",
-                "Optimizing the salary range can lead to a 3.6% decrease in delay"
+                "The **Engineering** department is the primary cause of the delay, accounting for **47.9%** of the Time-to-Hire breach.",
+                "The expected CTC (**Cust Exp Ctc**) of **11.5** is the second most significant cause, contributing to **44.4%** of the delay.",
+                "The **Job Role** of **Lead Software Engineer** causes **6.7%** of the delay.",
+                "The sourcing channel 'Employee Referral' historically averages **42 days**, which is **1 day** faster than the company baseline.",
+                "The hiring process for the **Lead Software Engineer** role in the **Engineering** department needs optimization."
             ],
             "immediate_actions": [
                 {
-                    "action": "Optimize the salary range for job requisitions",
-                    "responsible_role": "Recruitment Team",
-                    "sap_transaction": "Create/Update Job Requisition",
-                    "expected_impact": "Reduce Time-to-Hire by 5-7 days",
-                    "effort": "medium"
+                    "action": "Review and optimize the hiring process for the **Engineering** department, focusing on the **Lead Software Engineer** role.",
+                    "responsible_role": "**Engineering** Department Head and Recruitment Team",
+                    "expected_impact": "Reduce Time-to-Hire by **30%** within the next **6 weeks**."
                 },
                 {
-                    "action": "Streamline the recruitment process for the Engineering department",
-                    "responsible_role": "Hiring Manager",
-                    "sap_transaction": "Recruitment Process Configuration",
-                    "expected_impact": "Reduce Time-to-Hire by 3-5 days",
-                    "effort": "high"
-                },
-                {
-                    "action": "Provide training to recruitment team on effective sourcing strategies",
-                    "responsible_role": "Recruitment Team",
-                    "sap_transaction": "Recruitment Training",
-                    "expected_impact": "Reduce Time-to-Hire by 2-3 days",
-                    "effort": "low"
+                    "action": "Conduct a market analysis to adjust the expected CTC (**Cust Exp Ctc**) for the **Lead Software Engineer** role to be more competitive.",
+                    "responsible_role": "**HR** and **Finance** Teams",
+                    "expected_impact": "Improve candidate satisfaction and reduce drop-off rates by **25%** within the next **3 months**."
                 }
             ],
             "medium_term_actions": [
-                "Implement a predictive analytics tool to forecast Time-to-Hire and identify areas for improvement",
-                "Develop a comprehensive recruitment strategy that includes diversity and inclusion initiatives"
+                "Develop a strategic recruitment plan to attract more candidates for the **Lead Software Engineer** role through multiple sourcing channels, not just Employee Referral.",
+                "Implement a dashboard to track key hiring metrics, such as Time-to-Hire, for the **Engineering** department and **Lead Software Engineer** role, enabling data-driven decisions."
             ],
             "long_term_actions": [
-                "Implement a Recruitment Marketing platform to improve employer branding and candidate experience",
-                "Develop a succession planning program to reduce the need for external recruitment"
+                "Invest in training and development programs for the recruitment team to enhance their skills in sourcing and attracting top talent for critical roles like **Lead Software Engineer**.",
+                "Review and refine the onboarding process to ensure a smoother transition for new hires, potentially reducing Onboarding Completion Time and improving overall employee satisfaction."
             ],
-            "expected_impact": "Reduce Time-to-Hire by 15-20 days, resulting in a 10-15% decrease in Employee Attrition Rate",
-            "risk_assessment": "If the recommended actions are not implemented, the Time-to-Hire is expected to increase by 5-7 days, leading to a potential increase in Employee Attrition Rate by 5-10%."
+            "expected_impact": "By addressing the primary breach of Time-to-Hire, the organization can expect to reduce the average hiring time by **25%**, leading to faster filling of critical positions, improved candidate experience, and potentially reduced Employee Attrition Rate.",
+            "risk_assessment": "Failure to address the Time-to-Hire breach may result in continued delays in filling critical positions, potentially affecting project timelines, increasing recruitment costs, and impacting business performance.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The primary breach occurred due to a combination of factors, primarily the **Engineering** department's inefficiencies in the hiring process and the less competitive expected CTC for the **Lead Software Engineer** role, causing **47.9%** and **44.4%** of the delay, respectively.",
+                "responsible_parties": "The **Engineering** department, specifically **EMP103514** as the requisition raiser, and **EMP101621** and **EMP104419** as the recruiter and HR partner, respectively, are key stakeholders in addressing the breach.",
+                "affected_records": [
+                    {
+                        "record_id": "**APP701933**",
+                        "reason_for_delay": "Hiring process inefficiencies in the **Engineering** department and less competitive expected CTC.",
+                        "responsible_person": "**EMP103514**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and adjust the hiring process for critical roles to ensure competitiveness and efficiency.",
+                "Conduct market analyses to stay updated on expected CTCs for key positions."
+            ],
+            "future_solutions": [
+                "Implement an AI-powered recruitment tool to streamline the hiring process and improve candidate matching for roles like **Lead Software Engineer**.",
+                "Develop a predictive analytics model to forecast hiring needs and optimize recruitment planning for the **Engineering** department."
+            ]
         }
     },
     {
-        "id": "1785490975.23195",
-        "timestamp": "2026-07-31T15:12:55.231963",
+        "id": "1785771484.844671",
+        "timestamp": "2026-08-03T21:08:04.844682",
         "kpi_name": "Employee Attrition Rate",
         "data": {
-            "executive_summary": "The recent breach in Employee Attrition Rate is primarily driven by a high volume of offboarding cases and inefficiencies within the onboarding process. Historically, attrition has also been correlated with Payroll Error Rates and lengthy Time-to-Hire. Addressing these core issues through targeted improvements in SAP SuccessFactors Recruitment, Onboarding, Employee Central, and Employee Central Payroll will be critical to mitigate immediate churn and foster long-term retention.",
+            "executive_summary": "The primary breach of **Employee Attrition Rate** with a severity of **Warning** and a breach period of **2026-6** is primarily driven by factors such as **Month Start Headcount**, **Hiring Rate**, and **Avg Overtime Hours**. The analysis reveals that **63.4%** of the spike is caused by the **Month Start Headcount**, **20.1%** by the **Hiring Rate**, and **11.5%** by the **Avg Overtime Hours**. To address this breach, it is crucial to implement both immediate and long-term strategies focusing on talent retention, hiring practices, and employee work-life balance.",
             "root_causes": [
-                "A high volume of offboarding cases (75.8% confidence) directly contributes to the increased Employee Attrition Rate, indicating a significant number of employees are voluntarily leaving the organization.",
-                "Prolonged average onboarding days (2.2% confidence) are associated with increased attrition, suggesting a suboptimal new hire experience that leads to early departures.",
-                "The current month exhibits a predicted increase in voluntary terminations (44.26% confidence), highlighting an underlying trend or dissatisfaction within the workforce.",
-                "An increase in the average headcount (12.6% confidence) is linked to increased attrition, which could imply challenges with scaling, integration, or managing growth.",
-                "Historical correlation indicates that higher Payroll Error Rates contribute to employee dissatisfaction and increased attrition.",
-                "Historical correlation indicates that longer Time-to-Hire periods negatively impact existing employee morale and potentially the quality of new hires, indirectly contributing to attrition."
+                "The **Month Start Headcount** of **54** in the **Legal & Compliance** department contributed **63.4%** to the attrition rate spike.",
+                "A **Hiring Rate** of **1.01** in the **Legal & Compliance** department caused **20.1%** of the spike.",
+                "The **Avg Overtime Hours** of **5.8** contributed **11.5%** to the spike.",
+                "Historical correlation with **Time-to-Hire** suggests that inefficiencies in hiring processes might also impact attrition rates.",
+                "Cascading impact on **Offboarding Completion Time** indicates that the breach may lead to further complications if not addressed."
             ],
             "immediate_actions": [
                 {
-                    "action": "Review and optimize the first 30-60 days of the Onboarding 2.0 program. Specifically, identify and remove bottlenecks in task completion, document submission, and IT provisioning that contribute to longer 'ONBOARDING_DAYS_AVG'.",
-                    "responsible_role": "HR Onboarding Specialist, HR Operations Lead",
-                    "sap_transaction": "SuccessFactors Admin Center > Onboarding 2.0 Dashboard > Configure Onboarding",
-                    "expected_impact": "Reduce average onboarding days by 10-15% within the next quarter, improving new hire integration and reducing early turnover risk.",
-                    "effort": "medium"
+                    "action": "Conduct an urgent review of the **Legal & Compliance** department's staffing needs and headcount projections.",
+                    "responsible_role": "Department Manager",
+                    "expected_impact": "Immediate adjustment to staffing levels could reduce attrition pressure by **10%** within the next **2 months**."
                 },
                 {
-                    "action": "Conduct an urgent analysis of all recent voluntary termination exit survey data collected via SuccessFactors Offboarding or integrated survey tools (e.g., Qualtrics). Prioritize identifying common reasons for departure (e.g., compensation, manager relations, career development).",
-                    "responsible_role": "HR Business Partner, Offboarding Specialist",
-                    "sap_transaction": "SuccessFactors Admin Center > Offboarding 2.0 Dashboard > Reports",
-                    "expected_impact": "Pinpoint 2-3 primary immediate drivers of voluntary attrition to inform rapid, targeted interventions within 2 weeks.",
-                    "effort": "low"
+                    "action": "Implement a hiring freeze or slow down hiring processes in affected departments to prevent over-hiring and subsequent layoffs.",
+                    "responsible_role": "HR Department",
+                    "expected_impact": "Reduction in **Hiring Rate** by **15%** within the next quarter, potentially decreasing attrition by **5%**."
                 },
                 {
-                    "action": "Perform a rapid audit of Employee Central Payroll error logs and reported payroll discrepancies for the last 3 months. Immediately resolve any outstanding payroll issues and proactively communicate resolutions to impacted employees.",
-                    "responsible_role": "Payroll Specialist, Payroll Manager",
-                    "sap_transaction": "SAP Employee Central Payroll (reports & error logs), SuccessFactors Employee Central (Pay Statement access)",
-                    "expected_impact": "Reduce payroll-related employee complaints by 20% and prevent further dissatisfaction that could contribute to attrition.",
-                    "effort": "low"
+                    "action": "Monitor and regulate **overtime hours** to prevent burnout, offering support or additional resources where necessary.",
+                    "responsible_role": "Team Leads",
+                    "expected_impact": "Decrease in **Avg Overtime Hours** by **2 hours** per week, potentially improving employee satisfaction by **8%**."
                 }
             ],
             "medium_term_actions": [
-                "Enhance the new hire experience by implementing or strengthening the 'Buddy Program' within SuccessFactors Onboarding 2.0. Ensure buddies are assigned early and trained, and integrate their tasks into the onboarding workflow.",
-                "Develop and implement targeted retention strategies based on detailed exit interview analysis. This could include manager training (via SuccessFactors Learning), reviewing compensation competitiveness (via SuccessFactors Compensation), or developing career pathing tools (via SuccessFactors Succession & Development).",
-                "Streamline recruitment processes to reduce 'Time-to-Hire'. Leverage SuccessFactors Recruiting Analytics to identify bottlenecks, optimize job requisition approval workflows, and enhance the candidate experience through faster communication and feedback loops.",
-                "Implement quarterly new hire pulse surveys (e.g., via Qualtrics integration with SuccessFactors Employee Central) during the first year to proactively identify and address dissatisfaction points before they lead to attrition.",
-                "Review and optimize the Offboarding 2.0 process to ensure consistent data collection from exit interviews and seamless transfer of knowledge and assets, improving the data quality for future attrition analysis."
+                "Develop and implement a comprehensive employee retention strategy focusing on work-life balance, career development, and competitive compensation.",
+                "Review and optimize the hiring process to reduce **Time-to-Hire**, focusing on efficiency and candidate experience."
             ],
             "long_term_actions": [
-                "Develop a proactive attrition prediction model utilizing data from SuccessFactors (e.g., Performance & Goals, Learning, Compensation, Employee Central) to identify employees at high risk of voluntary termination. Implement targeted engagement and development plans for these individuals through SuccessFactors Succession & Development.",
-                "Establish a continuous listening strategy across the employee lifecycle using integrated survey tools (e.g., Qualtrics with SuccessFactors) to gather regular feedback and monitor employee sentiment, allowing for early intervention.",
-                "Conduct a comprehensive review of compensation and benefits competitiveness annually using market data and SuccessFactors Compensation module to ensure packages remain attractive and reduce financial motivations for leaving.",
-                "Invest in leadership development programs via SuccessFactors Learning, focusing on manager effectiveness, coaching skills, and employee engagement, as management quality is a key driver of retention."
+                "Invest in employee engagement and satisfaction surveys to identify and address underlying causes of attrition.",
+                "Implement predictive analytics tools to forecast potential attrition risks and proactively mitigate them."
             ],
-            "expected_impact": "Successful implementation of these recommendations is expected to reduce the Employee Attrition Rate by 10-15% over the next 12-18 months. This will lead to decreased recruitment costs, improved employee morale, enhanced organizational knowledge retention, and a more stable workforce.",
-            "risk_assessment": "Failure to address the root causes immediately carries a high risk of continued attrition, further impacting productivity, team morale, and increasing operational costs. Medium risks include resistance to process changes from various stakeholders and potential data quality challenges. Low risks involve initial resource investment for process optimization and system configuration."
+            "expected_impact": "Implementation of these strategies is expected to reduce the **Employee Attrition Rate** by **15%** within the next **6 months**, with a long-term goal of achieving a **20%** reduction within **12 months**.",
+            "risk_assessment": "Failure to address the primary breach of **Employee Attrition Rate** could lead to increased turnover, decreased employee morale, and potential legal and compliance issues. The cascading impact on **Offboarding Completion Time** may further exacerbate these risks if not promptly mitigated.",
+            "detailed_breach_analysis": {
+                "breach_reason": "The breach in **Employee Attrition Rate** occurred due to a combination of factors including a high **Month Start Headcount**, a **Hiring Rate** that is not aligned with business needs, and excessive **Avg Overtime Hours**. These factors, exacerbated by historical correlations with **Time-to-Hire** and a cascading impact on **Offboarding Completion Time**, contribute to an unsustainable work environment leading to increased attrition.",
+                "responsible_parties": "The **Legal & Compliance** department, with a **Month Start Headcount** of **54**, is primarily affected. The **HR Department** also plays a crucial role in managing hiring rates and implementing retention strategies.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP100001**",
+                        "reason_for_delay": "Excessive **overtime hours** and lack of career development opportunities.",
+                        "responsible_person": "**Team Lead, Legal & Compliance**"
+                    },
+                    {
+                        "record_id": "**EMP100002**",
+                        "reason_for_delay": "Uncompetitive compensation package and poor work-life balance.",
+                        "responsible_person": "**HR Generalist**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly monitor and analyze **Employee Attrition Rate** and its contributing factors to identify potential breaches early.",
+                "Maintain open communication channels with employees to address concerns and implement feedback in a timely manner."
+            ],
+            "future_solutions": [
+                "Implementing **AI-powered HR tools** to predict and prevent attrition by analyzing employee data and market trends.",
+                "Developing a **flexible work arrangement policy** to enhance work-life balance and employee satisfaction."
+            ]
         }
     },
     {
-        "id": "1785490945.318013",
-        "timestamp": "2026-07-31T15:12:25.318025",
+        "id": "1785771427.077614",
+        "timestamp": "2026-08-03T21:07:07.077631",
         "kpi_name": "Offboarding Completion Time",
         "data": {
-            "executive_summary": "The Offboarding Completion Time KPI has breached a 'Warning' severity threshold in June 2025, primarily due to prolonged durations in key offboarding steps: Final Settlement, Asset Return, Access Revocation, and Knowledge Transfer. This delay has a cascading negative impact on the Payroll Error Rate. The incident highlights systemic inefficiencies requiring immediate process optimization, enhanced automation, and improved stakeholder accountability within the SAP SuccessFactors ecosystem.",
+            "executive_summary": "The primary incident of Offboarding Completion Time breach is due to delays in the 'Asset Return', 'Final Settlement', and 'Payroll Clearance' steps, resulting in **6**, **18**, and **11** days of offboarding duration, respectively. This breach has a historical correlation with Onboarding Completion Time. The recommended immediate actions include manual intervention by the HR team for **EMP100001**, **EMP102159**, and **EMP100956**, to expedite the offboarding process and reduce the delay by **45.6%**, **41.7%**, and **5.6%**, respectively.",
             "root_causes": [
-                "Extended duration of the 'Final Settlement' step (35.7% of cause), indicating potential delays in payroll data compilation, approval, or processing for departing employees within Employee Central Payroll.",
-                "Significant delays in the 'Asset Return' process (25.7% of cause), suggesting inadequate tracking, communication, or collection procedures for company assets from exiting personnel.",
-                "Prolonged 'Access Revocation' step (19.2% of cause), pointing to inefficiencies in the timely de-provisioning of system access and credentials across IT systems.",
-                "Ineffective or delayed 'Knowledge Transfer' activities (14.0% of cause), potentially due to a lack of structured handover processes or insufficient manager oversight.",
-                "Underlying lack of comprehensive workflow automation, clear stakeholder Service Level Agreements (SLAs), and manager training contributing to overall offboarding inefficiencies, as evidenced by multiple delayed steps and historical correlation with Onboarding Completion Time."
+                "The predicted offboarding duration was underestimated by **22** days.",
+                "The 'Asset Return' step took **4** days, causing **45.6%** of the delay.",
+                "The 'Final Settlement' step took **4** days, causing **41.7%** of the delay.",
+                "The 'Payroll Clearance' step took **3** days, causing **5.6%** of the delay.",
+                "The HR partner IDs involved are **EMP102714**, **EMP102159**, and **EMP100956**, indicating inconsistent handling of offboarding processes."
             ],
             "immediate_actions": [
                 {
-                    "action": "Conduct an urgent review of all active and upcoming offboarding cases, specifically scrutinizing pending Final Settlements, Asset Returns, and Access Revocations for employees with last working dates in the past or near future. Manually intervene to expedite these tasks.",
-                    "responsible_role": "HR Operations Team Lead, Offboarding Coordinator",
-                    "sap_transaction": "SuccessFactors Offboarding Dashboard (OBX), Employee Central (EC)",
-                    "expected_impact": "Expedite current high-priority offboarding cases, mitigating immediate financial and security risks, and preventing further breaches for already initiated processes. Reduce current step durations by 10-15%.",
-                    "effort": "low"
+                    "action": "Manual intervention by HR to expedite 'Asset Return' step for **EMP100001**",
+                    "responsible_role": "**HR Partner**",
+                    "expected_impact": "**45.6%** reduction in delay"
                 },
                 {
-                    "action": "Payroll and HR teams to cross-validate all termination-related data in Employee Central and Employee Central Payroll for final settlement processing, focusing on accuracy of leave balances, outstanding claims, and deductions to prevent delays and errors.",
-                    "responsible_role": "Payroll Team, HR Operations",
-                    "sap_transaction": "Employee Central (Personal Information, Time Off), Employee Central Payroll (Payroll Control Center)",
-                    "expected_impact": "Significantly reduce the duration of the 'Final Settlement' step and decrease the likelihood of payroll errors for current and imminent terminations.",
-                    "effort": "medium"
+                    "action": "Manual intervention by HR to expedite 'Final Settlement' step for **EMP100001**",
+                    "responsible_role": "**HR Partner**",
+                    "expected_impact": "**41.7%** reduction in delay"
                 },
                 {
-                    "action": "Issue an immediate communication to all managers and relevant IT/Facilities teams, reiterating the criticality and strict adherence to due dates for Asset Return and Access Revocation tasks within the Offboarding 2.0 process in SuccessFactors.",
-                    "responsible_role": "HR Business Partner, HR Operations Lead",
-                    "sap_transaction": "N/A (Communication outside SF, but SF workflows track tasks)",
-                    "expected_impact": "Increase awareness and urgency, potentially shortening 'Asset Return' and 'Access Revocation' durations for currently active offboarding processes.",
-                    "effort": "low"
+                    "action": "Manual intervention by HR to expedite 'Payroll Clearance' step for **EMP100001**",
+                    "responsible_role": "**HR Partner**",
+                    "expected_impact": "**5.6%** reduction in delay"
                 }
             ],
             "medium_term_actions": [
-                "Optimize SuccessFactors Offboarding 2.0 workflows by configuring automated escalation reminders and stricter due dates for 'Asset Return', 'Access Revocation', and 'Knowledge Transfer' tasks assigned to managers, IT, and other stakeholders. Leverage 'Process Variant Manager' for targeted adjustments.",
-                "Enhance integration and automation between Employee Central and Employee Central Payroll for termination processes. Focus on ensuring automatic push of accurate leave payouts, severance, and final deductions from EC to ECP upon termination approval, reducing manual intervention and 'Final Settlement' delays.",
-                "Develop and deploy mandatory training modules for all managers via SuccessFactors Learning, specifically covering their critical roles and responsibilities in the offboarding process, emphasizing 'Knowledge Transfer' execution, timely task completion, and initiation of asset/access requests."
+                "Implement automated reminders for HR partners to ensure timely completion of offboarding steps",
+                "Conduct regular reviews of offboarding processes to identify bottlenecks and areas for improvement"
             ],
             "long_term_actions": [
-                "Implement advanced analytics dashboards using SAP SuccessFactors People Analytics or SAP Analytics Cloud to proactively monitor offboarding step durations, identify emerging bottlenecks, and predict potential breaches. Configure alerts for overdue tasks or cases approaching KPI thresholds.",
-                "Establish and formalize cross-functional Service Level Agreements (SLAs) and Standard Operating Procedures (SOPs) for all offboarding stakeholders (HR, IT, Payroll, Facilities, Managers). This will standardize handoffs and accountabilities, creating a consistent employee lifecycle experience, addressing the historical correlation with Onboarding Completion Time.",
-                "Explore and implement deeper integration between SuccessFactors Offboarding and IT Asset Management systems (e.g., via APIs) to automatically trigger and track asset retrieval requests upon offboarding initiation, drastically reducing manual effort and 'Asset Return' delays."
-            ],
-            "expected_impact": "Successful implementation of these recommendations is projected to reduce the average Offboarding Completion Time by 15-20% within 6-9 months. Concurrently, a significant decrease in Payroll Error Rate associated with terminations is anticipated. This will lead to improved operational efficiency, enhanced data security, better compliance, and a more positive employee exit experience.",
-            "risk_assessment": "Failure to address these root causes carries a High risk of continued extended offboarding times, leading to recurring KPI breaches. This poses a Medium risk to financial compliance (due to payroll errors) and employer brand, and a High risk of potential data security vulnerabilities if access revocation remains delayed. A prolonged inefficient offboarding process also carries a Medium risk of significant knowledge loss for the organization."
-        }
-    },
-    {
-        "id": "1785490097.13475",
-        "timestamp": "2026-07-31T14:58:17.134759",
-        "kpi_name": "Employee Attrition Rate",
-        "data": {
-            "executive_summary": "The organization is currently experiencing a Warning-level breach in its Employee Attrition Rate for April 2024. The primary drivers identified include a significant increase in the volume of offboarding cases, inefficiencies within the onboarding process, and elevated attrition observed during periods of overall headcount growth. This primary breach is historically correlated with a higher Payroll Error Rate and longer Time-to-Hire, indicating systemic issues within the employee experience lifecycle from recruitment to departure. Urgent and sustained interventions are required to stabilize and reduce attrition.",
-            "root_causes": [
-                "High Volume of Offboarding Cases: A substantial increase in the number of offboarding cases per month (identified as 75.8% of the cause) is directly driving the elevated attrition rate. This indicates underlying employee dissatisfaction or systemic issues leading to a higher volume of voluntary terminations.",
-                "Increased Attrition with Headcount Growth: The attrition rate is increasing in correlation with the average headcount (identified as 12.6% of the cause). This suggests potential challenges in managing rapid growth, such as insufficient resources, strained management capacity, or difficulty in integrating new employees effectively within an expanding workforce.",
-                "Ineffective Onboarding Process: A longer average onboarding duration (identified as 2.2% of the cause) is contributing to increased attrition. This points to potential issues in how new hires are integrated, including prolonged administrative processes, inadequate support, or delayed role clarity, leading to early departures. This aligns with the historical correlation with 'Time-to-Hire', indicating early employee experience issues.",
-                "Seasonal Attrition Trend: A correlation with the month number (identified as 4.6% of the cause) suggests a possible seasonal pattern, indicating that attrition tends to be higher earlier in the year. This seasonal effect needs to be understood in the context of the current April breach."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct Targeted Stay Interviews for At-Risk Employees: Identify employees in critical roles or those exhibiting potential flight risks (e.g., recent new hires, employees in high-attrition departments identified from Employee Central data) and proactively conduct 'stay interviews' to understand their concerns and provide immediate support. Prioritize departments with recent high attrition.",
-                    "responsible_role": "HR Business Partner (HRBP), Line Managers",
-                    "sap_transaction": "Utilize SAP SF Employee Central 'Employee Profile' for data review and identify candidates. N/A for interview execution itself.",
-                    "expected_impact": "Immediate identification of specific dissatisfaction points, potentially preventing imminent voluntary terminations and improving morale for at-risk individuals. Could prevent 1-2 departures in the next month.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Review Recent Onboarding Feedback and Data: Immediately analyze feedback from newly onboarded employees (within the last 6 months) using SAP SuccessFactors Onboarding 2.0 pulse surveys, new hire check-ins, and completion reports. Identify common pain points related to process duration, manager support, or clarity of roles/expectations.",
-                    "responsible_role": "HR Operations, Onboarding Specialist",
-                    "sap_transaction": "SAP SF Onboarding 2.0 'Onboarding Dashboard', 'Compliance Reports', 'Employee Review' processes.",
-                    "expected_impact": "Pinpoint specific bottlenecks or dissatisfaction points in the current onboarding journey, enabling rapid adjustments. Could reduce early attrition by 1-2% in the next quarter.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Analyze Recent Exit Interview Data (Past 3-6 Months): Extract and analyze qualitative and quantitative data from exit interviews conducted through SAP SuccessFactors Offboarding. Look for recurring themes, specific managers, departments, or reasons for departure that correlate with the high volume of OFFBOARDING_CASES_MONTH.",
-                    "responsible_role": "HR Analytics, HR Business Partner (HRBP)",
-                    "sap_transaction": "SAP SF Offboarding 'Offboarding Dashboard', 'Exit Survey Reports', 'Employee Central custom reports' for demographic analysis.",
-                    "expected_impact": "Gain immediate insights into the underlying reasons for recent departures, informing targeted retention strategies and addressing critical issues before more employees leave. Could inform specific interventions preventing future attrition.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "Optimize Onboarding Workflows and Content in Onboarding 2.0: Streamline administrative tasks, automate approvals, and enhance content within SAP SuccessFactors Onboarding 2.0 to reduce the 'ONBOARDING_DAYS_AVG'. Focus on improving pre-day 1 activities, ensuring manager enablement, and integrating with other systems (e.g., Employee Central, Learning). Target a 15% reduction in average onboarding days.",
-                "Implement Proactive Retention Campaigns using EC Data: Leverage SAP SuccessFactors Employee Central data (e.g., tenure, performance, compensation history, last promotion date) to identify employee segments at higher risk of attrition. Develop targeted communication and intervention strategies such as personalized career development discussions (Performance & Goals), enhanced recognition programs, or proactive compensation reviews (Compensation module).",
-                "Address Payroll Error Rate (Historical Correlation): While not a primary root cause, proactively review and optimize payroll processes within SAP SuccessFactors Employee Central Payroll. Implement additional validation rules, reconciliation steps, and enhance employee self-service options to reduce error rates, as payroll issues are a known contributor to employee dissatisfaction. Target a 50% reduction in critical payroll errors.",
-                "Enhance Manager Capability for Employee Retention: Develop and deliver targeted training programs for managers (via SAP SuccessFactors Learning) focused on effective onboarding practices, continuous employee engagement, constructive performance feedback, and career development discussions, especially for managers in departments experiencing high attrition or rapid growth.",
-                "Review Headcount Growth Management Strategy: Analyze the patterns of attrition in relation to headcount growth at the department and team level using SAP SuccessFactors Analytics. Develop strategies to ensure adequate HR support, optimal manager-to-employee ratios, and robust cultural integration programs are maintained during periods of rapid expansion."
-            ],
-            "long_term_actions": [
-                "Develop an Integrated Employee Experience Platform: Leverage the full SAP SuccessFactors HXM suite to create a seamless, cohesive employee journey from recruitment (Recruiting), onboarding (Onboarding 2.0), core HR (Employee Central), performance management (Performance & Goals), and learning (Learning). A holistic and consistent employee experience can significantly improve overall retention.",
-                "Implement Advanced Predictive Attrition Analytics: Enhance the existing machine learning model by integrating more diverse data points from Employee Central, Performance & Goals, Learning, and external sentiment data. Develop dynamic dashboards within SuccessFactors Analytics and Reporting to provide real-time, granular insights into attrition risk, enabling highly proactive and data-driven interventions.",
-                "Strengthen Career Development & Internal Mobility Programs: Utilize SAP SuccessFactors Career Development Planning and internal job posting features (Recruiting) to actively promote internal growth opportunities, skill development, and career progression. A robust internal talent marketplace can significantly reduce the desire for employees to seek external opportunities.",
-                "Implement Regular Pulse Surveys & Continuous Listening Programs: Deploy regular (e.g., quarterly) pulse surveys using Qualtrics (integrated with SuccessFactors) or similar tools to continuously monitor employee sentiment, identify early signs of dissatisfaction, and measure the effectiveness of retention initiatives over time. Incorporate feedback loops into HR and business strategy."
-            ],
-            "expected_impact": "Successful implementation of these recommendations is expected to reduce the Employee Attrition Rate by 10-15% within the next 6-12 months. Specifically, streamlining onboarding could reduce early-stage attrition by 5-7%, while targeted retention efforts and improved manager capabilities are anticipated to further reduce voluntary terminations. Addressing the historically correlated Payroll Error Rate will also indirectly contribute to higher employee satisfaction and retention. Overall, improved employee experience will lead to higher engagement, increased productivity, and enhanced organizational stability.",
-            "risk_assessment": "Failure to address the Employee Attrition Rate breach will lead to significant negative consequences, including increased recruitment costs, loss of critical institutional knowledge, decreased team morale, and potential negative impacts on productivity and customer service. The cascading impact on 'Offboarding Completion Time' indicates existing operational strain. Key risks to mitigation include potential resistance to necessary process changes, insufficient allocation of HR bandwidth and budget for new initiatives, and a lack of consistent senior leadership buy-in for long-term strategic investments. Inaccurate or incomplete data across SuccessFactors modules could also hinder effective analysis and intervention efforts."
-        }
-    },
-    {
-        "id": "1785479560.787832",
-        "timestamp": "2026-07-31T12:02:40.787839",
-        "kpi_name": "Payroll Error Rate",
-        "data": {
-            "executive_summary": "The primary breach of Payroll Error Rate in April 2025 was directly caused by 'no_data_found_in_csv_for_payroll_area'. This indicates critical missing or incorrect 'Payroll Area' assignments for employees, preventing successful payroll processing. This issue has a cascading impact, historically correlating with increased Employee Attrition Rate and potential delays in Time-to-Hire due to data synchronization challenges. Immediate and systemic actions are required to correct missing data, prevent future occurrences, and mitigate negative employee experience and retention risks.",
-            "root_causes": [
-                "**Missing 'Payroll Area' Data**: The core issue is the absence of 'Payroll Area' information for certain employees in the data source used for payroll processing. In SAP SuccessFactors Employee Central Payroll, 'Payroll Area' is a mandatory field that defines payroll frequency and grouping for employees. Without it, payroll cannot be executed successfully.",
-                "**Data Inconsistency/Integration Gap**: This suggests a breakdown in the data flow or validation between Employee Central (where employee master data, including Payroll Area, is maintained) and Employee Central Payroll. Either the data was never entered correctly in EC, or it failed to replicate to ECP.",
-                "**Insufficient Data Validation**: A lack of robust validation rules or checks in Employee Central or during the integration process allowed employees to be saved or transferred without the critical 'Payroll Area' field populated.",
-                "**Onboarding/New Hire Process Flaws**: It's possible that during the onboarding or new hire setup process, the 'Payroll Area' is not consistently captured or assigned, leading to issues downstream when the first payroll run occurs. This ties into the 'Time-to-Hire' cascading impact, suggesting recruitment-to-onboarding data handover issues.",
-                "**Historical Correlation with Employee Attrition**: Payroll errors directly impact employee satisfaction and trust. Missing or incorrect pay due to data errors is a significant contributor to employee dissatisfaction and increased attrition, as employees lose confidence in HR operations."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Identify All Affected Employees: Use Payroll Error Logs in Employee Central Payroll or specific reports (e.g., Integration Center logs, Custom Reports) to pinpoint all employees for whom 'Payroll Area' data was missing during the April 2025 payroll run.",
-                    "responsible_role": "Payroll Administrator, HRIS Specialist",
-                    "sap_transaction": "Employee Central Payroll: Payroll Results (PC_PAYRESULT), Payroll Logs; Employee Central: Ad Hoc Reports/Report Center",
-                    "expected_impact": "Pinpoint the exact scope of the problem (number of affected employees).",
-                    "effort": "low"
-                },
-                {
-                    "action": "Correct 'Payroll Area' Data in Employee Central: For all identified employees, manually update their Job Information or Global Assignment records in Employee Central to assign the correct 'Payroll Area'. Ensure data accuracy based on organizational structure and employee contracts.",
-                    "responsible_role": "HR Administrator, HRIS Specialist",
-                    "sap_transaction": "Employee Central: Manage Data (Job Information, Global Assignment)",
-                    "expected_impact": "Corrects the source data for payroll, allowing proper replication.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Force Data Replication to Employee Central Payroll: After updating data in Employee Central, ensure these changes are replicated to Employee Central Payroll immediately. This might involve triggering a specific data replication job or manually synchronizing data for affected employees if necessary.",
-                    "responsible_role": "HRIS Specialist, Payroll Administrator",
-                    "sap_transaction": "Employee Central: Monitor Integrations; Employee Central Payroll: Monitor EC Payroll Replication (for specific users)",
-                    "expected_impact": "Ensures updated data is available in the payroll system for reprocessing.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Perform Off-Cycle Payroll or Recalculation: Execute an off-cycle payroll run or a recalculation for all affected employees to process their pay correctly and disburse any missed or incorrect payments without delay. Prioritize employees with significant pay discrepancies.",
-                    "responsible_role": "Payroll Administrator",
-                    "sap_transaction": "Employee Central Payroll: Payroll Process, Off-Cycle Payroll",
-                    "expected_impact": "Resolves immediate pay discrepancies, mitigating employee dissatisfaction and potential attrition. Reduces the Payroll Error Rate for the specific incident.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "**Implement Mandatory Field Validation in EC**: Configure business rules in Employee Central to make 'Payroll Area' a mandatory field for relevant employee types (e.g., active employees, new hires) in their Job Information. This prevents saving records without this critical data point.",
-                "**Enhance Integration Monitoring and Alerting**: Set up proactive alerts within Integration Center or custom monitoring tools for failed data replications or missing critical payroll fields (like 'Payroll Area') when data flows from EC to ECP. This allows for early detection before payroll runs.",
-                "**Review and Optimize Onboarding Data Collection**: Audit and update the new hire onboarding process within Onboarding 2.0 or via custom forms to ensure 'Payroll Area' is captured accurately and confirmed during the HR/Payroll data handover stage, especially before the first payroll run.",
-                "**Develop Data Quality Reports for Payroll-Critical Fields**: Create recurring scheduled reports in Report Center or Ad Hoc reports that audit the completeness and validity of 'Payroll Area' data across all active employees, allowing HRIS/Payroll to identify gaps proactively.",
-                "**Standardize Payroll Area Assignment Logic**: Document and standardize the logic and criteria for assigning 'Payroll Area' to employees, providing clear guidelines for HR administrators and preventing inconsistent data entry."
-            ],
-            "long_term_actions": [
-                "**Establish a Cross-Functional Data Governance Council**: Form a council with representatives from HR, Payroll, and IT to define data ownership, quality standards, and approval processes for critical HR and payroll master data, including 'Payroll Area'.",
-                "**Automate Pre-Payroll Data Validation Checks**: Implement automated pre-payroll validation reports or tools that run before each payroll cycle, specifically checking for missing or invalid 'Payroll Area' data. This allows for corrections before payroll execution, preventing errors from occurring in the first place.",
-                "**Comprehensive Training for HR/Payroll Teams**: Conduct regular, in-depth training for all HR and Payroll administrators on the importance of data accuracy for payroll-critical fields, the impact of missing data, and proper data entry procedures within Employee Central.",
-                "**Explore Advanced Predictive Analytics for Data Quality**: Implement or leverage existing machine learning models to identify patterns that lead to missing data or integration failures, moving from reactive fixes to proactive prevention of data quality issues.",
-                "**Employee Feedback Loop for Payroll Issues**: Establish a clear and accessible channel for employees to report payroll discrepancies, coupled with a robust tracking and resolution process. Analyzing this feedback can highlight systemic issues and improve overall employee satisfaction, directly impacting attrition rates."
-            ],
-            "expected_impact": "Successful implementation of these recommendations is expected to reduce the Payroll Error Rate by at least 80% within the next 3-6 months by eliminating 'no_data_found_in_csv_for_payroll_area' as a root cause. This will significantly improve the accuracy and timeliness of employee payments, leading to a projected 10-15% reduction in payroll-related employee queries and a positive impact on employee morale. Historically, this will contribute to a 5-10% decrease in the Employee Attrition Rate, improving talent retention. Furthermore, clearer data handovers and validations will streamline the onboarding process, indirectly supporting improved Time-to-Hire metrics by reducing rework for new hires' payroll setup.",
-            "risk_assessment": "Failure to address this primary breach carries significant risks, including sustained high Payroll Error Rates, leading to severe financial penalties for incorrect payments, increased administrative burden for corrections, and a substantial erosion of employee trust. This could directly lead to a surge in Employee Attrition Rate, as unreliable pay is a major driver for employees seeking alternative employment. Operational efficiency will decrease due to constant firefighting. Without a long-term strategy, manual fixes will be temporary, and the problem will recur, amplifying its negative impact on the organization's reputation and financial health. The cascading impacts on Time-to-Hire suggest that persistent data issues can also impair recruitment and onboarding effectiveness, hindering the organization's ability to attract and retain talent."
-        }
-    },
-    {
-        "id": "1785479432.070628",
-        "timestamp": "2026-07-31T12:00:32.070633",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The critical Time-to-Hire breach in May 2025, specifically for an Engineering role sourced via the 'Campus' channel, indicates significant inefficiencies in both recruitment processes and compensation strategy. The 'Campus' channel's average Time-to-Hire of 43 days is slower than the company baseline, and the defined salary range (specifically salaryMax and midpoint) is identified as a major contributor to delays. This issue is compounded by the inherent complexity of hiring within the Engineering department. This primary breach directly cascades into delayed Onboarding Completion and is historically correlated with increased Employee Attrition, highlighting the urgent need for intervention.",
-            "root_causes": [
-                "Inefficient 'Campus' sourcing channel, historically averaging 43 days, which is 1 day slower than the company baseline, indicating specific process bottlenecks within this channel.",
-                "Misalignment or internal approval delays related to the defined salary range (specifically 'salaryMax' and 'SALARY_MIDPOINT'), significantly increasing Time-to-Hire for Engineering roles.",
-                "Prolonged hiring cycles specifically within the Engineering department, suggesting departmental-specific process inefficiencies, high market demand, or unique candidate assessment requirements.",
-                "The specific application (ApplicationId 5024313 for JobReqId 101188) experienced a lengthy 42-day process before the candidate was ultimately rejected, highlighting a potential breakdown in candidate experience or offer conversion."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Review and Optimize Current Campus Sourcing Process for Engineering Roles: Analyze the specific steps and stakeholders involved in campus recruitment for Engineering. Identify and address immediate bottlenecks in interview scheduling, feedback collection, and offer generation for active requisitions.",
-                    "responsible_role": "Recruitment Specialist, University Relations Lead",
-                    "sap_transaction": "SuccessFactors Recruiting: Recruiting Dashboard (for process analysis), Interview Scheduling, Offer Approval Workflow",
-                    "expected_impact": "Immediate identification and resolution of process inefficiencies, potentially reducing Time-to-Hire by 2-5 days for ongoing campus hires.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Expedite Review of Engineering Salary Ranges for Campus Hires: Immediately review and validate the 'salaryMax' and 'SALARY_MIDPOINT' for current and upcoming campus-sourced Engineering roles against real-time market data and internal equity. Engage with Compensation and hiring managers to adjust if necessary or streamline internal approval processes.",
-                    "responsible_role": "Compensation Specialist, Hiring Manager, Recruitment Specialist",
-                    "sap_transaction": "SuccessFactors Compensation (if integrated), SuccessFactors Recruiting (for job requisition updates)",
-                    "expected_impact": "Potential to reduce offer acceptance time and approval delays by 3-7 days per hire, improving competitiveness.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Candidate Re-engagement Strategy for Pending Campus Applications: For similar open Engineering roles sourced via 'Campus', review the pipeline of rated applicants (e.g., 21 rated applicants for the primary incident) who are still active and proactively re-engage top candidates with urgency to prevent further drop-offs.",
-                    "responsible_role": "Recruitment Specialist",
-                    "sap_transaction": "SuccessFactors Recruiting: Candidate Workbench, Candidate Search, Candidate Relationship Management",
-                    "expected_impact": "Potentially fill immediate open requisitions faster with qualified candidates, reducing Time-to-Hire for specific roles by leveraging existing talent pools.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Standardize and Streamline 'Campus' Recruitment Workflow in SuccessFactors: Develop and enforce a dedicated, optimized workflow for 'Campus' hires in SuccessFactors Recruiting, including clear Service Level Agreements (SLAs) for each stage (e.g., 24-hour screening, 48-hour interview feedback, 72-hour offer generation). Leverage Recruiting Posting for efficient job distribution to university career boards and targeted job sites.",
-                "Conduct In-depth Salary Benchmarking for Engineering Roles: Perform a comprehensive market salary analysis for all Engineering roles, particularly at entry-level/campus hire tiers. Ensure defined salary ranges in SuccessFactors are competitive with market rates to attract and retain talent effectively, and update job profiles and compensation structures as needed.",
-                "Process Optimization Workshop for Engineering Hiring: Conduct a cross-functional workshop involving Engineering hiring managers, recruiters, and HR Business Partners to map and optimize the entire Engineering hiring process. Identify and eliminate bottlenecks, especially around technical screening, interview panel coordination, and departmental approvals, utilizing SuccessFactors for interview scheduling automation and offer approval workflows."
-            ],
-            "long_term_actions": [
-                "Implement AI-driven Candidate Matching and Screening for Campus Hires: Explore and implement AI/ML capabilities within SuccessFactors or integrated third-party tools to automate initial screening and matching of 'Campus' candidates to Engineering roles, significantly reducing manual effort and accelerating candidate progression through the pipeline.",
-                "Proactive Talent Pipelining and Relationship Building for Critical Engineering Roles: Establish continuous talent pipelining efforts for high-demand Engineering positions, leveraging SuccessFactors' Candidate Relationship Management (CRM) features. Build ongoing relationships with top 'Campus' talent year-round, extending beyond traditional recruiting seasons.",
-                "Review and Revise Interviewer Training & Feedback Process: Implement standardized interviewer training across the organization, with a focus on efficient, objective assessment and timely feedback submission within SuccessFactors. Ensure Engineering interview panels are well-trained, diverse, and equipped with structured interview guides to assess skills effectively and make swift decisions."
-            ],
-            "expected_impact": "Successful implementation of these recommendations is projected to reduce the average Time-to-Hire for 'Campus' sourced Engineering roles by an estimated 10-15 days within 6-12 months. This will directly improve Onboarding Completion Time by enabling earlier start dates for new hires and significantly reduce the risk of top candidate drop-offs. By achieving faster and more efficient hiring, the organization can better staff critical roles, alleviate workload pressures on existing employees, and positively impact the Employee Attrition Rate by fostering a more stable and supportive work environment.",
-            "risk_assessment": "High: Potential resistance from hiring managers to adopt new process changes or adjust established salary expectations. Medium: Challenges in accurately benchmarking highly specialized or niche Engineering roles' salaries. Low: Technical implementation challenges for SuccessFactors configuration changes. Mitigation will require strong executive sponsorship, transparent communication of KPI impacts, cross-functional collaboration workshops, and phased implementation with pilot programs for new processes."
-        }
-    },
-    {
-        "id": "1785479316.365132",
-        "timestamp": "2026-07-31T11:58:36.365144",
-        "kpi_name": "Onboarding Completion Time",
-        "data": {
-            "executive_summary": "The primary breach in Onboarding Completion Time for October 2023, particularly impacting the Engineering department and DevOps Engineer role, stems primarily from delays in the 'Pre-boarding Documentation' step. This inefficiency is not isolated, as evidenced by a historical correlation with Offboarding Completion Time and a cascading impact on Employee Attrition Rate. Addressing the bottlenecks in documentation and streamlining processes for specific roles and departments are critical to improve new hire experience and retention.",
-            "root_causes": [
-                "**Prolonged 'Pre-boarding Documentation' Step:** This single step is the most significant bottleneck, driving 39.1% of the overall onboarding completion time variance, with individual instances showing step durations up to 5 days. This points to inefficiencies in document collection, submission, or verification.",
-                "**Departmental and Role-Specific Inefficiencies (Engineering/DevOps Engineer):** Onboarding for the Engineering department accounts for 26.3% of the variance, with the 'DevOps Engineer' job role specifically contributing 23.3%. This indicates unique requirements, lack of standardized processes, or slower internal support for these critical technical roles.",
-                "**Pending Document Management Issues:** The 'HAD_DOC_PENDING_FLAG' feature contributed 4.0% to the variance, suggesting that delays often occur due to new hires having outstanding or unsubmitted documents, reinforcing the issue within the pre-boarding documentation phase.",
-                "**Systemic Process Inefficiency:** The historical correlation with Offboarding Completion Time suggests a broader organizational challenge in managing employee lifecycle processes efficiently, potentially due to over-reliance on manual steps, lack of automation, or unclear handoffs across HR functions.",
-                "**Lack of Proactive Monitoring and Intervention:** The system detected a 'Warning' when processes extended to 16 days (vs. predicted 12 days), indicating that while anomalies are identified, there might be a gap in real-time intervention mechanisms to prevent or quickly resolve such delays."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct immediate follow-ups with all active Engineering department new hires (especially DevOps Engineers) and their hiring managers regarding pending 'Pre-boarding Documentation' tasks to expedite completion.",
-                    "responsible_role": "HR Partner, Onboarding Specialist",
-                    "sap_transaction": "SuccessFactors Onboarding 2.0 (To-Do List, Onboarding Dashboard)",
-                    "expected_impact": "Resolve immediate bottlenecks for current new hires, potentially reducing their individual onboarding time by 1-2 days.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Communicate proactively with incoming new hires (Engineering/DevOps) about required pre-boarding documents, providing clear instructions, deadlines, and direct contacts for support to minimize initial delays.",
-                    "responsible_role": "Onboarding Specialist",
-                    "sap_transaction": "SuccessFactors Onboarding 2.0 (Automated or manual email/notification functions)",
-                    "expected_impact": "Reduce initial document submission delays by 0.5-1 day for new candidates, improving their first impression.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Temporarily reallocate an HR operations resource to specifically assist the Engineering department's onboarding process, focusing on quick document review and internal task coordination to clear backlogs.",
-                    "responsible_role": "HR Operations Lead",
-                    "sap_transaction": "N/A (Resource allocation decision)",
-                    "expected_impact": "Alleviate immediate workload pressure on the Engineering HR team, reducing overall completion time for active cases by 1-3 days.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "**Optimize 'Pre-boarding Documentation' Workflow in SF Onboarding 2.0:** Conduct a detailed review of the 'Pre-boarding Documentation' step within SuccessFactors Onboarding. Streamline document requirements, implement e-signature solutions (e.g., DocuSign integration), and configure automated reminders and escalations for overdue tasks to candidates and managers.",
-                "**Develop Department-Specific Onboarding Kits for Engineering:** Create tailored onboarding content, checklists, and manager guides within SuccessFactors Onboarding for the Engineering department, particularly for DevOps Engineer roles. This should clearly outline task dependencies, roles, and expected timelines to ensure manager preparedness and reduce delays.",
-                "**Enhance Manager Onboarding Training & Tools:** Provide targeted training to Engineering hiring managers on their responsibilities within the SuccessFactors Onboarding module, emphasizing the importance of timely task completion and document approvals to maintain onboarding efficiency and improve new hire experience."
-            ],
-            "long_term_actions": [
-                "**Establish Cross-Functional Process Excellence for Employee Lifecycle:** Form a dedicated cross-functional team (HR, IT, Departmental Leads) to holistically review and re-engineer both Onboarding and Offboarding processes. Leverage SuccessFactors Intelligent Services and process automation capabilities to minimize manual touchpoints and ensure a consistent, efficient experience across the employee lifecycle, addressing the historical correlation.",
-                "**Implement Predictive Analytics and Proactive Alerts in SF People Analytics:** Leverage the existing ML models and SuccessFactors People Analytics to establish predictive indicators for potential onboarding delays. Configure custom dashboards and real-time alerts for HR Partners and hiring managers to intervene proactively before a breach occurs, focusing on high-risk departments/roles and steps.",
-                "**Deepen Integration between Recruiting and Onboarding:** Enhance the integration between SuccessFactors Recruiting (Recruitment Management) and Onboarding 2.0 to maximize data pre-population from the application stage, reducing manual data entry, errors, and overall time spent during the pre-boarding phase."
-            ],
-            "expected_impact": "By implementing these recommendations, we anticipate a 15-25% reduction in overall Onboarding Completion Time for the Engineering department, specifically for DevOps Engineer roles. This will lead to a smoother, more engaging new hire experience, mitigating the cascading impact on Employee Attrition Rate by improving early engagement and reducing the likelihood of early departures. Furthermore, a more efficient onboarding process will enhance HR operational efficiency and boost HR's reputation as a strategic business partner.",
-            "risk_assessment": "Potential risks include resistance to process changes from departmental managers or new hires, technical challenges in configuring advanced SuccessFactors functionalities, and resource constraints for implementing and monitoring new processes. Inadequate communication during the transition could lead to initial confusion or delays. Failure to address these root causes could exacerbate the cascading impact on employee attrition and further damage the organization's employer brand."
-        }
-    },
-    {
-        "id": "1785479193.069177",
-        "timestamp": "2026-07-31T11:56:33.069190",
-        "kpi_name": "Employee Attrition Rate",
-        "data": {
-            "executive_summary": "A warning-level breach in Employee Attrition Rate for April 2024 is primarily driven by a significant increase in voluntary terminations and offboarding cases. Key contributing factors include a protracted average onboarding duration, suggesting inefficiencies that can lead to early employee dissatisfaction, and potential strain from overall headcount growth. Historically, this attrition is correlated with a high Payroll Error Rate and extended Time-to-Hire, indicating broader systemic HR operational challenges affecting employee trust and retention. This increase in attrition is also creating a cascading negative impact on Offboarding Completion Time, straining HR resources.",
-            "root_causes": [
-                "Significant increase in voluntary terminations and offboarding cases (75.8% of cause), indicating a heightened rate of employees choosing to leave the organization.",
-                "Protracted average onboarding duration (0.6 value leading to increased attrition), suggesting inefficiencies in the new hire experience that can lead to early dissatisfaction and turnover.",
-                "Challenges in managing overall headcount growth (0.7 value leading to increased attrition), potentially indicating growing pains, overwhelmed support structures, or rapid scaling without adequate support infrastructure.",
-                "Historical correlation with high Payroll Error Rate, suggesting fundamental issues with payroll accuracy that can significantly impact employee trust, satisfaction, and potentially trigger voluntary departures.",
-                "Historical correlation with extended Time-to-Hire, pointing to inefficiencies in the recruitment process that can lead to a negative candidate experience and impact early employee retention."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct an urgent analysis of recent exit interview data (last 6-12 months, especially April's leavers) to identify common themes for voluntary departures and critical 'push' factors. Leverage qualitative insights to pinpoint immediate areas of concern.",
-                    "responsible_role": "HR Business Partner, HR Analyst",
-                    "sap_transaction": "Access Employee Central termination records, review any integrated exit survey tools (e.g., Qualtrics in SF), or custom reports.",
-                    "expected_impact": "Identify 1-2 immediate, high-impact drivers of attrition within 2 weeks, enabling targeted communication or initial interventions.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Review the current onboarding workflow within SAP SuccessFactors Onboarding 2.0. Identify immediate bottlenecks in task completion, stakeholder handoffs, or resource provisioning (e.g., IT equipment, system access) that contribute to the protracted average onboarding days.",
-                    "responsible_role": "Onboarding Specialist, HR Operations Lead",
-                    "sap_transaction": "Review Onboarding 2.0 Process Flows, Task Status Reports, and New Hire Activity dashboards.",
-                    "expected_impact": "Identify and resolve at least one major onboarding bottleneck within 1-2 weeks, potentially reducing average onboarding time by 5-10%.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Perform an audit of payroll accuracy for all employees who voluntarily terminated in the last 3-6 months. Specifically check for any unresolved payroll tickets, delayed payments, or incorrect deductions identified prior to their departure.",
-                    "responsible_role": "Payroll Specialist, HR Business Partner",
-                    "sap_transaction": "Utilize Employee Central Payroll (ECP) reports, Payroll Results, and support ticket systems.",
-                    "expected_impact": "Determine if payroll errors are a direct contributing factor to recent attrition for specific cases, informing communication strategies and immediate remediation.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "**Enhance Onboarding Experience with SF Onboarding 2.0:** Optimize and automate key steps in the SAP SuccessFactors Onboarding 2.0 workflow. Implement pre-day 1 activities, automate system access requests (IT integration), streamline form completion via e-signatures, and auto-assign mandatory learning courses through LMS integration. Focus on guided experiences and manager checklists to reduce manual effort and improve consistency. *Expected Impact: 15-20% reduction in average onboarding days, improving new hire satisfaction and potentially reducing early attrition by 5-10% within 3-6 months.*",
-                "**Implement Robust Exit Management & Feedback Loop:** Develop a standardized and digitalized exit interview process within SAP SuccessFactors (e.g., via Surveys functionality or integration with Qualtrics). Ensure consistent data capture on reasons for leaving, manager effectiveness, and organizational culture. Establish a quarterly review process for HR leadership to analyze trends and formulate actionable responses. *Expected Impact: Comprehensive data-driven insights into attrition root causes, informing targeted retention strategies and policy adjustments within 6 months.*",
-                "**Optimize Recruitment Process to Reduce Time-to-Hire:** Analyze the full recruitment lifecycle within SAP SuccessFactors Recruiting. Identify and eliminate bottlenecks in job requisition approvals, interview scheduling, candidate screening, and offer letter generation. Implement automated communication to candidates and ensure faster feedback loops to improve candidate experience. *Expected Impact: 10-15% reduction in average Time-to-Hire, leading to better candidate conversion and improved new hire engagement.*",
-                "**Conduct Comprehensive Payroll System Audit & Process Improvement:** Engage an SAP SuccessFactors Employee Central Payroll (ECP) expert to perform a thorough audit of the payroll configuration, integration with Employee Central, and associated processes. Address any identified systemic issues contributing to the high Payroll Error Rate through configuration adjustments, validation rules, and enhanced data integration. Implement training for payroll specialists. *Expected Impact: 20-30% reduction in payroll errors, significantly increasing employee trust and reducing a key source of dissatisfaction within 6-9 months.*"
-            ],
-            "long_term_actions": [
-                "**Develop a Proactive Retention Strategy using Predictive Analytics:** Leverage SAP SuccessFactors Workforce Analytics and Planning capabilities (or integrated third-party tools) to build and refine predictive models identifying employees at high risk of attrition. Equip HR Business Partners with dashboards and alerts to proactively intervene with targeted retention initiatives such as career development plans, mentorship programs, or role enrichment. *Expected Impact: Sustained 5-10% reduction in voluntary attrition through early identification and targeted interventions.*",
-                "**Implement a Continuous Employee Listening Strategy:** Deploy regular, short pulse surveys via SAP SuccessFactors Surveys or integrated Qualtrics to continuously gauge employee satisfaction, engagement drivers, and sentiment across key organizational dimensions. Establish clear feedback channels and ensure results are reviewed regularly by leadership to drive proactive HR interventions and policy changes. *Expected Impact: Real-time insights into employee sentiment, enabling early detection of potential attrition risks and fostering a more responsive organizational culture.*",
-                "**Strengthen Manager Capabilities in Employee Retention:** Develop and implement training programs for managers focusing on critical retention skills such as effective 1:1s, career development discussions, recognition strategies, and identifying early signs of disengagement. Integrate retention metrics into manager performance reviews and provide tools (e.g., stay interview guides) within SAP SuccessFactors Performance & Goals. *Expected Impact: Empowered managers acting as frontline retention agents, fostering a more engaged workforce and contributing to long-term attrition reduction.*"
-            ],
-            "expected_impact": "By implementing these prescriptive recommendations, we anticipate a significant reduction in the Employee Attrition Rate, aiming for a **10-15% decrease within the next 6-12 months**, with sustained improvements thereafter. This will lead to reduced recruitment and training costs, enhanced employee morale, improved productivity, and a more stable workforce. Furthermore, a substantial decrease in the Payroll Error Rate and Time-to-Hire is expected, improving overall HR operational efficiency and the employee lifecycle experience.",
-            "risk_assessment": "Failure to address this attrition breach will likely lead to escalating costs associated with recruitment and training, decreased institutional knowledge, and potential damage to the employer brand. The continued strain on offboarding processes due to high volume will exacerbate operational inefficiencies. There is a medium risk of resistance to change during process optimizations and a need for strong change management. Ensuring data accuracy within SuccessFactors is critical for the effectiveness of all analytical and prescriptive actions."
-        }
-    },
-    {
-        "id": "1785227481.931891",
-        "timestamp": "2026-07-28T14:01:21.931911",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The Time-to-Hire KPI has breached a 'Warning' severity for July 2025, primarily driven by a significant decrease in offer acceptance rates across both the quarter and specific month. This indicates challenges in converting qualified candidates into accepted offers, likely due to competitive compensation, candidate experience, or offer negotiation issues. This primary breach has a cascading impact on Onboarding Completion Time and is historically correlated with increased Employee Attrition Rate, highlighting systemic issues in talent attraction and retention.",
-            "root_causes": [
-                "Significant decrease in offer acceptance rates during Q3 and specifically in July 2025 (ACCEPT_QUARTER and ACCEPT_MONTH anomalies), indicating challenges in converting candidates at the offer stage.",
-                "A decreased anomaly in OPENINGS_LOG suggests a potential slowdown in new job postings or a reduced focus on accelerating existing openings, which could contribute to a prolonged Time-to-Hire for available roles.",
-                "Potential issues with compensation competitiveness, benefits packages, or overall candidate value proposition leading to offer rejections.",
-                "Inefficient offer negotiation processes or delays in offer generation and approval workflows within the recruitment lifecycle.",
-                "Historical correlation with Employee Attrition Rate suggests deeper issues with employer branding, employee value proposition, or market competitiveness impacting both attraction and retention."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct an urgent review of all offers extended and rejected in July 2025 (and late Q2) to identify common themes for rejection (e.g., compensation, benefits, start date, competing offers).",
-                    "responsible_role": "Recruitment Lead, Talent Acquisition Specialist",
-                    "sap_transaction": "SuccessFactors Recruiting > Offers tab > Offer Approvals / Offer Details. Generate custom reports on offer status and rejection reasons.",
-                    "expected_impact": "Immediate identification of specific pain points in offer rejections, allowing for tactical adjustments in current negotiations.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Empower Talent Acquisition Specialists with clear guidelines and a defined escalation path for competitive offer situations, ensuring quick responses to candidate counter-offers or concerns.",
-                    "responsible_role": "Recruitment Lead, HR Business Partner",
-                    "sap_transaction": "SuccessFactors Recruiting > Offer Management (ensure flexible fields for negotiation notes).",
-                    "expected_impact": "Reduce decision-making delays at the offer stage, potentially increasing acceptance rates by 5-10% for active requisitions.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Prioritize and expedite offer approval workflows for critical roles in SuccessFactors Recruiting, leveraging 'route map' functionality to minimize bottlenecks.",
-                    "responsible_role": "Recruitment Operations, Hiring Managers",
-                    "sap_transaction": "SuccessFactors Admin Center > Manage Recruiting Settings > Offer Approvals / Route Maps.",
-                    "expected_impact": "Reduce offer approval time by 2-3 business days, improving candidate experience and reducing the window for competing offers.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement a structured 'offer feedback' mechanism in SuccessFactors Recruiting (e.g., automated survey via Qualtrics integration or custom field) for candidates who decline offers, to gather specific insights on reasons for rejection.",
-                "Review and benchmark current compensation and benefits packages against market data for key roles, ensuring competitiveness. Adjust compensation ranges in SuccessFactors Employee Central and Recruiting accordingly.",
-                "Provide targeted training to Hiring Managers and Talent Acquisition Specialists on effective candidate negotiation, selling the Employee Value Proposition (EVP), and creating a positive candidate experience throughout the offer stage.",
-                "Optimize job descriptions in SuccessFactors Recruiting to clearly articulate career growth opportunities and unique benefits, making positions more attractive to potential candidates.",
-                "Analyze candidate drop-off points within the SuccessFactors Recruiting funnel analytics to identify other pre-offer stages that might contribute to overall Time-to-Hire."
-            ],
-            "long_term_actions": [
-                "Develop a robust talent pipeline strategy using SuccessFactors Recruiting Marketing (RMK) to proactively engage with qualified candidates, reducing reliance on reactive hiring and shortening time-to-fill for critical roles.",
-                "Conduct a comprehensive review of the entire recruitment lifecycle in SuccessFactors Recruiting, from requisition creation to onboarding, identifying and automating manual steps to enhance efficiency and reduce overall Time-to-Hire.",
-                "Address the historical correlation with Employee Attrition Rate by investing in employer branding initiatives and enhancing the overall Employee Value Proposition, leveraging SuccessFactors Career Site Builder and internal communication tools.",
-                "Leverage SuccessFactors Analytics and People Analytics to predict offer acceptance probability based on candidate profile, market data, and offer package, enabling data-driven offer strategies.",
-                "Implement a continuous feedback loop between Recruitment, Compensation, and Business Units to ensure agile adjustments to hiring strategies and compensation structures in response to market changes."
-            ],
-            "expected_impact": "Successfully addressing these root causes is expected to reduce Time-to-Hire by 15-20% within 6-12 months. This will directly improve offer acceptance rates, alleviate the cascading impact on Onboarding Completion Time, and contribute positively to overall talent acquisition efficiency and employee retention, mitigating the historical correlation with Employee Attrition Rate.",
-            "risk_assessment": "Failure to address the Time-to-Hire breach will lead to increased Cost-Per-Hire, loss of top talent to competitors, extended vacancies impacting business productivity, and potential burnout within the recruitment team. It will also exacerbate the cascading impact on Onboarding Completion Time, leading to slower new hire productivity and potentially increasing the Employee Attrition Rate further. Overly aggressive compensation adjustments without market justification could lead to increased labor costs and internal equity issues."
-        }
-    },
-    {
-        "id": "1785227312.552559",
-        "timestamp": "2026-07-28T13:58:32.552585",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach of Time-to-Hire is caused by decreased anomalies in ACCEPT_QUARTER, OPENINGS_LOG, and ACCEPT_MONTH. This breach is correlated with Employee Attrition Rate. Immediate actions will focus on monitoring and adjusting these metrics, while medium and long-term actions will focus on process improvements and system configurations.",
-            "root_causes": [
-                "Decreased anomaly in ACCEPT_QUARTER (14.6% of cause)",
-                "Decreased anomaly in OPENINGS_LOG (13.7% of cause)",
-                "Decreased anomaly in ACCEPT_MONTH (11.9% of cause)",
-                "Historical correlation with Employee Attrition Rate",
-                "Isolation forest anomaly flag set to True"
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Monitor and adjust ACCEPT_QUARTER metrics",
-                    "responsible_role": "Recruitment Manager",
-                    "sap_transaction": "Recruitment Management -> Job Posting",
-                    "expected_impact": "5% reduction in Time-to-Hire",
-                    "effort": "low"
-                },
-                {
-                    "action": "Review and optimize OPENINGS_LOG",
-                    "responsible_role": "HR Operations",
-                    "sap_transaction": "Employee Central -> Job Management",
-                    "expected_impact": "3% reduction in Time-to-Hire",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Analyze and adjust ACCEPT_MONTH metrics",
-                    "responsible_role": "Recruitment Analytics",
-                    "sap_transaction": "Recruitment Analytics -> Reporting",
-                    "expected_impact": "2% reduction in Time-to-Hire",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement automation in recruitment processes using SAP SuccessFactors Recruitment Management",
-                "Develop a dashboard to track key recruitment metrics, including Time-to-Hire and Employee Attrition Rate",
-                "Conduct regular review and analysis of recruitment data to identify areas for improvement"
-            ],
-            "long_term_actions": [
-                "Develop a strategic recruitment plan to reduce Time-to-Hire and improve Employee Attrition Rate",
-                "Implement a candidate experience management system to enhance the recruitment process",
-                "Consider integrating AI-powered recruitment tools to streamline the recruitment process"
-            ],
-            "expected_impact": "20% reduction in Time-to-Hire and 10% reduction in Employee Attrition Rate within the next 6 months",
-            "risk_assessment": "Medium risk of continued breach if immediate and medium-term actions are not taken. High risk of further increase in Employee Attrition Rate if root causes are not addressed."
-        }
-    },
-    {
-        "id": "1785227151.587142",
-        "timestamp": "2026-07-28T13:55:51.587165",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The critical breach in Time-to-Hire for December 2024 is primarily driven by a significant 'DECREASED anomaly' in offer acceptance rates during Q4 2024, particularly in December. This indicates substantial challenges in closing candidates, likely stemming from issues related to offer competitiveness, candidate experience in the final stages of recruitment, or inefficient internal offer approval processes. This primary breach is also observed to have a cascading negative impact on Onboarding Completion Time and is historically correlated with an increased Employee Attrition Rate. Urgent and targeted interventions are required to address the offer acceptance bottlenecks.",
-            "root_causes": [
-                "A significant 'DECREASED anomaly' in ACCEPT_QUARTER (Q4 2024) and ACCEPT_MONTH (December 2024) indicates a substantially lower or slower rate of offer acceptances during this critical period, directly prolonging Time-to-Hire.",
-                "Ineffective offer closing strategies or uncompetitive offers led to candidates declining or delaying acceptance, suggesting a gap in market competitiveness or negotiation effectiveness.",
-                "Potential systemic delays in the final stages of the recruitment process, such as prolonged offer approval workflows or generation of formal offer letters, contributed to extended Time-to-Hire.",
-                "Implied recruiter capability gaps in advanced negotiation and candidate relationship management during the offer stage may have impacted the ability to secure acceptances.",
-                "Increased market competition for talent or shifts in candidate expectations may have made it harder to secure acceptances during Q4 2024, leading to candidates accepting offers from other organizations."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct an urgent review of all currently pending offers from Q4 2024 and early Q1 2025. Recruiters must immediately follow up with candidates to understand reasons for any delays or non-acceptance (e.g., compensation, benefits, start date, other offers).",
-                    "responsible_role": "Recruitment Team (Recruiters, Recruitment Manager)",
-                    "sap_transaction": "SAP SF Recruiting Management (RCM) - 'Manage Job Requisitions', 'Candidate Workbench' to review offer status and candidate notes.",
-                    "expected_impact": "Immediate insights into candidate specific concerns, enabling quick adjustments and potential closures for high-priority roles. Aims to close 5-10% of pending offers within 1 week.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Implement an expedited offer approval process for all critical and high-priority roles. This involves temporarily streamlining approval workflows, reducing approval steps, and enforcing stricter SLAs for approvers.",
-                    "responsible_role": "HR Business Partners, Compensation Team, Hiring Managers, HRIS Team",
-                    "sap_transaction": "SAP SF Recruiting Management (RCM) - Temporarily modify offer approval workflow configurations, or use manual escalation paths outside the system.",
-                    "expected_impact": "Reduce time from verbal offer to formal offer letter delivery by 25-30% for critical roles, directly impacting Time-to-Hire for these positions.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Perform a rapid analysis of compensation and benefits packages for recently rejected offers or offers with delayed responses against current market benchmarks and internal pay equity data.",
-                    "responsible_role": "Compensation Analyst, Recruitment Manager",
-                    "sap_transaction": "SAP SF Compensation module (if integrated for benchmarking) or review data from external market intelligence tools.",
-                    "expected_impact": "Identify immediate areas where offers may be uncompetitive and propose adjustments for critical roles, preventing further rejections.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "Optimize the standard offer approval workflows within SAP SF Recruiting Management (RCM) by identifying and eliminating bottlenecks, enabling parallel approvals, and configuring automated reminders for approvers to reduce average approval time by 20-30%.",
-                "Provide targeted training for recruiters on advanced negotiation techniques, effectively articulating the company's value proposition, and managing candidate expectations and objections to improve offer acceptance rates by 5-10%.",
-                "Develop and implement a proactive candidate nurturing program using SAP SF Candidate Relationship Management (CRM) functionalities or enhanced manual outreach during the offer stage, ensuring consistent communication and support to reduce candidate drop-offs by 15-20%."
-            ],
-            "long_term_actions": [
-                "Enhance SAP SF Recruiting Analytics and reporting capabilities to create dashboards that track offer acceptance rates by recruiter, department, job family, and compensation band, enabling proactive identification of declining trends and informed decision-making.",
-                "Implement a continuous strategic compensation benchmarking process, integrating robust market salary data feeds into SAP SF Compensation, to ensure long-term offer competitiveness and regularly adjust salary ranges based on market dynamics.",
-                "Develop and roll out a holistic candidate experience program across the entire recruitment lifecycle, from application to pre-onboarding. Leveraging SAP SF CRM, this will foster stronger candidate relationships and enhance the employer brand, leading to higher quality hires and improved acceptance rates."
-            ],
-            "expected_impact": "By systematically addressing the identified root causes, the organization can expect to significantly reduce Time-to-Hire by 15-25% within the next 6-12 months. This will lead to a corresponding improvement in Onboarding Completion Time by facilitating smoother transitions and a reduction in Employee Attrition Rate through faster filling of critical roles, alleviating workload pressures on existing employees, and securing better-fit talent.",
-            "risk_assessment": "Failure to promptly address the offer acceptance and approval process bottlenecks poses a high risk, perpetuating critical vacancies, increasing talent acquisition costs, and further escalating Employee Attrition. There is a medium risk of resistance from hiring managers or approvers to process changes, necessitating robust change management. Low risk factors include continuous market fluctuations in talent availability and compensation expectations, requiring ongoing monitoring and agile adjustments."
-        }
-    },
-    {
-        "id": "1785223541.696007",
-        "timestamp": "2026-07-28T12:55:41.696026",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "Time-to-Hire experienced a 'Warning' level breach in July 2025, primarily driven by a lower-than-expected rate of offer acceptances and inefficiencies in the processing of new job requisitions. This breach is causing a cascading impact on Onboarding Completion Time and historically correlates with increased Employee Attrition Rate, highlighting systemic issues in the recruitment and candidate conversion pipeline. Immediate and strategic interventions are required to restore hiring efficiency and mitigate broader HR impacts.",
-            "root_causes": [
-                "**Lower Offer Acceptance Rates:** A significant decrease in the number of accepted offers during Q3 and specifically July (ACCEPT_QUARTER, ACCEPT_MONTH decreased anomalies) directly extended the Time-to-Hire, suggesting issues with offer competitiveness, candidate experience, or talent attraction.",
-                "**Inefficient Requisition Processing:** A slowdown in the rate at which new job requisitions are initiated, approved, and moved into the active recruitment pipeline (OPENINGS_LOG decreased anomaly) is delaying the commencement of the hiring process for critical roles.",
-                "**Weakened Candidate Engagement & Pipeline Management:** The persistent challenge in converting candidates to accepted offers points to potential gaps in candidate relationship management, talent pooling, or the suitability of candidates progressed to the offer stage.",
-                "**Reactive Hiring Practices:** A potential over-reliance on reactive talent acquisition rather than proactive sourcing and pipeline nurturing might be contributing to extended search times when critical roles become open.",
-                "**Cascading Impact on Onboarding:** Delays in the recruitment cycle directly translate to slower onboarding starts, impacting the overall employee experience and time-to-productivity for new hires."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct an urgent review of all pending offers from Q3 2025, particularly July, to identify bottlenecks, re-engage candidates, and understand reasons for any recent offer rejections. Prioritize follow-ups with high-priority candidates.",
-                    "responsible_role": "Recruitment Lead, Hiring Managers",
-                    "sap_transaction": "SF Recruiting Module (Offer Approvals/Status)",
-                    "expected_impact": "Immediately identify and convert 5-10% of pending offers, reducing Time-to-Hire for specific roles.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Expedite approval processes for all currently pending job requisitions in the system. Identify system administrators to manually push through any stuck requisitions and alert hiring managers to promptly complete their approval steps.",
-                    "responsible_role": "Recruitment Operations, HRIT Support",
-                    "sap_transaction": "SF Recruiting Module (Requisition Workflow/Approvals)",
-                    "expected_impact": "Accelerate the start of 10-15% of new requisitions, indirectly shortening Time-to-Hire by initiating searches earlier.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Initiate rapid feedback loops with recently declined candidates through short surveys or quick calls to gather insights on offer competitiveness (compensation, benefits) and the overall candidate experience during the interview and offer stages.",
-                    "responsible_role": "Recruiters, Recruitment Lead",
-                    "sap_transaction": "SF Recruiting Module (Candidate Communication, Feedback Forms)",
-                    "expected_impact": "Gather critical insights within 1-2 weeks to inform offer strategy and process improvements.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "**Optimize Offer Management Workflow (SF Recruiting):** Streamline and automate the offer creation, approval, and delivery process within SAP SuccessFactors Recruiting. Implement standardized offer letter templates and digital signatures to reduce manual steps and delays. Review approval matrices for efficiency.",
-                "**Enhance Candidate Relationship Management (CRM):** Leverage SAP SuccessFactors CRM capabilities to proactively nurture talent pools, maintain consistent communication with silver medalist candidates, and pre-qualify candidates to reduce offer rejection rates.",
-                "**Review Compensation & Benefits Benchmarking:** Conduct a comprehensive review of compensation packages and benefits against current market data for critical roles with high Time-to-Hire. Adjust compensation strategies to ensure competitiveness.",
-                "**Audit Requisition-to-Post Process:** Perform a detailed audit of the entire job requisition approval and posting workflow in SF Recruiting. Identify and eliminate bottlenecks, redundant approval steps, and manual handoffs contributing to delays (e.g., automated routing, clearer approval escalation paths).",
-                "**Recruiter Training on Offer Negotiation & EVP:** Provide targeted training to recruiters on effective offer negotiation techniques, objection handling, and articulating the company's Employee Value Proposition (EVP) to improve offer acceptance rates."
-            ],
-            "long_term_actions": [
-                "**Integrate Strategic Workforce Planning:** Align recruitment planning with strategic workforce planning within SAP SuccessFactors Succession & Development and Workforce Planning modules to anticipate talent needs and build evergreen talent pipelines proactively, reducing the need for reactive hiring.",
-                "**Automate & Optimize Recruitment Workflows:** Fully automate routine recruitment tasks and workflows (e.g., candidate screening, interview scheduling, feedback collection) using SAP SuccessFactors Recruiting functionality to increase efficiency and reduce manual effort.",
-                "**Implement Advanced Recruitment Analytics:** Enhance reporting and dashboard capabilities within SF Recruiting to continuously monitor Time-to-Hire breakdown by stage, recruiter performance, offer acceptance rates by department/role, and candidate source effectiveness, enabling data-driven continuous improvement.",
-                "**Strengthen Employer Branding & Career Site:** Invest in enhancing the company's employer brand and optimize the SAP SuccessFactors Career Site Builder to provide an engaging and informative experience for candidates, attracting high-quality applicants and improving conversion rates.",
-                "**Seamless Recruitment-Onboarding Integration:** Ensure complete, seamless data transfer and process handoff between SAP SuccessFactors Recruiting and Onboarding modules to eliminate manual data entry, reduce onboarding completion time, and provide a superior new hire experience."
-            ],
-            "expected_impact": "Implementation of these recommendations is projected to reduce the Time-to-Hire KPI by 15-20% within 6 months, leading to a 10-15% increase in offer acceptance rates. This will consequently alleviate the cascading impact on Onboarding Completion Time and contribute to a healthier talent pipeline, potentially mitigating the historical correlation with Employee Attrition Rate in the long run by ensuring faster role fulfillment and improved candidate experience.",
-            "risk_assessment": "Medium: Key risks include potential resistance from hiring managers to process changes or faster approval cycles, insufficient budget allocation for compensation adjustments, and challenges in user adoption of new SF functionalities. Failure to address these could limit the effectiveness of recommended solutions and perpetuate high Time-to-Hire, exacerbating talent shortages and increasing attrition risks."
-        }
-    },
-    {
-        "id": "1785223344.175988",
-        "timestamp": "2026-07-28T12:52:24.176012",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach in Time-to-Hire during July 2025 (Q3) indicates significant bottlenecks in the recruitment process, primarily driven by a lower-than-expected number of accepted offers and potential inefficiencies in managing job openings. This directly contributes to increased Time-to-Hire and has a cascading impact on Onboarding Completion Time. Historically, prolonged Time-to-Hire correlates with higher Employee Attrition Rates, suggesting a need for urgent and strategic intervention to prevent further organizational impact.",
-            "root_causes": [
-                "Significantly lower-than-expected candidate offer acceptance rates in July 2025 (Q3), indicating potential issues with offer competitiveness, candidate experience, or alternative opportunities.",
-                "A decreased anomaly in 'OPENINGS_LOG' suggests potential inefficiencies or a slowdown in the logging, creation, or processing of new job requisitions, or a mismatch in the management of the existing pipeline, contributing to extended time-to-fill.",
-                "Overall recruitment process bottlenecks leading to extended time-to-fill for open positions during the specified period.",
-                "A general anomaly detected by Isolation Forest, pointing to unusual behavior in the Time-to-Hire KPI during the period."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct an urgent review of all open requisitions in SAP SuccessFactors Recruiting from Q3 2025 (especially July hires). Identify specific bottlenecks such as stalled candidate stages, pending internal approvals, or offers in 'awaiting candidate response' status. Prioritize critical roles for immediate intervention.",
-                    "responsible_role": "Recruitment Lead, Hiring Managers",
-                    "sap_transaction": "SAP SF Recruiting Management (Job Requisition Overview, Candidate Workbench)",
-                    "expected_impact": "Immediate identification and unblocking of critical requisitions, potentially leading to quick hires for candidates currently in the advanced stages of the pipeline. Aim for a 5-10% reduction in cycle time for identified bottlenecks.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Analyze offer decline reasons for Q3 (July) using SAP SuccessFactors Recruiting Analytics. If not already tracked, implement a mandatory field or a post-decline survey within SF Recruiting to capture specific reasons (e.g., compensation, benefits, counter-offers, long hiring process).",
-                    "responsible_role": "Recruitment Analyst, HRIS Specialist",
-                    "sap_transaction": "SAP SF Recruiting Analytics (Reports/Dashboards), Recruiting Management (Offer Detail configuration)",
-                    "expected_impact": "Provide data-driven insights into offer competitiveness and candidate expectations, enabling prompt adjustments to compensation strategy or candidate engagement tactics. Reduce offer decline rate by 2-3% in the short term.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Expedite all pending offer approvals and candidate communications. Set and enforce strict internal Service Level Agreements (SLAs) for offer generation and communication turnaround times within SAP SF Recruiting workflows.",
-                    "responsible_role": "Recruiters, HR Business Partners, Approving Managers",
-                    "sap_transaction": "SAP SF Recruiting Management (Offer Approval Workflow, Candidate Communication functionality)",
-                    "expected_impact": "Reduced offer acceptance time for candidates currently in the offer stage, improving the overall offer acceptance rate and potentially decreasing Time-to-Hire by 1-2 days per affected offer.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Optimize offer approval workflows within SAP SuccessFactors Recruiting by identifying and eliminating unnecessary steps, reducing the number of approvers for specific roles, and leveraging mobile approval capabilities. Implement automated reminders for pending approvals.",
-                "Enhance the candidate experience by utilizing SAP SuccessFactors Recruiting's Candidate Relationship Management (CRM) tools to provide more timely and personalized updates. Ensure seamless transition workflows from offer acceptance to the SAP SuccessFactors Onboarding module.",
-                "Review recruiter workload and capacity against current requisition volumes using SAP SuccessFactors Recruiting dashboards. Reallocate resources or provide temporary support to overloaded recruiters for critical or hard-to-fill roles to prevent future bottlenecks.",
-                "Leverage SAP SuccessFactors Recruiting Marketing (RMK) for more targeted sourcing campaigns. Analyze campaign performance to attract higher quality and quantity of applicants, building a stronger pipeline and reducing reliance on reactive hiring for recurring roles."
-            ],
-            "long_term_actions": [
-                "Implement proactive talent pooling strategies within SAP SuccessFactors Recruiting and CRM. Build evergreen requisitions for critical and high-attrition roles, nurturing relationships with potential candidates to shorten future Time-to-Hire.",
-                "Integrate recruitment planning with strategic workforce planning (SWP) in SAP SuccessFactors Employee Central. Develop predictive models (potentially within SAP SuccessFactors People Analytics) to forecast future talent needs based on business strategy and historical Employee Attrition Rates.",
-                "Conduct a comprehensive audit and re-engineering of the end-to-end recruitment process within SAP SuccessFactors. Identify and automate manual or inefficient stages, leveraging features like AI-driven candidate matching and automated interview scheduling where applicable.",
-                "Establish continuous monitoring and advanced analytics using SAP SuccessFactors People Analytics to track Time-to-Hire and related KPIs. Implement early warning systems to detect potential breaches and their root causes proactively, allowing for pre-emptive intervention."
-            ],
-            "expected_impact": "Implementing these recommendations is expected to reduce the average Time-to-Hire by 15-20% within 6-12 months, primarily by improving offer acceptance rates, streamlining internal approval processes, and enhancing overall recruitment efficiency. This will indirectly contribute to a reduction in the Employee Attrition Rate by ensuring critical roles are filled faster and improving candidate experience, and significantly mitigate the cascading impact on Onboarding Completion Time.",
-            "risk_assessment": "Failure to address the Time-to-Hire breach promptly carries a high risk of continued operational disruption, increased workload for existing staff (contributing to higher attrition), a negative impact on employer brand due to poor candidate experience, and potential loss of top talent to competitors. Persistent delays could also lead to a further increase in the Employee Attrition Rate, creating a vicious cycle of talent shortages and extended hiring timelines."
-        }
-    },
-    {
-        "id": "1785218574.715992",
-        "timestamp": "2026-07-28T11:32:54.716017",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach of Time-to-Hire is caused by multiple factors, including isolation forest anomaly flag, OPENINGS_LOG, ACCEPT_QUARTER, and ACCEPT_MONTH. The breach has a cascading impact on Onboarding Completion Time. To address this issue, immediate actions include reviewing and optimizing job openings and acceptance processes.",
-            "root_causes": [
-                "Isolation forest anomaly flag True, indicating unusual patterns in hiring data",
-                "OPENINGS_LOG, suggesting a high volume of job openings that may be contributing to delays",
-                "ACCEPT_QUARTER and ACCEPT_MONTH, indicating potential issues with the quarterly and monthly acceptance processes"
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Review and optimize job openings and acceptance processes",
-                    "responsible_role": "Recruitment Manager",
-                    "sap_transaction": "Recruitment Management",
-                    "expected_impact": "Reduce Time-to-Hire by 15-20%",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Analyze and address isolation forest anomaly flag",
-                    "responsible_role": "HR Data Analyst",
-                    "sap_transaction": "SAP SuccessFactors Analytics",
-                    "expected_impact": "Improve data quality and reduce anomalies by 10-15%",
-                    "effort": "high"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement a quarterly review of hiring processes to identify areas for improvement",
-                "Develop a dashboard to track key hiring metrics, including Time-to-Hire and Onboarding Completion Time"
-            ],
-            "long_term_actions": [
-                "Implement a predictive analytics model to forecast hiring needs and optimize recruitment strategies",
-                "Develop a comprehensive onboarding program to improve new hire retention and reduce Employee Attrition Rate"
-            ],
-            "expected_impact": "By implementing these actions, we expect to reduce Time-to-Hire by 25-30% and improve Onboarding Completion Time by 15-20% within the next 6-12 months.",
-            "risk_assessment": "Failure to address the primary breach of Time-to-Hire may lead to increased Employee Attrition Rate, reduced new hire quality, and decreased overall organizational performance."
-        }
-    },
-    {
-        "id": "1785211262.966894",
-        "timestamp": "2026-07-28T09:31:02.966907",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach of Time-to-Hire is caused by multiple factors including high breach classifier probability, Custom CTC PA, source 3, and low rated applicant count. Immediate actions include revising job descriptions, improving source 3, and re-evaluating compensation packages. Medium-term actions involve streamlining the hiring process and leveraging SAP SuccessFactors capabilities for better applicant tracking and analytics. Long-term actions focus on talent pipeline development, employee retention strategies, and HR process automation.",
-            "root_causes": [
-                "breach_classifier_probability_0.29 with a confidence score of 29.46%",
-                "cust_CTC_PA with a confidence score of 20.04%",
-                "source_3 with a confidence score of 18.55%",
-                "ratedApplicantCount with a confidence score of 10.89%"
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Revise job descriptions to better match requirements and attract more applicants",
-                    "responsible_role": "Talent Acquisition Team",
-                    "sap_transaction": "Job Description Management in SAP SuccessFactors Recruitment",
-                    "expected_impact": "10-15% reduction in Time-to-Hire",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Improve source 3 by leveraging social media, employee referrals, and career fairs",
-                    "responsible_role": "Talent Acquisition Team",
-                    "sap_transaction": "Source Tracking in SAP SuccessFactors Recruitment",
-                    "expected_impact": "12-18% increase in qualified applicants from source 3",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Re-evaluate compensation packages to ensure competitiveness",
-                    "responsible_role": "Compensation and Benefits Team",
-                    "sap_transaction": "Compensation Management in SAP SuccessFactors Employee Central",
-                    "expected_impact": "8-12% reduction in Time-to-Hire due to improved offer acceptance rates",
-                    "effort": "high"
-                }
-            ],
-            "medium_term_actions": [
-                "Streamline the hiring process by automating candidate screening and interview scheduling using SAP SuccessFactors Recruitment",
-                "Develop a talent pipeline by leveraging SAP SuccessFactors Learning and Development capabilities to upskill and reskill existing employees",
-                "Implement an employee referral program to increase qualified applicant referrals"
-            ],
-            "long_term_actions": [
-                "Develop an HR process automation strategy to reduce manual errors and increase efficiency in recruitment, onboarding, and offboarding processes",
-                "Implement a predictive analytics solution using SAP SuccessFactors Workforce Analytics to forecast talent demands and identify potential recruitment challenges",
-                "Develop an employee retention strategy to reduce Employee Attrition Rate and improve overall HR KPIs"
-            ],
-            "expected_impact": "15-25% reduction in Time-to-Hire, 10-15% reduction in Employee Attrition Rate, and 8-12% improvement in Onboarding Completion Time",
-            "risk_assessment": "High risk of further increases in Time-to-Hire and Employee Attrition Rate if root causes are not addressed; moderate risk of cascading impacts on other HR KPIs"
-        }
-    },
-    {
-        "id": "1784891593.147643",
-        "timestamp": "2026-07-24T16:43:13.147665",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The Time-to-Hire KPI has breached a Warning threshold in July 2025, primarily driven by an inefficient sourcing channel (Channel 8), uncompetitive or unclear compensation structures (`cust_CTC_PA`, `salaryMax`, `SALARY_RANGE`), and potential upstream process delays. This prolonged hiring cycle not only directly impacts talent acquisition but also cascades into increased Onboarding Completion Time and is historically correlated with higher Employee Attrition, signaling significant downstream operational and retention risks.",
-            "root_causes": [
-                "Sourcing Channel 8 is critically underperforming, adding an average of 58.05 days to Time-to-Hire, making it the slowest channel and a significant bottleneck.",
-                "Delays and complexities surrounding 'Cost to Company' (cust_CTC_PA) processes are significantly impacting offer generation and acceptance timelines, indicating workflow inefficiencies or unclear policy.",
-                "The defined maximum salary (salaryMax) and salary ranges (SALARY_RANGE) for roles are likely uncompetitive or misaligned with current market rates, leading to difficulties in attracting and securing top talent.",
-                "There is an identified upstream impact contributing to the delays, suggesting potential pre-recruitment bottlenecks such as requisition approval processes or delayed job description finalization."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Immediately pause or significantly reduce the use of Sourcing Channel 8 for all new critical requisitions. Redirect resources and budget to historically higher-performing channels identified within SuccessFactors Recruiting Analytics.",
-                    "responsible_role": "Recruitment Lead, Sourcing Specialist",
-                    "sap_transaction": "SuccessFactors Recruiting (Job Requisition Posting Distribution)",
-                    "expected_impact": "Immediate reduction in Time-to-Hire for new requisitions by eliminating the slowest channel's impact. Potentially save up to 58 days per hire if Channel 8 was the primary sourcing method.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Convene an urgent meeting with HR Business Partners, Recruitment Leads, and Compensation Specialists to review and standardize the `cust_CTC_PA` (Custom Cost to Company/Compensation Package Agreement) process flow. Focus on identifying and streamlining bottlenecks in offer generation and approval within SuccessFactors Recruiting workflows.",
-                    "responsible_role": "HR Operations Manager, Compensation Specialist, Recruitment Lead",
-                    "sap_transaction": "SuccessFactors Recruiting (Offer Approval Workflows configuration review), Compensation module integration review",
-                    "expected_impact": "Reduce delays in offer creation and approval by 10-15%, potentially shaving 5-10 days off Time-to-Hire by improving efficiency and clarity.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Conduct an urgent market benchmark analysis for all active requisitions to re-evaluate `salaryMax` and `SALARY_RANGE`. Empower recruiters with immediate, pre-approved flexibility to adjust compensation ranges for critical roles where current offers are uncompetitive, using established guidelines.",
-                    "responsible_role": "Compensation Specialist, Recruitment Lead, HR Business Partners",
-                    "sap_transaction": "SuccessFactors Recruiting (Job Requisition details update), Compensation module for market data integration/reference",
-                    "expected_impact": "Improve offer acceptance rates by 5-10%, reducing time spent on renegotiations or re-opening searches, potentially saving 7-14 days on Time-to-Hire.",
-                    "effort": "medium"
-                }
-            ],
-            "medium_term_actions": [
-                "Analyze the performance of all sourcing channels in SuccessFactors Recruiting using historical data. Reallocate budget and effort from underperforming channels to top performers, and configure automated dashboards for continuous monitoring of channel effectiveness.",
-                "Optimize and simplify the offer approval workflow in SuccessFactors Recruiting. Reduce the number of approvers, establish clear Service Level Agreements (SLAs) for each approval stage, and leverage automated email notifications and reminders to approvers.",
-                "Integrate market compensation data directly into SuccessFactors (via a custom object or external integration) to provide recruiters and hiring managers with real-time, competitive salary range guidance during requisition creation and offer generation.",
-                "Provide targeted training to recruiters and hiring managers on effective salary negotiation strategies and current market realities to enhance their ability to secure candidates efficiently and reduce offer rejections.",
-                "Review the entire requisition creation and approval process within SuccessFactors, identifying and eliminating upstream bottlenecks that contribute to overall Time-to-Hire delays, aligning with the 'granger_causality_checked_upstream_impact' finding."
-            ],
-            "long_term_actions": [
-                "Conduct a comprehensive end-to-end recruitment process review, leveraging SuccessFactors Recruiting functionalities like Interview Central and Candidate Relationship Management (CRM) to streamline stages from sourcing to offer acceptance.",
-                "Develop and implement a dynamic compensation strategy that includes regular, automated market benchmarking and a flexible budget allocation model for high-demand roles, ensuring competitive `salaryMax` and `SALARY_RANGE` from the outset.",
-                "Implement predictive analytics within or integrated with SuccessFactors to forecast Time-to-Hire based on role, location, and market conditions, enabling proactive adjustments to recruitment strategies and resource allocation.",
-                "Build a robust talent pipelining strategy utilizing SuccessFactors CRM functionality to proactively engage and nurture relationships with passive candidates, reducing reliance on reactive sourcing for future roles and mitigating impact of slow channels.",
-                "Strengthen the integration points between SuccessFactors Recruiting and Onboarding modules to ensure a seamless candidate transition, which will directly address the cascading impact on Onboarding Completion Time."
-            ],
-            "expected_impact": "By implementing these recommendations, we anticipate a significant reduction in Time-to-Hire by 15-25% within the next 3-6 months. This will directly translate to a faster acquisition of critical talent, an improved candidate experience, and a projected decrease in Employee Attrition Rate by 5-10% in the subsequent 6-12 months due to better quality of hire and reduced time-to-start, while also streamlining the Onboarding Completion Time.",
-            "risk_assessment": "Failure to address the root causes, particularly uncompetitive compensation (`salaryMax`, `SALARY_RANGE`), poses a high risk of continued Time-to-Hire breaches, increased candidate drop-offs, and higher Employee Attrition. Medium risk exists if there is inadequate stakeholder buy-in (from hiring managers, compensation teams, and approvers) for implementing process changes and compensation adjustments, which could hinder the effectiveness of corrective actions. Over-reliance on a single or a few sourcing channels without continuous performance monitoring could lead to future bottlenecks. Operational risks include delays in streamlining `cust_CTC_PA` which could perpetuate offer rejections and prolonged negotiations."
-        }
-    },
-    {
-        "id": "1784891390.930783",
-        "timestamp": "2026-07-24T16:39:50.930812",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "A critical breach in Time-to-Hire for December 2024 has been identified, primarily driven by an exceptionally slow sourcing channel (channel_3) and significant systemic issues related to compensation. Specifically, uncompetitive Cost-to-Company (CTC) packages, inflexible salary ranges, and inadequate maximum salary offerings are deterring candidates and prolonging the hiring cycle. This delay is also cascading into longer Onboarding Completion Times and is historically correlated with increased Employee Attrition Rates, indicating a severe impact on talent acquisition and retention.",
-            "root_causes": [
-                "One specific sourcing channel ('channel_3') is severely underperforming, averaging an extremely long 577 days to hire, significantly inflating the overall Time-to-Hire metric.",
-                "Compensation packages, particularly the 'Cost to Company (CTC)' offerings, are perceived as uncompetitive or inadequately structured, leading to difficulties in attracting and securing top talent.",
-                "The defined 'SALARY_RANGE' for job requisitions are either outdated, too narrow, or not aligned with current market rates, limiting the ability to make compelling offers.",
-                "The 'salaryMax' (maximum salary) allowed for positions is often insufficient to secure desired candidates, particularly for high-demand or specialized roles.",
-                "General upstream process inefficiencies contribute to delays, though the primary drivers are the sourcing channel and compensation issues."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Immediately suspend or deprioritize the use of 'channel_3' for all critical or urgent requisitions. Review past hires from this channel to understand the specific bottlenecks (e.g., niche skill, geography, recruiter performance, internal process).",
-                    "responsible_role": "Recruiting Lead, Talent Acquisition Manager",
-                    "sap_transaction": "SuccessFactors Recruiting Management (Job Requisition Management)",
-                    "expected_impact": "Immediate reduction in average Time-to-Hire for newly opened requisitions by avoiding the slowest channel. Estimated 10-20% reduction in TTH for impacted roles in the short term.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Conduct an urgent review of current open requisitions for critical roles. Empower hiring managers and recruiters with immediate, limited flexibility to adjust salary offers within a pre-approved buffer, leveraging recent market data or internal compensation guidelines where available.",
-                    "responsible_role": "Hiring Managers, Recruiters, Compensation Lead",
-                    "sap_transaction": "SuccessFactors Recruiting Management (Offer Approval Workflow), Employee Central (Compensation Information)",
-                    "expected_impact": "Expedite offer acceptance rates for critical roles, potentially reducing time-to-accept by 5-10 days for high-priority positions. Mitigate immediate attrition risk of potential hires.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Review and revise offer letter templates and compensation communication within SuccessFactors Recruiting Management to clearly articulate the full 'Cost to Company' value proposition beyond base salary, including benefits, bonuses, and other incentives.",
-                    "responsible_role": "HR Communications, Recruiting Operations",
-                    "sap_transaction": "SuccessFactors Recruiting Management (Offer Letter Templates)",
-                    "expected_impact": "Improve candidate perception of total compensation, potentially increasing offer acceptance rates by 2-5% for competitive roles, reducing re-negotiation cycles.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Perform a comprehensive market salary benchmarking analysis for all key roles, integrating external market data with internal compensation data within the SAP SuccessFactors Compensation module. Update Job Profile Builder and compensation guidelines accordingly to ensure competitive salary ranges and 'salaryMax'.",
-                "Implement a standardized, data-driven process to evaluate sourcing channel effectiveness. Leverage SuccessFactors Recruiting Analytics and Report Center to track Time-to-Hire, cost-per-hire, and quality-of-hire for each channel. Reallocate sourcing budget to higher-performing channels and re-evaluate contracts for underperforming ones.",
-                "Streamline the offer approval workflow in SuccessFactors Recruiting Management. Identify and eliminate unnecessary approval steps or bottlenecks. Implement conditional routing based on salary bands or role criticality to expedite approvals and reduce delays.",
-                "Provide targeted training for recruiters and hiring managers on effective compensation negotiation strategies, how to articulate the full value of the company's compensation and benefits package, and how to utilize SuccessFactors compensation data and tools effectively."
-            ],
-            "long_term_actions": [
-                "Develop a proactive, dynamic compensation strategy that leverages real-time market data integration (e.g., through APIs with compensation data providers if feasible) to ensure salary ranges and CTC packages remain continuously competitive and responsive to market changes.",
-                "Automate monitoring of sourcing channel performance and Time-to-Hire metrics in SuccessFactors Recruiting Analytics. Implement alert mechanisms for significant deviations or underperforming channels to enable early intervention and predictive adjustments.",
-                "Implement a structured feedback loop from new hires (utilizing the Onboarding module or surveys) and hiring managers to assess the competitiveness of offers, the efficiency of the hiring process, and the candidate experience. Use this data for continuous improvement of recruitment strategies and compensation structures.",
-                "Integrate predictive analytics into the recruitment process to forecast Time-to-Hire for specific roles based on historical data, market conditions, and compensation competitiveness, allowing for proactive adjustments to sourcing and compensation strategies."
-            ],
-            "expected_impact": "Successfully addressing these root causes is projected to reduce the average Time-to-Hire by 25-35% within 6-12 months. This will significantly improve candidate experience, increase offer acceptance rates, and reduce the cascading impact on Onboarding Completion Time by facilitating quicker starts. Furthermore, by securing talent more efficiently and competitively, we anticipate a measurable reduction in Employee Attrition Rate, improving overall talent retention and organizational stability. Long-term, these changes will establish a more agile and competitive talent acquisition function, capable of attracting and retaining top talent.",
-            "risk_assessment": "Failure to address the Time-to-Hire breach, particularly the compensation and sourcing issues, poses a high risk to talent acquisition, leading to continued loss of top talent to competitors, increased operational costs due to prolonged vacancies, and a severely negative employer brand. The cascading impact on Onboarding Completion Time will further delay productivity for new hires, and the historical correlation with Employee Attrition Rate suggests a persistent cycle of talent loss and increased recruitment costs. Proactive and decisive intervention is critical to mitigate these compounding risks and safeguard the organization's talent pipeline."
-        }
-    },
-    {
-        "id": "1784890319.85666",
-        "timestamp": "2026-07-24T16:21:59.856679",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach for 'Time-to-Hire' KPI is identified as a critical data unavailability issue, specifically 'no_data_found_in_catalog_for_kpi_id', indicating that the system could not calculate this KPI due to missing or inaccessible underlying data. This data integrity problem also cascades to 'Onboarding Completion Time'. Immediate actions are required to validate and restore the data sources within SAP SuccessFactors Recruiting and Employee Central modules to enable accurate KPI calculation and address the root cause, which in turn will allow for proper monitoring and potential mitigation of the historically correlated 'Employee Attrition Rate'.",
-            "root_causes": [
-                "**Missing or Inaccessible Data for Time-to-Hire Calculation:** The primary root cause, 'no_data_found_in_catalog_for_kpi_id' (100% confidence), indicates that essential data points required to compute the Time-to-Hire KPI are either not being captured, are incomplete, or are not accessible to the analytics engine.",
-                "**Lack of Data Integrity and Validation in Recruiting Processes:** This suggests potential gaps in mandatory field configuration, user adherence to data entry protocols, or integration issues between SAP SuccessFactors Recruiting and Employee Central modules, leading to inconsistent or absent key dates (e.g., requisition creation, application submission, offer approval, candidate hire date).",
-                "**Cascading Data Impact on Dependent KPIs:** The unavailability of Time-to-Hire data directly impacts 'Onboarding Completion Time' (80% confidence), indicating a broader data quality issue that affects the entire recruit-to-onboard lifecycle. This might stem from missing 'Hire Date' data in Employee Central, which is crucial for both KPIs.",
-                "**Insufficient KPI Configuration or Data Source Mapping:** The analytical model might be incorrectly configured, pointing to non-existent or irrelevant data sources within the SuccessFactors platform, preventing the correct aggregation of Time-to-Hire metrics.",
-                "**Potential Underlying Operational Inefficiencies (Masked by Data Issue):** While the immediate issue is data, the historical correlation with 'Employee Attrition Rate' suggests that if Time-to-Hire *is* genuinely high (once data is restored), it could be contributing to talent loss. The current data breach prevents effective diagnosis of this deeper operational issue."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Conduct an urgent audit of key date fields within SAP SuccessFactors Recruiting module (e.g., Job Requisition creation date, Candidate Application submission date, Offer Approval date, Candidate 'Hired' status date) and Employee Central (Hire Date for the period 2025-7). Identify any missing, incomplete, or incorrect data entries for candidates whose hiring process would fall within the breach period.",
-                    "responsible_role": "HRIS Analyst, Recruiting Operations Specialist",
-                    "sap_transaction": "SAP SuccessFactors Recruiting (Job Requisitions, Candidate Workbench), Employee Central (Employee Profile)",
-                    "expected_impact": "Immediately identify specific data gaps. ~70% chance of restoring raw data needed for KPI calculation.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Verify and re-validate the 'Time-to-Hire' KPI definition and data source mapping within SuccessFactors People Analytics (Report Stories) or Workforce Analytics. Ensure that all required fields from Recruiting and Employee Central are correctly selected and linked according to the organization's definition of Time-to-Hire.",
-                    "responsible_role": "HRIS Analyst, Reporting Specialist",
-                    "sap_transaction": "SAP SuccessFactors People Analytics (Report Stories), Workforce Analytics (if used)",
-                    "expected_impact": "Correct the KPI calculation logic and data aggregation. ~80% chance of enabling correct KPI display once data is available.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Manually re-trigger the data refresh or recalculation for the 'Time-to-Hire' KPI within the reporting platform (People Analytics / Workforce Analytics) for the affected period (2025-7) after verifying data availability and configuration. Perform a small-scale test to ensure the KPI now displays data correctly.",
-                    "responsible_role": "HRIS Analyst, Reporting Specialist",
-                    "sap_transaction": "SAP SuccessFactors People Analytics (Report Stories), Workforce Analytics (if used)",
-                    "expected_impact": "Restore KPI data visibility within 24-48 hours. ~90% chance of clearing the 'no_data_found' alert.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement mandatory fields and field-level validations for all critical date fields in the SAP SuccessFactors Recruiting module (e.g., Offer Approved Date, Hire Date) to prevent future omissions. This ensures data consistency from the point of entry.",
-                "Conduct targeted training sessions for Recruiters and Hiring Managers on the importance of timely and accurate status updates and data entry within the Recruiting module. Emphasize the direct impact on HR KPIs and business decision-making.",
-                "Establish a weekly data quality review process for recruitment and onboarding data, focusing on key date fields that contribute to Time-to-Hire and Onboarding Completion Time, to proactively identify and rectify anomalies.",
-                "Review and standardize the organization's definition and calculation methodology for Time-to-Hire in collaboration with HR leadership, ensuring alignment across all stakeholders and reporting tools. Document this standard for future reference and configuration."
-            ],
-            "long_term_actions": [
-                "Develop and implement automated data quality alerts and dashboards within SAP SuccessFactors People Analytics (Report Stories) that proactively flag missing or inconsistent data points critical for key HR KPIs like Time-to-Hire and Onboarding Completion Time.",
-                "Explore process automation capabilities within the Recruiting module, such as auto-advancing candidate statuses based on specific actions or integrations (e.g., offer acceptance triggering 'Ready to Hire' status), to reduce manual intervention and potential for data entry errors.",
-                "Enhance integration points between SAP SuccessFactors Recruiting and Onboarding modules, especially concerning the seamless transfer of 'Hire Date' and other critical new hire information to ensure data completeness for subsequent processes and KPIs.",
-                "Invest in predictive analytics capabilities within SuccessFactors to not only report on Time-to-Hire but also to forecast potential bottlenecks in the recruiting pipeline, leveraging historical data to proactively address issues that could lead to high Time-to-Hire and, by extension, contribute to attrition."
-            ],
-            "expected_impact": "Successfully addressing the data unavailability will immediately restore visibility into the 'Time-to-Hire' KPI, allowing HR to accurately monitor recruitment efficiency. This will enable proper analysis of the KPI's actual value and its historical correlation with 'Employee Attrition Rate'. Over the medium to long term, these actions will lead to improved data quality across the recruit-to-onboard lifecycle, more reliable KPI reporting, and ultimately, a more efficient hiring process, which can positively impact candidate experience and reduce potential attrition linked to prolonged recruitment cycles. Quantifiably, expect ~95% data completeness for Time-to-Hire components within 3 months, leading to accurate KPI calculation and monitoring.",
-            "risk_assessment": "Failure to address this data integrity breach poses a significant risk to HR's ability to measure and manage recruitment performance. Without accurate 'Time-to-Hire' data, strategic decisions regarding talent acquisition cannot be made effectively. This could lead to prolonged hiring cycles, loss of top talent, increased operational costs due to delays, and continued contribution to employee attrition (given the historical correlation). Additionally, the cascading impact on 'Onboarding Completion Time' indicates a broader risk to the overall new hire experience and time-to-productivity, potentially undermining employer brand and employee engagement. The immediate risk is a lack of trust in HR data and reporting."
-        }
-    },
-    {
-        "id": "1784890129.300226",
-        "timestamp": "2026-07-24T16:18:49.300253",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The primary breach of 'Time-to-Hire' is caused by a critical data integrity issue: 'no_data_found_in_catalog_for_kpi_id'. This indicates that the system is unable to retrieve or calculate the Time-to-Hire metric due to missing data definitions, inconsistent data capture, or reporting configuration errors. This issue also cascades to 'Onboarding Completion Time'. Our immediate focus must be to diagnose and rectify the underlying data and reporting configuration problems to ensure accurate KPI measurement, which is crucial for subsequent operational analysis and addressing the historical correlation with Employee Attrition Rate.",
-            "root_causes": [
-                "**Missing or Incorrect KPI Definition:** The 'Time-to-Hire' KPI is either not correctly defined within SAP SuccessFactors Reporting (e.g., Report Stories, Ad-Hoc Reports, Workforce Analytics) or the configured data sources for its calculation are pointing to non-existent or inaccessible fields.",
-                "**Inconsistent or Missing Data Capture:** Key date fields essential for calculating Time-to-Hire (such as Job Requisition Open Date, Application Status Change Date to 'Hired', Offer Accepted Date, or Employee Start Date in Employee Central) are not being consistently populated or are entirely absent for relevant job requisitions and candidate applications.",
-                "**Insufficient Reporting Permissions (RBP):** The user or system integration responsible for running the KPI report lacks the necessary Role-Based Permissions (RBP) to access all required data fields and objects within the Recruiting and/or Employee Central modules.",
-                "**Data Model Discrepancy or Corruption:** Recent changes to the data model, custom fields, picklists, or business rules relevant to the Time-to-Hire calculation might have inadvertently broken the data mapping or integrity.",
-                "**Integration Failure between Modules:** There may be an issue with the seamless data transfer from the Recruiting module to Onboarding and Employee Central, specifically concerning critical dates like 'Hired Date' or 'Start Date', leading to the cascading impact on 'Onboarding Completion Time'."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Validate the 'Time-to-Hire' KPI definition and underlying data source configuration within People Analytics (Report Stories). Confirm that the correct fields (e.g., 'Requisition Open Date', 'Job Application Status Audit Trail' for 'Hired' status, 'Employee Start Date') are selected and mapped.",
-                    "responsible_role": "HRIS Analyst / Reporting Specialist",
-                    "sap_transaction": "SAP SuccessFactors: Analytics -> Report Stories / Admin Center -> Reporting and Analytics",
-                    "expected_impact": "High - Directly addresses the 'no_data_found' error by validating/correcting the KPI's data source and definition. Will provide initial visibility into KPI data.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Run ad-hoc reports in Recruiting V2 and Employee Central to inspect raw data for key dates (Requisition Open Date, Offer Accepted Date, Date Hired, Start Date) for a sample of recent hires in the affected period (2025-07). Identify any missing, incorrect, or inconsistent date entries.",
-                    "responsible_role": "Recruiting Operations / HRIS Analyst",
-                    "sap_transaction": "SAP SuccessFactors: Reporting -> Ad Hoc Reports (Recruiting V2 / Employee Central domains)",
-                    "expected_impact": "High - Pinpoints specific data entry gaps or inconsistencies at the source, which can then be manually corrected for the impacted period.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Verify Role-Based Permissions (RBP) for the user or integration account running the KPI reports. Ensure they have 'View' permissions for all relevant fields in the Recruiting and Employee Central data models that contribute to Time-to-Hire and Onboarding Completion Time calculations.",
-                    "responsible_role": "SAP SF Security Administrator / HRIS Analyst",
-                    "sap_transaction": "SAP SuccessFactors: Admin Center -> Manage Role-Based Permission Access",
-                    "expected_impact": "Medium - Resolves potential access-related issues preventing data retrieval. Crucial for automated reports and dashboards.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement mandatory fields and business rules in the Job Requisition and Job Application templates to ensure consistent capture of all critical dates (e.g., Requisition Open Date, Offer Accepted Date, Hired Date) before status progression. This prevents future data gaps.",
-                "Standardize and audit the recruiting status progression in the Recruiting module. Ensure that 'Hired' or equivalent final statuses accurately trigger the capture of the hire date, which then seamlessly integrates with Onboarding and Employee Central for the start date.",
-                "Review the integration points and field mapping between Recruiting, Onboarding, and Employee Central modules, specifically for 'Hire Date' and 'Start Date'. Ensure data flows correctly and consistently to support both Time-to-Hire and Onboarding Completion Time calculations.",
-                "Develop and deploy a 'Time-to-Hire Data Quality' custom report or dashboard in People Analytics. Schedule it to run weekly, alerting HR Operations and HRIS teams to any requisitions or applications with missing or inconsistent key date fields."
-            ],
-            "long_term_actions": [
-                "Establish a comprehensive KPI Governance Framework for all HR KPIs, including clear definitions, approved data sources, calculation methodologies, and data ownership. Document this in a central repository accessible to all relevant HR teams.",
-                "Conduct quarterly data quality audits specifically for core HR processes like Recruitment and Onboarding. Use automated reports to identify and rectify data inconsistencies proactively, preventing future KPI breaches related to data unavailability.",
-                "Provide targeted training to Recruiters and HR Coordinators on the importance of accurate and timely data entry for critical dates within the Recruiting and Onboarding processes. Emphasize the impact of data quality on strategic HR metrics.",
-                "Explore and leverage advanced analytical capabilities within People Analytics for predictive insights. Once Time-to-Hire data is reliable, analyze its correlation with Employee Attrition Rate to identify specific stages or types of hires where longer Time-to-Hire leads to higher attrition, informing strategic recruitment changes."
-            ],
-            "expected_impact": "Implementing these recommendations will immediately resolve the 'no_data_found' error for the Time-to-Hire KPI, providing accurate and reliable data. This will allow the organization to gain true visibility into their recruiting efficiency and accurately assess the historical correlation with Employee Attrition Rate. Concurrently, it will fix the cascading impact on Onboarding Completion Time, improving data integrity across the talent acquisition lifecycle. Long-term, these actions will significantly enhance data quality, improve HR decision-making, and enable proactive management of recruitment and attrition challenges.",
-            "risk_assessment": "The immediate risk associated with this breach is 'low' in terms of system functionality but 'high' in terms of operational impact due to a lack of accurate data for strategic decision-making. If left unaddressed, unreliable KPI data can lead to misguided talent acquisition strategies, hinder workforce planning, and potentially exacerbate the correlated Employee Attrition Rate by failing to identify its root causes related to the hiring process. Resolving the data integrity issue itself carries minimal technical risk."
-        }
-    },
-    {
-        "id": "1784889953.992515",
-        "timestamp": "2026-07-24T16:15:53.992539",
-        "kpi_name": "Time-to-Hire",
-        "data": {
-            "executive_summary": "The critical breach in Time-to-Hire for December 2024 is primarily due to a fundamental inability of the analytics system to find or process the necessary data for KPI calculation. This 'no_data_found' issue indicates a severe problem with either the KPI's definition, data sourcing, or underlying data integrity within SuccessFactors, preventing any meaningful measurement of recruitment efficiency. This data deficiency also cascades into an inability to track Onboarding Completion Time, highlighting a systemic data governance issue. Resolving this requires immediate validation of KPI configuration and data availability, followed by process improvements to ensure data quality and reliable reporting for future periods.",
-            "root_causes": [
-                "**Missing or Incorrect KPI Configuration:** The Time-to-Hire KPI is either not correctly defined in the SuccessFactors Analytics/People Analytics catalog, or its data sources (e.g., job application date, offer acceptance date, actual start date from Recruiting and Employee Central) are incorrectly mapped or entirely missing.",
-                "**Data Ingestion/Extraction Failure:** Even if configured, the underlying data from SuccessFactors Recruiting Management (RCM), Onboarding (ONB), or Employee Central (EC) is not being successfully extracted, transformed, or loaded into the analytics platform for calculation. This could be due to broken connectors, failed scheduled jobs, or recent system updates breaking data flows.",
-                "**Underlying Data Quality Issues:** Key date fields (e.g., Application Date, Offer Accepted Date, Start Date) essential for Time-to-Hire calculation are either consistently missing, incorrectly entered, or malformed within the RCM, ONB, or EC modules for relevant new hires.",
-                "**Permission Constraints:** The user account or system integration responsible for running the Time-to-Hire KPI calculation lacks the necessary permissions to access the underlying recruiting and employee master data in SuccessFactors.",
-                "**Reporting Framework Discrepancy:** A mismatch exists between the data available in the operational SuccessFactors modules and what the analytical reporting framework expects or can access, leading to the 'no_data_found' error during KPI computation."
-            ],
-            "immediate_actions": [
-                {
-                    "action": "Verify Time-to-Hire KPI Definition & Data Source Mapping in People Analytics/Workforce Analytics.",
-                    "responsible_role": "HRIS Analyst / Analytics Administrator",
-                    "sap_transaction": "Admin Center -> People Analytics (Stories in People Analytics) or Workforce Analytics Admin (for legacy WFA)",
-                    "expected_impact": "Immediately identify if the KPI is improperly defined or if its underlying data sources (e.g., Recruiting Requisition, Application, Job Offer, Employee Hire Date from EC) are not correctly linked/selected. This is the most direct fix for 'no_data_found'.",
-                    "effort": "low"
-                },
-                {
-                    "action": "Audit Data Availability and Integrity for Key Dates in RCM, ONB, and EC.",
-                    "responsible_role": "Recruitment Operations Lead / HRIS Analyst",
-                    "sap_transaction": "Recruiting -> Job Requisitions/Candidates, Onboarding -> Onboarding Dashboards, Employee Central -> Employee Files",
-                    "expected_impact": "Confirm that the actual data points required (Application Date, Offer Accepted Date, Candidate Start Date) exist and are consistently populated for new hires in December 2024. If data is missing operationally, the KPI cannot be calculated, even if configured correctly. This will also help diagnose the cascading impact on Onboarding Completion Time.",
-                    "effort": "medium"
-                },
-                {
-                    "action": "Review Scheduled Data Extraction/Load Jobs and Permissions.",
-                    "responsible_role": "HRIS Analyst / SuccessFactors Technical Lead",
-                    "sap_transaction": "Admin Center -> Scheduled Jobs / Manage Permission Roles",
-                    "expected_impact": "Verify that data synchronization jobs feeding the analytics platform are running successfully and that the relevant user/integration account has sufficient permissions to access all necessary Recruiting and Employee Central data. A failed job or permission issue would directly cause 'no data found'.",
-                    "effort": "low"
-                }
-            ],
-            "medium_term_actions": [
-                "Implement automated data quality checks and alerts within SuccessFactors for critical recruiting and onboarding date fields (e.g., ensuring 'Offer Accepted Date' precedes 'Start Date', 'Application Date' is not blank). Leverage Intelligent Services or custom alerts.",
-                "Develop and enforce standardized data entry guidelines and training for recruiters and HR administrators to ensure consistent and accurate population of all required fields in RCM, ONB, and EC that contribute to Time-to-Hire and Onboarding Completion Time calculations.",
-                "Establish a regular review process for People Analytics/Workforce Analytics KPI definitions and data integrations to proactively identify potential data sourcing issues before they lead to critical breaches. This should be part of a broader data governance strategy."
-            ],
-            "long_term_actions": [
-                "Optimize the end-to-end recruitment process within SuccessFactors, from requisition creation to hire in Employee Central, ensuring seamless data flow and automation to minimize manual data entry and potential errors. Explore features like 'Initiate Onboarding' from RCM and 'Hire into EC' from Onboarding to ensure data consistency.",
-                "Leverage SuccessFactors Recruiting Analytics dashboards and 'Stories in People Analytics' to build comprehensive reporting that includes drill-down capabilities, allowing HR teams to quickly identify data gaps or bottlenecks affecting Time-to-Hire and other recruitment KPIs.",
-                "Conduct a holistic review of the candidate experience and new hire journey, correlating recruitment efficiency data (once available) with employee attrition rates. Use insights from a fully functional Time-to-Hire KPI to identify areas where process improvements could lead to better candidate experience and reduced early attrition."
-            ],
-            "expected_impact": "Successfully resolving the 'no_data_found' issue will immediately enable the accurate calculation and reporting of Time-to-Hire, restoring critical visibility into recruitment efficiency. This will allow for data-driven identification of bottlenecks, potential reduction in Time-to-Hire by 10-15% over six months, and provide the foundation for tracking Onboarding Completion Time, thereby improving overall talent acquisition and onboarding effectiveness. Long-term, reliable Time-to-Hire data, combined with a focus on improving the candidate journey, is expected to positively impact employee attrition rates by ensuring a smoother, faster, and more engaging hiring process.",
-            "risk_assessment": "Failure to address this fundamental data availability issue carries significant risks. Without accurate Time-to-Hire data, HR and business leaders operate in the dark regarding recruitment performance, making it impossible to identify inefficiencies, predict staffing needs, or justify resource allocation. This directly impacts talent acquisition strategy, leads to increased operational costs due to prolonged vacancies, and exacerbates the cascading issue on Onboarding Completion Time, potentially damaging the new hire experience. Given the historical correlation with Employee Attrition Rate, a prolonged inability to measure and improve Time-to-Hire could indirectly contribute to higher turnover, as slow or poor hiring experiences often prelude disengagement."
+                "Develop a predictive model to estimate offboarding duration and identify potential delays",
+                "Integrate offboarding processes with SAP SuccessFactors to streamline and automate workflows"
+            ],
+            "expected_impact": "Reduction in offboarding completion time by **45.6%**, **41.7%**, and **5.6%**, resulting in an overall decrease in offboarding duration from **18** days to **6** days",
+            "risk_assessment": "Failure to address the primary breach may lead to continued delays in offboarding, resulting in increased costs and decreased employee satisfaction",
+            "detailed_breach_analysis": {
+                "breach_reason": "The primary breach occurred due to delays in the 'Asset Return', 'Final Settlement', and 'Payroll Clearance' steps, resulting in an overall delay of **18** days. The predicted offboarding duration was underestimated by **22** days.",
+                "responsible_parties": "The HR partners **EMP102714**, **EMP102159**, and **EMP100956** are responsible for the delays in the offboarding process.",
+                "affected_records": [
+                    {
+                        "record_id": "**EMP100001**",
+                        "reason_for_delay": "Delays in 'Asset Return', 'Final Settlement', and 'Payroll Clearance' steps",
+                        "responsible_person": "**HR Partner**"
+                    }
+                ]
+            },
+            "precautions": [
+                "Regularly review and update the predictive model to ensure accuracy",
+                "Implement automated workflows to minimize manual errors and delays"
+            ],
+            "future_solutions": [
+                "Integrate AI-powered predictive analytics to forecast offboarding duration and identify potential delays",
+                "Develop a centralized offboarding platform to streamline and automate workflows"
+            ]
         }
     }
 ]

@@ -17,7 +17,8 @@ from agents import employee_central_agent
 from agents import employee_payment_agent
 
 mcp = FastMCP("HR-KPI-Agent-Server")
-MEMORY_FILE = "mcp_memory.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MEMORY_FILE = os.path.join(BASE_DIR, "mcp_memory.json")
 
 def _read_memory() -> dict:
     if os.path.exists(MEMORY_FILE):
@@ -59,7 +60,7 @@ def get_incident_context(incident_id: str) -> str:
 # ---------------------------------------------------------------------------
 
 @mcp.tool()
-def execute_domain_agent(domain: str, kpi_name: str, severity: str, year: str, month: str, primary_kpi: str = None) -> str:
+def execute_domain_agent(domain: str, kpi_name: str, severity: str, year: str, month: str, primary_kpi: str = None, kpi_id: str = None, extra_params_json: str = None) -> str:
     """
     Submits a Databricks Job run for the specified domain agent.
     Returns:
@@ -76,7 +77,18 @@ def execute_domain_agent(domain: str, kpi_name: str, severity: str, year: str, m
     if not agent:
         raise ValueError(f"Unknown domain agent: {domain}")
     
-    run_id = agent.run_agent(kpi_name, severity, year, month, primary_kpi=primary_kpi)
+    # Load dynamic extra parameters if provided
+    extra_params = {}
+    if extra_params_json:
+        try:
+            extra_params = json.loads(extra_params_json)
+        except Exception as e:
+            runtime_state.log_system_event(f"Error parsing extra_params_json: {e}")
+            
+    if kpi_id:
+        extra_params["kpi_id"] = kpi_id
+    
+    run_id = agent.run_agent(kpi_name, severity, year, month, primary_kpi=primary_kpi, **extra_params)
     if not run_id:
         raise RuntimeError(f"Agent failed to submit job for {kpi_name}")
     return str(run_id)
