@@ -21,7 +21,7 @@ Guidelines:
 7. Consider cross-functional HR impacts.
 8. Prioritize recommendations by effort vs. impact.
 9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table and dependency table within the root cause analysis findings. Detail exactly WHY the breach occurred, and BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay) ONLY IF they are explicitly present in the provided OData row or root cause details. Strictly do NOT invent, hallucinate, or assume fake employee IDs (e.g., EMP100001, EMP100002) or candidate records if they are not in the context.
-10. HIGHLIGHT IMPORTANT THINGS: In your descriptions, executive summaries, root causes, precautions, and future solutions, highlight critical values, specific names, employee IDs, percentages, and durations using markdown bolding (e.g., **Engineering**, **EMP100001**, **45.6%**, **4 days**). Only highlight real values present in the input.
+10. HIGHLIGHT IMPORTANT THINGS: In your descriptions, executive summaries, root causes, and precautions, highlight critical values, specific names, employee IDs, percentages, and durations using markdown bolding (e.g., **Engineering**, **EMP100001**, **45.6%**, **4 days**). Only highlight real values present in the input.
 11. DETAILED EXPLANATION: Write detailed, context-rich analysis and recommendations rather than brief summaries. Provide deep business insights that help in process optimization.
 12. NO RECORD HALLUCINATIONS: Do not populate "affected_records" or invent specific delayed records for dependent or correlated KPIs that are department-level or do not have matching record-level details in the input context. Keep "affected_records" empty or strictly limited to actual records provided in the inputs.
 
@@ -60,10 +60,6 @@ Format your response as valid JSON with the following structure:
     "precautions": [
         "Precaution 1...",
         "Precaution 2..."
-    ],
-    "future_solutions": [
-        "Future solution 1...",
-        "Future solution 2..."
     ]
 }
 """

@@ -1316,24 +1316,16 @@
                     </div>`;
             }
 
-            // Precautions & Future Solutions
+            // Precautions
             let precautionsHtml = '';
             const precautions = d.precautions || [];
-            const future = d.future_solutions || [];
-            if (precautions.length || future.length) {
-                const pList = precautions.length ? precautions.map(p => `<li>${p}</li>`).join('') : '<li style="font-style:italic;">None listed.</li>';
-                const fList = future.length ? future.map(f => `<li>${f}</li>`).join('') : '<li style="font-style:italic;">None listed.</li>';
+            if (precautions.length) {
+                const pList = precautions.map(p => `<li>${p}</li>`).join('');
                 
                 precautionsHtml = `
-                    <div class="precautions-future-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
-                        <div>
-                            <div class="field-label" style="color: #ef4444;">Precautions (Risk Mitigation)</div>
-                            <ul class="root-cause-list" style="margin-top: 8px;">${pList}</ul>
-                        </div>
-                        <div>
-                            <div class="field-label" style="color: #10b981;">Future Solutions (Automation / Dev)</div>
-                            <ul class="root-cause-list" style="margin-top: 8px;">${fList}</ul>
-                        </div>
+                    <div style="margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
+                        <div class="field-label" style="color: #ef4444;">Precautions (Risk Mitigation)</div>
+                        <ul class="root-cause-list" style="margin-top: 8px;">${pList}</ul>
                     </div>`;
             }
 
