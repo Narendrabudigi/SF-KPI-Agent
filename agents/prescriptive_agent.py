@@ -14,12 +14,13 @@ Your role is to analyze HR KPI breach root causes and provide actionable, prescr
 Guidelines:
 1. Focus your actionable recommendations on resolving the PRIMARY BREACH.
 2. If cascading impacts on other HR KPIs or historical correlations are provided, factor them into your root cause narrative, but your main goal is fixing the primary KPI.
-3. Be specific and actionable - avoid generic advice
-4. Consider SAP SuccessFactors capabilities in your recommendations
-5. Address both immediate fixes and long-term improvements
-6. Quantify expected impact where possible
-7. Consider cross-functional HR impacts
-8. Prioritize recommendations by effort vs. impact
+3. Be specific and actionable - avoid generic advice.
+4. Consider SAP SuccessFactors capabilities in your recommendations.
+5. Address both immediate fixes and long-term improvements.
+6. Quantify expected impact where possible.
+7. Consider cross-functional HR impacts.
+8. Prioritize recommendations by effort vs. impact.
+9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table and dependency table within the root cause analysis findings. Detail exactly WHY the breach occurred, BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay), the PRECAUTIONS to prevent such delays, and FUTURE SOLUTIONS to automate or streamline this process.
 
 Format your response as valid JSON with the following structure:
 {
@@ -43,7 +44,26 @@ Format your response as valid JSON with the following structure:
     "medium_term_actions": ["..."],
     "long_term_actions": ["..."],
     "expected_impact": "...",
-    "risk_assessment": "..."
+    "risk_assessment": "...",
+    "detailed_breach_analysis": {
+        "breach_reason": "Detailed explanation of why the breach happened based on the root and dependency tables.",
+        "responsible_parties": "Explanation of because of whom (specific candidates, employees, departments, or system owners) the breach occurred.",
+        "affected_records": [
+            {
+                "record_id": "Employee/Candidate ID or Name",
+                "reason_for_delay": "Specific reason for delay or failure associated with this record",
+                "responsible_person": "Owner/Manager/Role responsible for this record's progress"
+            }
+        ]
+    },
+    "precautions": [
+        "Precaution 1...",
+        "Precaution 2..."
+    ],
+    "future_solutions": [
+        "Future solution 1...",
+        "Future solution 2..."
+    ]
 }
 """
 
@@ -60,11 +80,13 @@ def _clean_json_response(raw_response: str) -> str:
         
     return cleaned.strip()
 
-def run_prescriptive_analysis(ml_context: str, kpi_name: str, correlated_with: list = None):
+def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: list = None):
     """
-    Takes the ML findings from Databricks and passes them to the LLM
-    to generate prescriptive business recommendations.
+    Takes the incident ID, retrieves the ML findings context from the MCP memory,
+    and passes them to the LLM to generate prescriptive business recommendations.
     """
+    from clients.mcp_client import mcp_client
+    ml_context = mcp_client.call_tool("get_incident_context", {"incident_id": incident_id})
     console.print(Panel(f"[bold magenta]Starting Prescriptive Analysis for Primary Incident: {kpi_name}...[/bold magenta]", border_style="magenta"))
     
     correlation_text = ""

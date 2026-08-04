@@ -22,6 +22,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="HR KPI Agentic AI API", lifespan=lifespan)
 
+from agents.mcp_server import mcp
+app.mount("/mcp", mcp.sse_app())
+
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from agents.orchestrator import check_sap_breaches
