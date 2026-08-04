@@ -1,10 +1,26 @@
 from rich.console import Console
 from rich.panel import Panel
+import re
 
 import config
 from clients import notification_client
 
 console = Console()
+
+def _convert_markdown_to_html_highlights(val):
+    """Recursively converts markdown bold syntax (**text**) to HTML styled highlights."""
+    if isinstance(val, str):
+        return re.sub(
+            r'\*\*(.*?)\*\*',
+            r'<strong style="color: #3b82f6; font-weight: 600; background-color: rgba(59, 130, 246, 0.08); padding: 2px 4px; border-radius: 4px; font-family: inherit;">\1</strong>',
+            val
+        )
+    elif isinstance(val, list):
+        return [_convert_markdown_to_html_highlights(item) for item in val]
+    elif isinstance(val, dict):
+        return {k: _convert_markdown_to_html_highlights(v) for k, v in val.items()}
+    return val
+
 
 def _get_stakeholder_email(kpi_name: str, severity: str = None) -> str:
     """Routes to the correct stakeholder based on the HR KPI Domain."""
@@ -66,7 +82,7 @@ def _save_to_dashboard(data: dict, kpi_name: str):
 def _format_html_email(data: dict, kpi_name: str) -> str:
     """Formats the JSON recommendation into a readable HTML email."""
     actions_html = "".join([
-        f"<tr><td>{a.get('action', '')}</td><td>{a.get('responsible_role', '')}</td><td>{a.get('sap_transaction', '')}</td><td>{a.get('effort', '')}</td></tr>"
+        f"<tr><td>{a.get('action', '')}</td><td>{a.get('responsible_role', '')}</td></tr>"
         for a in data.get("immediate_actions", [])
     ])
     
@@ -88,8 +104,6 @@ def _format_html_email(data: dict, kpi_name: str) -> str:
           <tr style="background-color: #f2f2f2;">
             <th>Action</th>
             <th>Role</th>
-            <th>SAP T-Code</th>
-            <th>Effort</th>
           </tr>
           {actions_html}
         </table>
@@ -116,7 +130,7 @@ def _format_teams_markdown(data: dict, kpi_name: str) -> str:
     md += "### ⚡ Immediate Actions\n"
     
     for a in data.get("immediate_actions", []):
-        md += f"- **{a.get('action', '')}** (Role: {a.get('responsible_role', '')} | SAP T-Code: {a.get('sap_transaction', '')})\n"
+        md += f"- **{a.get('action', '')}** (Role: {a.get('responsible_role', '')})\n"
         
     md += f"\n**⚠️ Risk Assessment:** {data.get('risk_assessment', '')}"
     return md
@@ -137,8 +151,11 @@ def distribute_recommendations(data: dict, kpi_name: str, severity: str = "Criti
     stakeholder_email = _get_stakeholder_email(kpi_name, severity)
     subject = f"ACTION REQUIRED: AI Prescriptive Analysis for {kpi_name} Breach"
     
+    # Convert markdown bolding to HTML highlights for Email and Dashboard formats
+    html_data = _convert_markdown_to_html_highlights(data)
+    
     # 1. Send Email via SMTP
-    html_body = _format_html_email(data, kpi_name)
+    html_body = _format_html_email(html_data, kpi_name)
     notification_client.send_email(stakeholder_email, subject, html_body)
     
     # 2. Send MS Teams Notification
@@ -146,7 +163,7 @@ def distribute_recommendations(data: dict, kpi_name: str, severity: str = "Criti
     notification_client.send_teams_message(markdown_body)
     
     # 3. Save to Dashboard
-    _save_to_dashboard(data, kpi_name)
+    _save_to_dashboard(html_data, kpi_name)
     
     # 4. Record active breach in breach_tracker so active_breaches.json is updated
     try:

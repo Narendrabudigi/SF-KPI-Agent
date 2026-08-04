@@ -3,7 +3,7 @@ import os
 try:
     from mcp.server.fastmcp import FastMCP
 except ImportError:
-    from fastmcp import FastMCP
+    from  mcp.server.fastmcp import FastMCP
 import runtime_state
 
 # Import existing clients and agent modules

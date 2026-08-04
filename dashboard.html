@@ -972,6 +972,14 @@
             "employee_payment": "Payroll Agent"
         };
 
+        const agentPrimaryKPIs = {
+            "recruitment": "Time-to-Hire",
+            "onboarding": "Onboarding Completion Time",
+            "offboarding": "Offboarding Completion Time",
+            "employee_central": "Employee Attrition Rate",
+            "employee_payment": "Payroll Error Rate"
+        };
+
         function toggleConsole() {
             const terminal = document.getElementById('terminal-body');
             const btn = document.getElementById('btn-toggle-console');
@@ -1048,6 +1056,14 @@
                                 });
                             };
 
+                            const getDepRunDetail = (nameKey, parentKPI) => {
+                                if (!state.active_runs) return null;
+                                const depKPI = agentPrimaryKPIs[nameKey];
+                                return state.active_runs.find(run => {
+                                    return run.kpi_name === depKPI && run.primary_kpi === parentKPI;
+                                });
+                            };
+
                             // Self node
                             let selfColor = "var(--text-secondary)";
                             if (status === "running") selfColor = "var(--blue)";
@@ -1060,9 +1076,34 @@
                                 treeHtml += `<div style="font-size: 10px; color: var(--text-secondary); padding-left: 12px; margin-bottom: 4px;">└─ Run ID: ${selfRun.run_id} | ${selfRun.stage}</div>`;
                             }
 
+                            const parentKPI = agentPrimaryKPIs[agent];
+
                             // Children (Level 1 dependencies)
                             level1.forEach(dep1 => {
-                                const dep1Status = (state.agent_statuses && state.agent_statuses[dep1]) || "inactive";
+                                const dep1KPI = agentPrimaryKPIs[dep1];
+                                const dep1Run = getDepRunDetail(dep1, parentKPI);
+
+                                let dep1Status = "inactive";
+                                if (dep1Run) {
+                                    dep1Status = "running";
+                                } else {
+                                    const isParentPrimaryRunning = state.active_runs && state.active_runs.some(run => {
+                                        return run.kpi_name === parentKPI && run.stage.includes("Stage 1");
+                                    });
+
+                                    if (isParentPrimaryRunning) {
+                                        dep1Status = "inactive"; // Idle during Stage 1
+                                    } else {
+                                        if (status === "completed" || status === "running") {
+                                            dep1Status = "completed";
+                                        } else if (status === "failed") {
+                                            dep1Status = "failed";
+                                        } else {
+                                            dep1Status = "inactive";
+                                        }
+                                    }
+                                }
+
                                 let dep1Color = "var(--text-secondary)";
                                 if (dep1Status === "running") dep1Color = "var(--blue)";
                                 if (dep1Status === "completed") dep1Color = "var(--green)";
@@ -1075,7 +1116,6 @@
                                     </div>
                                 `;
 
-                                const dep1Run = getRunDetail(dep1);
                                 if (dep1Run) {
                                     treeHtml += `<div style="font-size: 10px; color: var(--text-secondary); padding-left: 20px; margin-bottom: 4px;">└─ Run ID: ${dep1Run.run_id} | ${dep1Run.stage}</div>`;
                                 }

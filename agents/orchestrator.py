@@ -143,6 +143,7 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                 runtime_state.SYSTEM_STATE["active_runs"].append({
                     "run_id": run_id,
                     "kpi_name": primary_kpi_name,
+                    "primary_kpi": primary_kpi_name,
                     "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_module.__name__ else (
                         config.ONBOARDING_NOTEBOOK_PATH if "onboarding" in agent_module.__name__ else (
                             config.OFFBOARDING_NOTEBOOK_PATH if "offboarding" in agent_module.__name__ else (
@@ -242,6 +243,7 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                         active_run_entry = {
                             "run_id": run_id,
                             "kpi_name": target_kpi,
+                            "primary_kpi": primary_kpi_name,
                             "notebook_path": config.RECRUITMENT_NOTEBOOK_PATH if "recruitment" in agent_mod.__name__ else (
                                 config.ONBOARDING_NOTEBOOK_PATH if "onboarding" in agent_mod.__name__ else (
                                     config.OFFBOARDING_NOTEBOOK_PATH if "offboarding" in agent_mod.__name__ else (
