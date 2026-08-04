@@ -71,7 +71,7 @@ DATABRICKS_SQL_HTTP_PATH: str = os.getenv("DATABRICKS_SQL_HTTP_PATH", "")
 # ---------------------------------------------------------------------------
 INTERDEPENDENCY_MATRIX = {
     "Time-to-Hire": {
-        "affected_by": ["Payroll Error Rate"],
+        "affected_by": [], # Commented for now: ["Payroll Error Rate"]
         "affects": ["Onboarding Completion Time"],
         "correlated_with": ["Employee Attrition Rate"]
     },
@@ -81,20 +81,21 @@ INTERDEPENDENCY_MATRIX = {
         "correlated_with": ["Offboarding Completion Time"]
     },
     "Employee Attrition Rate": {
-        "affected_by": ["Onboarding Completion Time", "Payroll Error Rate"],
+        "affected_by": ["Onboarding Completion Time"], # Commented for now: "Payroll Error Rate"
         "affects": ["Offboarding Completion Time"],
-        "correlated_with": ["Payroll Error Rate", "Time-to-Hire"]
+        "correlated_with": ["Time-to-Hire"] # Commented for now: "Payroll Error Rate"
     },
     "Offboarding Completion Time": {
         "affected_by": ["Employee Attrition Rate"],
-        "affects": ["Payroll Error Rate"],
+        "affects": [], # Commented for now: ["Payroll Error Rate"]
         "correlated_with": ["Onboarding Completion Time"]
     },
-    "Payroll Error Rate": {
-        "affected_by": ["Offboarding Completion Time"],
-        "affects": ["Employee Attrition Rate", "Time-to-Hire"],
-        "correlated_with": ["Employee Attrition Rate"]
-    }
+    # Commented out Payroll Error Rate block for now
+    # "Payroll Error Rate": {
+    #     "affected_by": ["Offboarding Completion Time"],
+    #     "affects": ["Employee Attrition Rate", "Time-to-Hire"],
+    #     "correlated_with": ["Employee Attrition Rate"]
+    # }
 }
 
 

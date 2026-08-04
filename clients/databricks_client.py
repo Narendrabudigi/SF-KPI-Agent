@@ -71,7 +71,9 @@ def submit_run(
     if parameters:
         payload["tasks"][0]["notebook_task"]["base_parameters"] = parameters
 
-    # Note: No cluster config — uses serverless compute automatically
+    # Use existing cluster if configured, otherwise falls back to serverless compute
+    if getattr(config, "EXISTING_CLUSTER_ID", None):
+        payload["tasks"][0]["existing_cluster_id"] = config.EXISTING_CLUSTER_ID
 
     response = requests.post(
         f"{config.API_BASE_URL}/jobs/runs/submit",

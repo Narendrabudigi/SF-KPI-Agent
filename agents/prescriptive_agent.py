@@ -14,13 +14,15 @@ Your role is to analyze HR KPI breach root causes and provide actionable, prescr
 Guidelines:
 1. Focus your actionable recommendations on resolving the PRIMARY BREACH.
 2. If cascading impacts on other HR KPIs or historical correlations are provided, factor them into your root cause narrative, but your main goal is fixing the primary KPI.
-3. Be specific and actionable - avoid generic advice.
+3. Be specific, extremely detailed, and actionable - avoid generic advice.
 4. Consider SAP SuccessFactors capabilities in your recommendations.
-5. Address both immediate fixes and long-term improvements.
+5. Address both immediate fixes and long-term improvements to reduce future failures and support business development.
 6. Quantify expected impact where possible.
 7. Consider cross-functional HR impacts.
 8. Prioritize recommendations by effort vs. impact.
 9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table and dependency table within the root cause analysis findings. Detail exactly WHY the breach occurred, BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay), the PRECAUTIONS to prevent such delays, and FUTURE SOLUTIONS to automate or streamline this process.
+10. HIGHLIGHT IMPORTANT THINGS: In your descriptions, executive summaries, root causes, precautions, and future solutions, highlight critical values, specific names, employee IDs, percentages, and durations using markdown bolding (e.g., **Engineering**, **EMP100001**, **45.6%**, **4 days**).
+11. DETAILED EXPLANATION: Write detailed, context-rich analysis and recommendations rather than brief summaries. Provide deep business insights that help in process optimization.
 
 Format your response as valid JSON with the following structure:
 {
@@ -36,9 +38,7 @@ Format your response as valid JSON with the following structure:
         {
             "action": "...",
             "responsible_role": "...",
-            "sap_transaction": "...",
-            "expected_impact": "...",
-            "effort": "low/medium/high"
+            "expected_impact": "..."
         }
     ],
     "medium_term_actions": ["..."],
@@ -127,15 +127,12 @@ def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: 
         actions_table = Table(title="⚡ Immediate Actions (Within 1 week)", show_header=True, header_style="bold cyan")
         actions_table.add_column("Action")
         actions_table.add_column("Role")
-        actions_table.add_column("SAP T-Code")
-        actions_table.add_column("Effort")
-        
+      
         for action in data.get("immediate_actions", []):
             actions_table.add_row(
                 str(action.get("action", "")),
-                str(action.get("responsible_role", "")),
-                str(action.get("sap_transaction", "")),
-                str(action.get("effort", ""))
+                str(action.get("responsible_role", ""))
+              
             )
             
         console.print(actions_table)

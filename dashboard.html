@@ -45,7 +45,7 @@
             --radius-md: 8px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --bg-radial: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
-                         radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
         }
 
         body.light-theme {
@@ -67,7 +67,7 @@
             --red-glow: rgba(244, 63, 94, 0.08);
             --orange-glow: rgba(245, 158, 11, 0.08);
             --bg-radial: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 40%),
-                         radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 40%);
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 40%);
         }
 
         body {
@@ -299,15 +299,9 @@
 
         /* ── Agent Status Grid ──────────────── */
         .agent-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 16px;
-        }
-
-        @media (max-width: 640px) {
-            .agent-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         .agent-card {
@@ -740,6 +734,22 @@
                 transform: translateX(100%);
             }
         }
+
+        .tree-node {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            margin-top: 4px;
+        }
+
+        .tree-badge {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 
@@ -751,11 +761,15 @@
             <div class="brand-logo">
                 <img src="/Yash.png" alt="Yash Technologies Logo">
             </div>
-            <div class="brand-title">Yash Technologies <span>HR KPI Agentic AI Control Center</span></div>
+            <div class="brand-title">Yash Technologies <span>
+                    <h1>AI POWERED - AGENTIC SAP SF KPI MONITOR</h1>
+                </span></div>
         </div>
         <div class="navbar-actions">
-            <button id="btn-theme-toggle" class="btn" onclick="toggleTheme()" aria-label="Toggle Theme" style="padding: 8px 12px;">
-                <svg id="theme-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <button id="btn-theme-toggle" class="btn" onclick="toggleTheme()" aria-label="Toggle Theme"
+                style="padding: 8px 12px;">
+                <svg id="theme-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
                 </svg>
             </button>
             <button id="btn-trigger" class="btn btn-primary" onclick="triggerScan()">
@@ -782,7 +796,48 @@
         </div>
 
         <div class="dashboard-grid">
-            <!-- ── Left Column: Agent Network Status ── -->
+            <!-- ── Left Column: Jobs & Logs ───────── -->
+            <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                <!-- Active Jobs -->
+                <div style="flex-shrink:0;">
+                    <div class="panel-header" style="margin-bottom:12px;">
+                        <div class="panel-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Active Databricks Jobs (<span id="jobs-count">0</span>)
+                        </div>
+                    </div>
+                    <div class="jobs-list" id="active-jobs-list">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Monospace Console Logs -->
+                <div style="flex-grow:1; display:flex; flex-direction:column;">
+                    <div class="panel-header"
+                        style="margin-bottom:12px; padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div class="panel-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Live Agent Console Events
+                        </div>
+                        <button id="btn-toggle-console" class="btn" style="padding: 4px 8px; font-size: 11px;"
+                            onclick="toggleConsole()">Hide</button>
+                    </div>
+                    <div class="terminal" id="terminal-body">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Right Column: Agent Network Status ── -->
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title">
@@ -807,6 +862,9 @@
                             <span>Notebook: <strong>Recruitment_RCA</strong></span>
                             <span>Target: <strong>recruitment_rca_results</strong></span>
                         </div>
+                        <div class="agent-tree" id="tree-recruitment"
+                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
+                        </div>
                     </div>
 
                     <!-- Onboarding Agent -->
@@ -818,6 +876,9 @@
                         <div class="agent-detail">
                             <span>Notebook: <strong>Onboarding_RCA</strong></span>
                             <span>Target: <strong>onboarding_rca_results</strong></span>
+                        </div>
+                        <div class="agent-tree" id="tree-onboarding"
+                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
                         </div>
                     </div>
 
@@ -831,6 +892,9 @@
                             <span>Notebook: <strong>Offboarding_RCA</strong></span>
                             <span>Target: <strong>offboarding_rca_results</strong></span>
                         </div>
+                        <div class="agent-tree" id="tree-offboarding"
+                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
+                        </div>
                     </div>
 
                     <!-- Employee Central Agent -->
@@ -843,10 +907,13 @@
                             <span>Notebook: <strong>Central_RCA</strong></span>
                             <span>Target: <strong>central_rca_results</strong></span>
                         </div>
+                        <div class="agent-tree" id="tree-employee_central"
+                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
+                        </div>
                     </div>
 
-                    <!-- Payroll Agent -->
-                    <div class="agent-card inactive" id="agent-employee_payment">
+                    <!-- Payroll Agent (Hidden for now since payroll is inactive) -->
+                    <div class="agent-card inactive" id="agent-employee_payment" style="display:none;">
                         <div class="agent-header">
                             <span class="agent-name">Payroll Agent</span>
                             <span class="agent-badge">INACTIVE</span>
@@ -855,44 +922,9 @@
                             <span>Notebook: <strong>Payroll_RCA</strong></span>
                             <span>Target: <strong>payment_rca_results</strong></span>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ── Right Column: Jobs & Logs ───────── -->
-            <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
-                <!-- Active Jobs -->
-                <div style="flex-shrink:0;">
-                    <div class="panel-header" style="margin-bottom:12px;">
-                        <div class="panel-title">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Active Databricks Jobs (<span id="jobs-count">0</span>)
+                        <div class="agent-tree" id="tree-employee_payment"
+                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
                         </div>
-                    </div>
-                    <div class="jobs-list" id="active-jobs-list">
-                        <!-- Filled dynamically -->
-                    </div>
-                </div>
-
-                <!-- Monospace Console Logs -->
-                <div style="flex-grow:1; display:flex; flex-direction:column;">
-                    <div class="panel-header" style="margin-bottom:12px; padding-bottom:8px;">
-                        <div class="panel-title">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            Live Agent Console Events
-                        </div>
-                    </div>
-                    <div class="terminal" id="terminal-body">
-                        <!-- Filled dynamically -->
                     </div>
                 </div>
             </div>
@@ -924,6 +956,34 @@
 
         let lastResultsCount = -1;
 
+        const dependencyMap = {
+            "recruitment": ["onboarding"],
+            "onboarding": ["employee_central"],
+            "employee_central": ["offboarding"],
+            "offboarding": [], // Commented for now: ["employee_payment"]
+            // "employee_payment": ["recruitment", "employee_central"]
+        };
+
+        const agentDisplayNames = {
+            "recruitment": "Recruitment Agent",
+            "onboarding": "Onboarding Agent",
+            "offboarding": "Offboarding Agent",
+            "employee_central": "Central Agent",
+            "employee_payment": "Payroll Agent"
+        };
+
+        function toggleConsole() {
+            const terminal = document.getElementById('terminal-body');
+            const btn = document.getElementById('btn-toggle-console');
+            if (terminal.style.display === 'none') {
+                terminal.style.display = 'flex';
+                btn.textContent = 'Hide';
+            } else {
+                terminal.style.display = 'none';
+                btn.textContent = 'Show';
+            }
+        }
+
         async function fetchSystemState() {
             try {
                 const res = await fetch('/api/status');
@@ -951,8 +1011,8 @@
 
                 lastCheckEl.textContent = state.last_checked || "Never";
 
-                // Update Agent Cards
-                const agents = ['recruitment', 'onboarding', 'offboarding', 'employee_central', 'employee_payment'];
+                // Update Agent Cards (employee_payment removed for now)
+                const agents = ['recruitment', 'onboarding', 'offboarding', 'employee_central'];
                 agents.forEach(agent => {
                     const el = document.getElementById(`agent-${agent}`);
                     if (!el) return;
@@ -965,6 +1025,70 @@
 
                     const badge = el.querySelector('.agent-badge');
                     badge.textContent = status;
+
+                    // Render dependency tree if running, completed, or failed
+                    const treeEl = document.getElementById(`tree-${agent}`);
+                    if (treeEl) {
+                        if (status === "running" || status === "completed" || status === "failed") {
+                            const level1 = dependencyMap[agent] || [];
+                            let treeHtml = `<div style="font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); font-size: 11px;">Dependency Execution Tree:</div>`;
+                            treeHtml += `<div style="font-family: monospace; line-height: 1.5; padding-left: 2px;">`;
+
+                            // Helper to find run detail
+                            const getRunDetail = (nameKey) => {
+                                if (!state.active_runs) return null;
+                                return state.active_runs.find(run => {
+                                    const rKpi = run.kpi_name.toLowerCase();
+                                    if (nameKey === "recruitment" && rKpi.includes("hire")) return true;
+                                    if (nameKey === "onboarding" && rKpi.includes("onboarding")) return true;
+                                    if (nameKey === "offboarding" && rKpi.includes("offboarding")) return true;
+                                    if (nameKey === "employee_central" && (rKpi.includes("attrition") || rKpi.includes("central"))) return true;
+                                    if (nameKey === "employee_payment" && (rKpi.includes("payroll") || rKpi.includes("payment"))) return true;
+                                    return false;
+                                });
+                            };
+
+                            // Self node
+                            let selfColor = "var(--text-secondary)";
+                            if (status === "running") selfColor = "var(--blue)";
+                            if (status === "completed") selfColor = "var(--green)";
+                            if (status === "failed") selfColor = "var(--red)";
+                            treeHtml += `<div><span style="color: ${selfColor};">●</span> <span style="font-weight: 600; color: ${selfColor};">${agentDisplayNames[agent]}</span> <span class="tree-badge" style="background: ${selfColor}15; color: ${selfColor}; border: 1px solid ${selfColor}30; font-size: 8px; padding: 0px 3px;">${status}</span></div>`;
+
+                            const selfRun = getRunDetail(agent);
+                            if (selfRun) {
+                                treeHtml += `<div style="font-size: 10px; color: var(--text-secondary); padding-left: 12px; margin-bottom: 4px;">└─ Run ID: ${selfRun.run_id} | ${selfRun.stage}</div>`;
+                            }
+
+                            // Children (Level 1 dependencies)
+                            level1.forEach(dep1 => {
+                                const dep1Status = (state.agent_statuses && state.agent_statuses[dep1]) || "inactive";
+                                let dep1Color = "var(--text-secondary)";
+                                if (dep1Status === "running") dep1Color = "var(--blue)";
+                                if (dep1Status === "completed") dep1Color = "var(--green)";
+                                if (dep1Status === "failed") dep1Color = "var(--red)";
+
+                                treeHtml += `
+                                    <div class="tree-node">
+                                        ├── <span style="font-weight: 600; color: ${dep1Color};">${agentDisplayNames[dep1]}</span>
+                                        <span class="tree-badge" style="background: ${dep1Color}15; color: ${dep1Color}; border: 1px solid ${dep1Color}30; font-size: 8px; padding: 0px 3px;">${dep1Status}</span>
+                                    </div>
+                                `;
+
+                                const dep1Run = getRunDetail(dep1);
+                                if (dep1Run) {
+                                    treeHtml += `<div style="font-size: 10px; color: var(--text-secondary); padding-left: 20px; margin-bottom: 4px;">└─ Run ID: ${dep1Run.run_id} | ${dep1Run.stage}</div>`;
+                                }
+                            });
+
+                            treeHtml += `</div>`;
+                            treeEl.innerHTML = treeHtml;
+                            treeEl.style.display = "block";
+                        } else {
+                            treeEl.style.display = "none";
+                            treeEl.innerHTML = "";
+                        }
+                    }
                 });
 
                 // Update Active Jobs
@@ -1108,20 +1232,70 @@
                 actionsHtml = `
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>Action</th><th>Responsible Role</th><th>SAP T-Code</th><th>Effort</th></tr></thead>
+                            <thead><tr><th>Action</th><th>Responsible Role</th></tr></thead>
                             <tbody>${actions.map(a => `
                                 <tr>
                                     <td>${a.action || ''}</td>
                                     <td>${a.responsible_role || ''}</td>
-                                    <td><span class="tcode">${a.sap_transaction || '—'}</span></td>
-                                    <td><span class="effort-badge ${effortClass(a.effort)}">${a.effort || ''}</span></td>
                                 </tr>`).join('')}
                             </tbody>
                         </table>
                     </div>`;
             }
 
-            let riskHtml = risk ? `<div class="field-label">Risk Assessment</div><div class="risk-box">${risk}</div>` : '';
+            let riskHtml = risk ? `<div class="field-label" style="margin-top:16px;">Risk Assessment</div><div class="risk-box">${risk}</div>` : '';
+
+            // Detailed Analysis
+            let detailedHtml = '';
+            const detailed = d.detailed_breach_analysis || {};
+            if (detailed.breach_reason || detailed.responsible_parties) {
+                let recordsHtml = '';
+                const records = detailed.affected_records || [];
+                if (records.length) {
+                    recordsHtml = `
+                        <div class="field-sub-label" style="font-size: 0.85em; text-transform: uppercase; color: var(--text-muted); margin-top: 12px; margin-bottom: 6px; font-weight: 600; letter-spacing: 0.5px;">Affected Records & responsible owners</div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Record ID / Name</th><th>Reason for Delay / Details</th><th>Responsible Person</th></tr></thead>
+                                <tbody>${records.map(rec => `
+                                    <tr>
+                                        <td><strong>${rec.record_id || ''}</strong></td>
+                                        <td>${rec.reason_for_delay || ''}</td>
+                                        <td><span class="responsible-role-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; font-weight: 500;">${rec.responsible_person || ''}</span></td>
+                                    </tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+                detailedHtml = `
+                    <div style="margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
+                        <div class="field-label" style="color: var(--accent-blue);">Detailed Business & RCA Insights</div>
+                        <p class="field-content" style="margin-top: 6px;"><strong>Breach Driver:</strong> ${detailed.breach_reason || ''}</p>
+                        <p class="field-content" style="margin-top: 4px;"><strong>Responsible Entities:</strong> ${detailed.responsible_parties || ''}</p>
+                        ${recordsHtml}
+                    </div>`;
+            }
+
+            // Precautions & Future Solutions
+            let precautionsHtml = '';
+            const precautions = d.precautions || [];
+            const future = d.future_solutions || [];
+            if (precautions.length || future.length) {
+                const pList = precautions.length ? precautions.map(p => `<li>${p}</li>`).join('') : '<li style="font-style:italic;">None listed.</li>';
+                const fList = future.length ? future.map(f => `<li>${f}</li>`).join('') : '<li style="font-style:italic;">None listed.</li>';
+                
+                precautionsHtml = `
+                    <div class="precautions-future-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
+                        <div>
+                            <div class="field-label" style="color: #ef4444;">Precautions (Risk Mitigation)</div>
+                            <ul class="root-cause-list" style="margin-top: 8px;">${pList}</ul>
+                        </div>
+                        <div>
+                            <div class="field-label" style="color: #10b981;">Future Solutions (Automation / Dev)</div>
+                            <ul class="root-cause-list" style="margin-top: 8px;">${fList}</ul>
+                        </div>
+                    </div>`;
+            }
 
             return `
                 <div class="alert-card">
@@ -1142,6 +1316,8 @@
                         <div class="field-label">Immediate Actions (Within 1 week)</div>
                         ${actionsHtml || '<p class="field-content" style="font-style:italic;">None recommended.</p>'}
 
+                        ${detailedHtml}
+                        ${precautionsHtml}
                         ${riskHtml}
                     </div>
                 </div>`;

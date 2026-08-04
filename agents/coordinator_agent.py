@@ -63,6 +63,7 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
             df = databricks_sql_client.fetch_results(table_name)
             # Filter the dataframe to only include rows related to the primary incident (case-insensitive column search)
             if not df.empty:
+                df = df.replace(["nan", "NaN", "None", "null"], "")
                 primary_col = next((c for c in df.columns if c.upper() == 'PRIMARY_BREACH_KPI'), None)
                 if primary_col:
                     df = df[df[primary_col] == primary_kpi_name]

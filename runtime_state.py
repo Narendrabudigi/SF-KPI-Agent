@@ -8,6 +8,7 @@ console = Console()
 SYSTEM_STATE = {
     "status": "idle",             # idle, fetching, running_stage_1, running_stage_2, prescribing, completed
     "last_checked": None,
+    "primary_agent": None,        # tracks the primary breach agent (domain_key)
     "current_breaches": [],        # list of active breaches being processed
     "active_runs": [],             # list of active Databricks job runs with ID, KPI, and stage
     "agent_statuses": {            # recruitment, onboarding, offboarding, central, payment
