@@ -828,8 +828,12 @@
                             </svg>
                             Live Agent Console Events
                         </div>
-                        <button id="btn-toggle-console" class="btn" style="padding: 4px 8px; font-size: 11px;"
-                            onclick="toggleConsole()">Hide</button>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="btn-clear-console" class="btn" style="padding: 4px 8px; font-size: 11px; background: rgba(239, 68, 68, 0.1); color: var(--red); border-color: rgba(239, 68, 68, 0.2);"
+                                onclick="clearConsole()">Clear Console</button>
+                            <button id="btn-toggle-console" class="btn" style="padding: 4px 8px; font-size: 11px;"
+                                onclick="toggleConsole()">Hide</button>
+                        </div>
                     </div>
                     <div class="terminal" id="terminal-body">
                         <!-- Filled dynamically -->
@@ -980,6 +984,17 @@
             "employee_payment": "Payroll Error Rate"
         };
 
+        async function clearConsole() {
+            try {
+                const res = await fetch('/api/clear_logs', { method: 'POST' });
+                if (res.ok) {
+                    document.getElementById('terminal-body').innerHTML = '<div style="color:var(--text-secondary);font-style:italic;">Console cleared.</div>';
+                }
+            } catch (err) {
+                console.error("Failed to clear console logs:", err);
+            }
+        }
+
         function toggleConsole() {
             const terminal = document.getElementById('terminal-body');
             const btn = document.getElementById('btn-toggle-console');
@@ -1045,14 +1060,9 @@
                             // Helper to find run detail
                             const getRunDetail = (nameKey) => {
                                 if (!state.active_runs) return null;
+                                const targetPrimaryKPI = agentPrimaryKPIs[nameKey];
                                 return state.active_runs.find(run => {
-                                    const rKpi = run.kpi_name.toLowerCase();
-                                    if (nameKey === "recruitment" && rKpi.includes("hire")) return true;
-                                    if (nameKey === "onboarding" && rKpi.includes("onboarding")) return true;
-                                    if (nameKey === "offboarding" && rKpi.includes("offboarding")) return true;
-                                    if (nameKey === "employee_central" && (rKpi.includes("attrition") || rKpi.includes("central"))) return true;
-                                    if (nameKey === "employee_payment" && (rKpi.includes("payroll") || rKpi.includes("payment"))) return true;
-                                    return false;
+                                    return run.primary_kpi === targetPrimaryKPI && run.kpi_name === targetPrimaryKPI;
                                 });
                             };
 
@@ -1094,10 +1104,17 @@
                                     if (isParentPrimaryRunning) {
                                         dep1Status = "inactive"; // Idle during Stage 1
                                     } else {
-                                        if (status === "completed" || status === "running") {
-                                            dep1Status = "completed";
-                                        } else if (status === "failed") {
-                                            dep1Status = "failed";
+                                        const depDomainStatus = state.agent_statuses && state.agent_statuses[dep1];
+                                        if (status === "completed") {
+                                            dep1Status = depDomainStatus === "failed" ? "failed" : "completed";
+                                        } else if (status === "running") {
+                                            if (depDomainStatus === "completed") {
+                                                dep1Status = "completed";
+                                            } else if (depDomainStatus === "failed") {
+                                                dep1Status = "failed";
+                                            } else {
+                                                dep1Status = "inactive";
+                                            }
                                         } else {
                                             dep1Status = "inactive";
                                         }

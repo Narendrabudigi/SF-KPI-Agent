@@ -12,3 +12,4 @@ applications:
     # or you can add an `env:` section here (but don't commit secrets to GitHub!).
     env:
       PYTHON_VERSION: 3.12.x
+    

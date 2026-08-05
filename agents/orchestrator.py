@@ -185,10 +185,8 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "failed"
         return
         
-    if domain_key:
-        runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "completed"
-        
     # -------------------------------------------------------------------------
+
     # STAGE 2: Dependency Breach (DB)
     # -------------------------------------------------------------------------
     db_context = ""
@@ -311,6 +309,10 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
         row=extra_params if extra_params else None
     )
     
+    if domain_key:
+        if runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] != "failed":
+            runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] = "completed"
+
     # Remove from active breaches
     if breach_key in runtime_state.SYSTEM_STATE["current_breaches"]:
         runtime_state.SYSTEM_STATE["current_breaches"].remove(breach_key)

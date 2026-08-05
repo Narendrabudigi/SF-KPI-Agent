@@ -5,8 +5,8 @@
         "severity": "Critical",
         "department": "Quality Assurance",
         "first_detected": "2026-08-04T10:40:01.158427",
-        "last_notified": "2026-08-04T13:21:21.492115",
-        "notification_count": 4,
+        "last_notified": "2026-08-04T18:46:21.377217",
+        "notification_count": 6,
         "status": "ACTIVE"
     },
     "employee_attrition_rate_legal_compliance": {
@@ -15,8 +15,8 @@
         "severity": "Warning",
         "department": "Legal & Compliance",
         "first_detected": "2026-08-04T10:45:13.776057",
-        "last_notified": "2026-08-04T13:22:11.984980",
-        "notification_count": 4,
+        "last_notified": "2026-08-04T18:59:20.060091",
+        "notification_count": 6,
         "status": "ACTIVE"
     },
     "time_to_hire_app701933": {
@@ -25,8 +25,8 @@
         "severity": "Critical",
         "department": "Engineering",
         "first_detected": "2026-08-04T10:46:07.759632",
-        "last_notified": "2026-08-04T13:22:37.838595",
-        "notification_count": 4,
+        "last_notified": "2026-08-04T18:59:21.827122",
+        "notification_count": 6,
         "status": "ACTIVE"
     },
     "onboarding_completion_time_onb950001": {
@@ -35,8 +35,8 @@
         "severity": "Warning",
         "department": "DevOps & Cloud",
         "first_detected": "2026-08-04T10:46:08.667712",
-        "last_notified": "2026-08-04T13:22:37.307457",
-        "notification_count": 4,
+        "last_notified": "2026-08-04T18:59:32.789094",
+        "notification_count": 6,
         "status": "ACTIVE"
     }
 }

@@ -113,7 +113,7 @@ STATE_FILE: Path = _project_root / "run_state.json"
 
 # Active breach tracking
 ACTIVE_BREACHES_FILE: Path = _project_root / "active_breaches.json"
-NOTIFICATION_COOLDOWN_MINUTES: int = int(os.getenv("NOTIFICATION_COOLDOWN_MINUTES", "1440"))  # Default: 24 hours
+NOTIFICATION_COOLDOWN_MINUTES: int = int(os.getenv("NOTIFICATION_COOLDOWN_MINUTES", "0"))  # Default: 0 minutes (no cooldown)
 
 # LLM Configuration
 # ---------------------------------------------------------------------------

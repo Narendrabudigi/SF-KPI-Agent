@@ -84,6 +84,13 @@ def reset_results():
             return JSONResponse(content={"error": str(e)}, status_code=500)
     return {"status": "success", "message": "No data to clear"}
 
+@app.post("/api/clear_logs")
+def clear_logs():
+    """Clears the live agent console events/logs in memory."""
+    import runtime_state
+    runtime_state.SYSTEM_STATE["system_logs"] = []
+    return {"status": "success", "message": "Console logs cleared"}
+
 @app.post("/api/trigger")
 def trigger_now_post():
     """Endpoint to manually trigger a single SAP check cycle"""
