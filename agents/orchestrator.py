@@ -157,13 +157,13 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                 })
                 
                 runtime_state.log_system_event(f"[bold cyan]STAGE 1:[/bold cyan] Waiting for Main Breach job to complete...")
-                mb_context = coordinator_agent.wait_and_fetch_results_batch(
-                    mb_run_info_list, 
-                    primary_kpi_name, 
-                    severity, 
-                    year, 
-                    month
-                )
+                mb_context = mcp_client.call_tool("wait_and_fetch_results_batch", {
+                    "run_info_list_json": json.dumps(mb_run_info_list),
+                    "primary_kpi_name": primary_kpi_name,
+                    "severity": severity,
+                    "year": str(year),
+                    "month": str(month)
+                })
         finally:
             if run_id:
                 # Remove from active runs
@@ -256,13 +256,13 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                         runtime_state.SYSTEM_STATE["active_runs"].append(active_run_entry)
                         
                         # Wait and fetch results for this dependency run
-                        res_context = coordinator_agent.wait_and_fetch_results_batch(
-                            [run_info], 
-                            primary_kpi_name, 
-                            severity, 
-                            year, 
-                            month
-                        )
+                        res_context = mcp_client.call_tool("wait_and_fetch_results_batch", {
+                            "run_info_list_json": json.dumps([run_info]),
+                            "primary_kpi_name": primary_kpi_name,
+                            "severity": severity,
+                            "year": str(year),
+                            "month": str(month)
+                        })
                         if res_context:
                             with dependency_contexts_lock:
                                 dependency_contexts.append(res_context)
@@ -301,13 +301,13 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
     incident_id = f"{primary_kpi_name.replace(' ', '_')}_{year}_{month}"
     mcp_client.call_tool("store_incident_context", {"incident_id": incident_id, "context_data": full_combined_context})
     
-    prescriptive_agent.run_prescriptive_analysis(
-        incident_id, 
-        primary_kpi_name,
-        correlated_with=correlated_with,
-        severity=severity,
-        row=extra_params if extra_params else None
-    )
+    mcp_client.call_tool("run_prescriptive_analysis", {
+        "incident_id": incident_id,
+        "kpi_name": primary_kpi_name,
+        "correlated_with_json": json.dumps(correlated_with) if correlated_with else None,
+        "severity": severity,
+        "row_json": json.dumps(extra_params) if extra_params else None
+    })
     
     if domain_key:
         if runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] != "failed":

@@ -3,7 +3,7 @@ import os
 try:
     from mcp.server.fastmcp import FastMCP
 except ImportError:
-    from  mcp.server.fastmcp import FastMCP
+    from mcp.server.fastmcp import FastMCP
 import runtime_state
 
 # Import existing clients and agent modules
@@ -183,6 +183,75 @@ def query_results_table(table_name: str, primary_kpi_filter: str = None) -> str:
 # ---------------------------------------------------------------------------
 # Tools: Core Pipelines
 # ---------------------------------------------------------------------------
+
+@mcp.tool()
+def run_prescriptive_analysis(
+    incident_id: str,
+    kpi_name: str,
+    correlated_with_json: str = None,
+    severity: str = "Critical",
+    row_json: str = None
+) -> str:
+    """
+    Runs prescriptive analysis for a breach incident.
+    Fetches context from memory, queries LLM, and triggers email/Teams notifications.
+    """
+    from agents import prescriptive_agent
+    import json
+    
+    correlated_with = None
+    if correlated_with_json:
+        try:
+            correlated_with = json.loads(correlated_with_json)
+        except Exception:
+            pass
+            
+    row = None
+    if row_json:
+        try:
+            row = json.loads(row_json)
+        except Exception:
+            pass
+            
+    prescriptive_agent.run_prescriptive_analysis(
+        incident_id=incident_id,
+        kpi_name=kpi_name,
+        correlated_with=correlated_with,
+        severity=severity,
+        row=row
+    )
+    return f"Prescriptive analysis completed and notifications distributed for {kpi_name}."
+
+@mcp.tool()
+def wait_and_fetch_results_batch(
+    run_info_list_json: str,
+    primary_kpi_name: str,
+    severity: str,
+    year: str,
+    month: str
+) -> str:
+    """
+    Waits for multiple Databricks notebook runs to complete, then fetches all their output tables.
+    Returns the combined context block (or empty string if none).
+    """
+    from agents import coordinator_agent
+    import json
+    
+    run_info_list = []
+    if run_info_list_json:
+        try:
+            run_info_list = json.loads(run_info_list_json)
+        except Exception:
+            pass
+            
+    res = coordinator_agent.wait_and_fetch_results_batch(
+        run_info_list=run_info_list,
+        primary_kpi_name=primary_kpi_name,
+        severity=severity,
+        year=year,
+        month=month
+    )
+    return res or ""
 
 @mcp.tool()
 def trigger_odata_check() -> str:

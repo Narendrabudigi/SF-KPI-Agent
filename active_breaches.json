@@ -1,22 +1,12 @@
 {
-    "offboarding_completion_time_off400001": {
-        "breach_id": "offboarding_completion_time_off400001",
-        "kpi_name": "Offboarding Completion Time",
-        "severity": "Critical",
-        "department": "Quality Assurance",
-        "first_detected": "2026-08-04T10:40:01.158427",
-        "last_notified": "2026-08-04T18:46:21.377217",
-        "notification_count": 6,
-        "status": "ACTIVE"
-    },
     "employee_attrition_rate_legal_compliance": {
         "breach_id": "employee_attrition_rate_legal_compliance",
         "kpi_name": "Employee Attrition Rate",
         "severity": "Warning",
         "department": "Legal & Compliance",
         "first_detected": "2026-08-04T10:45:13.776057",
-        "last_notified": "2026-08-04T18:59:20.060091",
-        "notification_count": 6,
+        "last_notified": "2026-08-12T16:30:18.753227",
+        "notification_count": 11,
         "status": "ACTIVE"
     },
     "time_to_hire_app701933": {
@@ -25,18 +15,28 @@
         "severity": "Critical",
         "department": "Engineering",
         "first_detected": "2026-08-04T10:46:07.759632",
-        "last_notified": "2026-08-04T18:59:21.827122",
-        "notification_count": 6,
+        "last_notified": "2026-08-12T16:30:45.480383",
+        "notification_count": 11,
         "status": "ACTIVE"
     },
-    "onboarding_completion_time_onb950001": {
-        "breach_id": "onboarding_completion_time_onb950001",
+    "offboarding_completion_time_off400013": {
+        "breach_id": "offboarding_completion_time_off400013",
+        "kpi_name": "Offboarding Completion Time",
+        "severity": "Critical",
+        "department": "Engineering",
+        "first_detected": "2026-08-07T18:07:09.051865",
+        "last_notified": "2026-08-12T16:29:21.226856",
+        "notification_count": 3,
+        "status": "ACTIVE"
+    },
+    "onboarding_completion_time_onb950012": {
+        "breach_id": "onboarding_completion_time_onb950012",
         "kpi_name": "Onboarding Completion Time",
         "severity": "Warning",
-        "department": "DevOps & Cloud",
-        "first_detected": "2026-08-04T10:46:08.667712",
-        "last_notified": "2026-08-04T18:59:32.789094",
-        "notification_count": 6,
+        "department": "Engineering",
+        "first_detected": "2026-08-07T18:07:57.255543",
+        "last_notified": "2026-08-12T16:30:34.391447",
+        "notification_count": 3,
         "status": "ACTIVE"
     }
 }
