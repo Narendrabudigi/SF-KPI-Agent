@@ -81,35 +81,61 @@ def _save_to_dashboard(data: dict, kpi_name: str):
 
 def _format_html_email(data: dict, kpi_name: str) -> str:
     """Formats the JSON recommendation into a readable HTML email."""
-    actions_html = "".join([
+    immediate_html = "".join([
         f"<tr><td>{a.get('action', '')}</td><td>{a.get('responsible_role', '')}</td></tr>"
         for a in data.get("immediate_actions", [])
     ])
     
+    preventative_html = "".join([
+        f"<tr><td>{p.get('action', '')}</td><td>{p.get('responsible_role', '')}</td></tr>"
+        for p in data.get("preventative_actions", [])
+    ])
+    
+    predictive_list = "".join([
+        f"<li>{pred}</li>"
+        for pred in data.get("predictive_risk_analysis", [])
+    ])
+    
     html = f"""
     <html>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2 style="color: #d9381e;">KPI Breach Alert: {kpi_name}</h2>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a;">
+        <h2 style="color: #f43f5e; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">KPI Breach Alert: {kpi_name}</h2>
         
-        <h3>Executive Summary</h3>
+        <h3 style="color: #3b82f6;">Executive Summary</h3>
         <p>{data.get('executive_summary', '')}</p>
         
-        <h3>Root Cause Analysis (Top 5 Drivers)</h3>
+        <h3 style="color: #3b82f6;">Root Causes</h3>
         <ul>
             {"".join([f"<li>{rc}</li>" for rc in (data.get('root_causes', []) if isinstance(data.get('root_causes'), list) else [data.get('root_causes', '')])])}
         </ul>
         
-        <h3>⚡ Immediate Actions (Within 1 week)</h3>
-        <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
-          <tr style="background-color: #f2f2f2;">
+        <h3 style="color: #3b82f6;">⚡ Immediate Actions (Within 1 week)</h3>
+        <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border: 1px solid #cbd5e1;">
+          <tr style="background-color: #f8fafc; text-align: left;">
             <th>Action</th>
             <th>Role</th>
           </tr>
-          {actions_html}
+          {immediate_html or '<tr><td colspan="2" style="font-style: italic;">None recommended.</td></tr>'}
         </table>
         
-        <h3 style="color: #d9381e;">⚠️ Risk Assessment</h3>
-        <p>{data.get('risk_assessment', '')}</p>
+        <h3 style="color: #3b82f6;">🔮 Predictive Risk Analysis</h3>
+        <ul>
+            {predictive_list or '<li>No risk predictions available.</li>'}
+        </ul>
+        
+        <h3 style="color: #3b82f6;">🛡️ Preventative Actions</h3>
+        <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border: 1px solid #cbd5e1;">
+          <tr style="background-color: #f8fafc; text-align: left;">
+            <th>Action</th>
+            <th>Role</th>
+          </tr>
+          {preventative_html or '<tr><td colspan="2" style="font-style: italic;">None recommended.</td></tr>'}
+        </table>
+        
+        <h3 style="color: #f43f5e; margin-top: 24px;">⚠️ Risk Assessment</h3>
+        <div style="background-color: #fff1f2; border-left: 4px solid #f43f5e; padding: 12px 16px; border-radius: 4px; color: #9f1239;">
+          {data.get('risk_assessment', '')}
+        </div>
       </body>
     </html>
     """
@@ -119,6 +145,7 @@ def _format_teams_markdown(data: dict, kpi_name: str) -> str:
     """Formats the JSON recommendation into Markdown for MS Teams."""
     md = f"## 🚨 KPI Breach Alert: {kpi_name}\n\n"
     md += f"**Executive Summary:** {data.get('executive_summary', '')}\n\n"
+    
     root_causes = data.get("root_causes", [])
     if isinstance(root_causes, str):
         md += f"**Root Cause:** {root_causes}\n\n"
@@ -127,10 +154,18 @@ def _format_teams_markdown(data: dict, kpi_name: str) -> str:
         for rc in root_causes:
             md += f"- {rc}\n"
         md += "\n"
+        
     md += "### ⚡ Immediate Actions\n"
-    
     for a in data.get("immediate_actions", []):
         md += f"- **{a.get('action', '')}** (Role: {a.get('responsible_role', '')})\n"
+        
+    md += "\n### 🔮 Predictive Risk Analysis\n"
+    for p in data.get("predictive_risk_analysis", []):
+        md += f"- {p}\n"
+        
+    md += "\n### 🛡️ Preventative Actions\n"
+    for p in data.get("preventative_actions", []):
+        md += f"- **{p.get('action', '')}** (Role: {p.get('responsible_role', '')})\n"
         
     md += f"\n**⚠️ Risk Assessment:** {data.get('risk_assessment', '')}"
     return md

@@ -20,47 +20,49 @@ Guidelines:
 6. Quantify expected impact where possible.
 7. Consider cross-functional HR impacts.
 8. Prioritize recommendations by effort vs. impact.
-9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table and dependency table within the root cause analysis findings. Detail exactly WHY the breach occurred, and BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay) ONLY IF they are explicitly present in the provided OData row or root cause details. Strictly do NOT invent, hallucinate, or assume fake employee IDs (e.g., EMP100001, EMP100002) or candidate records if they are not in the context.
+9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table and dependency table within the root cause analysis findings. Detail exactly WHY the breach occurred, and BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay) ONLY IF they are explicitly present in the provided OData row or root cause details. If no specific record is affected (e.g., in a data-quality breach), explain that this is a system/data-quality issue, mentioning file/ID info (like "July 2026 CSV source data" or "KPI ID: OFF400013") rather than leaving it empty.
 10. HIGHLIGHT IMPORTANT THINGS: In your descriptions, executive summaries, root causes, and precautions, highlight critical values, specific names, employee IDs, percentages, and durations using markdown bolding (e.g., **Engineering**, **EMP100001**, **45.6%**, **4 days**). Only highlight real values present in the input.
 11. DETAILED EXPLANATION: Write detailed, context-rich analysis and recommendations rather than brief summaries. Provide deep business insights that help in process optimization.
-12. NO RECORD HALLUCINATIONS: Do not populate "affected_records" or invent specific delayed records for dependent or correlated KPIs that are department-level or do not have matching record-level details in the input context. Keep "affected_records" empty or strictly limited to actual records provided in the inputs.
+12. NO TECHNICAL MODEL NAMES: Absolutely do not mention ML model/algorithm names (e.g., do NOT mention "HistGradientBoostingRegressor", "HistGradientBoostingRegressor_SHAP", "SourcingChannelBaselineAnalysis", or "Onboarding_Dependency_Cascade_Model"). Instead, use plain business terms (e.g., "hiring risk predictor model", "sourcing channel analytics", "departmental contribution model", or "process cascade forecasting").
+13. NO RECORD HALLUCINATIONS: Do not invent specific delayed records for dependent or correlated KPIs that are department-level or do not have matching record-level details in the input context. Keep "affected_records" empty or strictly limited to actual records provided in the inputs.
+14. SIMPLE DAY BREAKDOWNS: In your Executive Summary and Root Causes, explain the delay using a simple, short, and punchy format:
+    *   **Why it is late**: The operational bottleneck (e.g., technical interview feedback lag).
+    *   **By how much**: The forecast duration (e.g., **41 days** predicted cycle time).
+    *   **What is the downstream delay**: The next process affected (e.g., pushes back **Onboarding** setup timelines).
+    Keep sentences short and readable for business leaders.
+15. C-SUITE FORMATTING RULES (FOR CEO/CFO):
+    *   **Convert Day of Week Codes**: Never output raw codes like `Dayofweek: 4.0` or `Dayofweek: 2.0`. Translate them to actual days of the week (e.g., **Thursday**, **Tuesday**).
+    *   **Translate Confidence Scores**: Convert raw confidence percentages into qualitative executive risk descriptors:
+        *   `90% - 100%`: **Near Certain / Highly Critical**
+        *   `70% - 89%`: **High Probability Risk**
+        *   `50% - 69%`: **Moderate Risk / Monitor**
+    *   **No Technical placeholders**: Clean up any database artifacts like `nan`, `null`, or raw database keys from the final text.
 
 Format your response as valid JSON with the following structure:
 {
-    "executive_summary": "...",
+    "executive_summary": "Clean, high-level summary of the breach, its drivers, and downstream operational impact. Highlight key records and percentages.",
     "root_causes": [
-        "Point 1...",
-        "Point 2...",
-        "Point 3...",
-        "Point 4...",
-        "Point 5..."
+        "Detail driver 1 (explain what happened and why in plain business terms)...",
+        "Detail driver 2...",
+        "Detail driver 3..."
     ],
     "immediate_actions": [
         {
-            "action": "...",
-            "responsible_role": "...",
-            "expected_impact": "..."
+            "action": "Immediate tactical task to implement within 1 week...",
+            "responsible_role": "Responsible person or role (e.g., Recruiter EMP101621 / hiring manager EMP104419)..."
         }
     ],
-    "medium_term_actions": ["..."],
-    "long_term_actions": ["..."],
-    "expected_impact": "...",
-    "risk_assessment": "...",
-    "detailed_breach_analysis": {
-        "breach_reason": "Detailed explanation of why the breach happened based on the root and dependency tables.",
-        "responsible_parties": "Explanation of because of whom (specific candidates, employees, departments, or system owners) the breach occurred.",
-        "affected_records": [
-            {
-                "record_id": "Employee/Candidate ID or Name (leave empty if no specific record-level detail exists in input context)",
-                "reason_for_delay": "Specific reason for delay or failure associated with this record",
-                "responsible_person": "Owner/Manager/Role responsible for this record's progress"
-            }
-        ]
-    },
-    "precautions": [
-        "Precaution 1...",
-        "Precaution 2..."
-    ]
+    "predictive_risk_analysis": [
+        "Plain-language explanation of predictions, risk days, or forecast percentages provided by the models...",
+        "Explanation of downstream cascading delays and probabilities..."
+    ],
+    "preventative_actions": [
+        {
+            "action": "Medium/long-term policy or configuration change to prevent future breaches...",
+            "responsible_role": "Responsible person/role..."
+        }
+    ],
+    "risk_assessment": "Plain-language business warning explaining the long-term impact on operations, company baseline, and other departments if left unaddressed."
 }
 """
 
@@ -154,10 +156,26 @@ def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: 
             actions_table.add_row(
                 str(action.get("action", "")),
                 str(action.get("responsible_role", ""))
-              
             )
-            
         console.print(actions_table)
+
+        # Display Predictive Risk Analysis
+        pred_analysis = data.get('predictive_risk_analysis', [])
+        if pred_analysis:
+            pred_text = "\n".join([f"- {pa}" for pa in pred_analysis])
+            console.print(f"\n[bold underline]🔮 Predictive Risk Analysis:[/bold underline]\n{pred_text}\n")
+
+        # Display Preventative Actions as a Table
+        prev_table = Table(title="🛡️ Preventative Actions", show_header=True, header_style="bold green")
+        prev_table.add_column("Action")
+        prev_table.add_column("Role")
+      
+        for prev in data.get("preventative_actions", []):
+            prev_table.add_row(
+                str(prev.get("action", "")),
+                str(prev.get("responsible_role", ""))
+            )
+        console.print(prev_table)
         
         # Display Risk Assessment
         console.print(f"\n[bold red]⚠️ Risk Assessment:[/bold red] {data.get('risk_assessment', '')}\n")

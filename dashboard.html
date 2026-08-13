@@ -1270,7 +1270,9 @@
         function renderCard(item, idx) {
             const d = item.data;
             const rootCauses = d.root_causes || [];
-            const actions = d.immediate_actions || [];
+            const immediateActions = d.immediate_actions || [];
+            const predictiveAnalysis = d.predictive_risk_analysis || [];
+            const preventativeActions = d.preventative_actions || [];
             const risk = d.risk_assessment || '';
 
             // Root causes
@@ -1279,18 +1281,16 @@
                 rcHtml = `<ul class="root-cause-list">${rootCauses.map((rc, i) =>
                     `<li><span class="rc-number">${i + 1}</span><span>${rc}</span></li>`
                 ).join('')}</ul>`;
-            } else if (typeof rootCauses === 'string' && rootCauses) {
-                rcHtml = `<p class="field-content">${rootCauses}</p>`;
             }
 
             // Immediate actions table
-            let actionsHtml = '';
-            if (actions.length) {
-                actionsHtml = `
+            let immediateHtml = '';
+            if (immediateActions.length) {
+                immediateHtml = `
                     <div class="table-wrap">
                         <table>
                             <thead><tr><th>Action</th><th>Responsible Role</th></tr></thead>
-                            <tbody>${actions.map(a => `
+                            <tbody>${immediateActions.map(a => `
                                 <tr>
                                     <td>${a.action || ''}</td>
                                     <td>${a.responsible_role || ''}</td>
@@ -1300,51 +1300,32 @@
                     </div>`;
             }
 
-            let riskHtml = risk ? `<div class="field-label" style="margin-top:16px;">Risk Assessment</div><div class="risk-box">${risk}</div>` : '';
+            // Predictive Risk Analysis
+            let predictiveHtml = '';
+            if (Array.isArray(predictiveAnalysis) && predictiveAnalysis.length) {
+                predictiveHtml = `<ul class="root-cause-list">${predictiveAnalysis.map((pred, i) =>
+                    `<li><span class="rc-number" style="background:var(--orange-glow); border-color:var(--orange); color:var(--orange);">${i + 1}</span><span>${pred}</span></li>`
+                ).join('')}</ul>`;
+            }
 
-            // Detailed Analysis
-            let detailedHtml = '';
-            const detailed = d.detailed_breach_analysis || {};
-            if (detailed.breach_reason || detailed.responsible_parties) {
-                let recordsHtml = '';
-                const records = detailed.affected_records || [];
-                if (records.length) {
-                    recordsHtml = `
-                        <div class="field-sub-label" style="font-size: 0.85em; text-transform: uppercase; color: var(--text-muted); margin-top: 12px; margin-bottom: 6px; font-weight: 600; letter-spacing: 0.5px;">Affected Records & responsible owners</div>
-                        <div class="table-wrap">
-                            <table>
-                                <thead><tr><th>Record ID / Name</th><th>Reason for Delay / Details</th><th>Responsible Person</th></tr></thead>
-                                <tbody>${records.map(rec => `
-                                    <tr>
-                                        <td><strong>${rec.record_id || ''}</strong></td>
-                                        <td>${rec.reason_for_delay || ''}</td>
-                                        <td><span class="responsible-role-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; font-weight: 500;">${rec.responsible_person || ''}</span></td>
-                                    </tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>`;
-                }
-                detailedHtml = `
-                    <div style="margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
-                        <div class="field-label" style="color: var(--accent-blue);">Detailed Business & RCA Insights</div>
-                        <p class="field-content" style="margin-top: 6px;"><strong>Breach Driver:</strong> ${detailed.breach_reason || ''}</p>
-                        <p class="field-content" style="margin-top: 4px;"><strong>Responsible Entities:</strong> ${detailed.responsible_parties || ''}</p>
-                        ${recordsHtml}
+            // Preventative actions table
+            let preventativeHtml = '';
+            if (preventativeActions.length) {
+                preventativeHtml = `
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Action</th><th>Responsible Role</th></tr></thead>
+                            <tbody>${preventativeActions.map(a => `
+                                <tr>
+                                    <td>${a.action || ''}</td>
+                                    <td>${a.responsible_role || ''}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
                     </div>`;
             }
 
-            // Precautions
-            let precautionsHtml = '';
-            const precautions = d.precautions || [];
-            if (precautions.length) {
-                const pList = precautions.map(p => `<li>${p}</li>`).join('');
-                
-                precautionsHtml = `
-                    <div style="margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
-                        <div class="field-label" style="color: #ef4444;">Precautions (Risk Mitigation)</div>
-                        <ul class="root-cause-list" style="margin-top: 8px;">${pList}</ul>
-                    </div>`;
-            }
+            let riskHtml = risk ? `<div class="risk-box">${risk}</div>` : '';
 
             return `
                 <div class="alert-card">
@@ -1356,17 +1337,22 @@
                         <span class="severity-badge">Breach Detected</span>
                     </div>
                     <div class="alert-card-body">
-                        <div class="field-label">Executive Summary</div>
+                        <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Executive Summary</div>
                         <p class="field-content">${d.executive_summary || ''}</p>
 
-                        <div class="field-label">Root Causes (Top Drivers)</div>
+                        <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Root Causes</div>
                         ${rcHtml}
 
-                        <div class="field-label">Immediate Actions (Within 1 week)</div>
-                        ${actionsHtml || '<p class="field-content" style="font-style:italic;">None recommended.</p>'}
+                        <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">⚡ Immediate Actions (Within 1 week)</div>
+                        ${immediateHtml || '<p class="field-content" style="font-style:italic;">None recommended.</p>'}
 
-                        ${detailedHtml}
-                        ${precautionsHtml}
+                        <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">🔮 Predictive Risk Analysis</div>
+                        ${predictiveHtml || '<p class="field-content" style="font-style:italic;">No risk predictions available.</p>'}
+
+                        <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">🛡️ Preventative Actions</div>
+                        ${preventativeHtml || '<p class="field-content" style="font-style:italic;">None recommended.</p>'}
+
+                        <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">⚠️ Risk Assessment</div>
                         ${riskHtml}
                     </div>
                 </div>`;

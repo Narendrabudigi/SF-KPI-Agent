@@ -1,42 +1,12 @@
 {
-    "employee_attrition_rate_legal_compliance": {
-        "breach_id": "employee_attrition_rate_legal_compliance",
-        "kpi_name": "Employee Attrition Rate",
-        "severity": "Warning",
-        "department": "Legal & Compliance",
-        "first_detected": "2026-08-04T10:45:13.776057",
-        "last_notified": "2026-08-12T16:30:18.753227",
-        "notification_count": 11,
-        "status": "ACTIVE"
-    },
-    "time_to_hire_app701933": {
-        "breach_id": "time_to_hire_app701933",
-        "kpi_name": "Time-to-Hire",
-        "severity": "Critical",
-        "department": "Engineering",
-        "first_detected": "2026-08-04T10:46:07.759632",
-        "last_notified": "2026-08-12T16:30:45.480383",
-        "notification_count": 11,
-        "status": "ACTIVE"
-    },
-    "offboarding_completion_time_off400013": {
-        "breach_id": "offboarding_completion_time_off400013",
-        "kpi_name": "Offboarding Completion Time",
-        "severity": "Critical",
-        "department": "Engineering",
-        "first_detected": "2026-08-07T18:07:09.051865",
-        "last_notified": "2026-08-12T16:29:21.226856",
-        "notification_count": 3,
-        "status": "ACTIVE"
-    },
     "onboarding_completion_time_onb950012": {
         "breach_id": "onboarding_completion_time_onb950012",
         "kpi_name": "Onboarding Completion Time",
         "severity": "Warning",
         "department": "Engineering",
         "first_detected": "2026-08-07T18:07:57.255543",
-        "last_notified": "2026-08-12T16:30:34.391447",
-        "notification_count": 3,
+        "last_notified": "2026-08-13T12:07:50.837535",
+        "notification_count": 8,
         "status": "ACTIVE"
     }
 }
