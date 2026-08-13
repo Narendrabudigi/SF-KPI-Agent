@@ -1,12 +1,12 @@
 {
-    "onboarding_completion_time_onb950012": {
-        "breach_id": "onboarding_completion_time_onb950012",
-        "kpi_name": "Onboarding Completion Time",
-        "severity": "Warning",
+    "time_to_hire_app701933": {
+        "breach_id": "time_to_hire_app701933",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Critical",
         "department": "Engineering",
-        "first_detected": "2026-08-07T18:07:57.255543",
-        "last_notified": "2026-08-13T12:07:50.837535",
-        "notification_count": 8,
+        "first_detected": "2026-08-13T15:02:32.605916",
+        "last_notified": "2026-08-13T15:02:32.605916",
+        "notification_count": 1,
         "status": "ACTIVE"
     }
 }

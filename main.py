@@ -45,6 +45,46 @@ def get_dashboard():
             return HTMLResponse(content=f.read())
     return HTMLResponse(content="<h1>Dashboard not found. Run the setup script.</h1>", status_code=404)
 
+@app.get("/timetohire", response_class=HTMLResponse)
+def get_timetohire_page():
+    file_path = os.path.join(BASE_DIR, "timetohire.html")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>Time-to-Hire Page not found.</h1>", status_code=404)
+
+@app.get("/onboarding", response_class=HTMLResponse)
+def get_onboarding_page():
+    file_path = os.path.join(BASE_DIR, "onboarding.html")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>Onboarding Page not found.</h1>", status_code=404)
+
+@app.get("/attrition", response_class=HTMLResponse)
+def get_attrition_page():
+    file_path = os.path.join(BASE_DIR, "attrition.html")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>Attrition Page not found.</h1>", status_code=404)
+
+@app.get("/offboarding", response_class=HTMLResponse)
+def get_offboarding_page():
+    file_path = os.path.join(BASE_DIR, "offboarding.html")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>Offboarding Page not found.</h1>", status_code=404)
+
+@app.get("/alerts", response_class=HTMLResponse)
+def get_alerts_page():
+    file_path = os.path.join(BASE_DIR, "alerts.html")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>Alerts Page not found.</h1>", status_code=404)
+
 @app.get("/Yash.png")
 def get_yash_logo():
     logo_path = os.path.join(BASE_DIR, "Yash.png")
@@ -55,15 +95,82 @@ def get_yash_logo():
 @app.get("/api/results")
 def get_results():
     """Returns the latest historical AI insights for the dashboard."""
-    file_path = "dashboard_data.json"
+    file_path = os.path.join(BASE_DIR, "dashboard_data.json")
     if os.path.exists(file_path):
         try:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 return JSONResponse(content=data)
         except Exception as e:
             return JSONResponse(content={"error": str(e)}, status_code=500)
     return JSONResponse(content=[])
+
+@app.get("/api/breaches/{kpi_slug}")
+def get_breach_by_slug(kpi_slug: str):
+    """Returns breach data filtered for a specific KPI slug along with active breach info."""
+    slug_map = {
+        "timetohire": ["Time-to-Hire", "Time to Hire", "tth"],
+        "onboarding": ["Onboarding Completion Time", "Onboarding", "oct"],
+        "attrition": ["Employee Attrition Rate", "Attrition", "ear"],
+        "offboarding": ["Offboarding Completion Time", "Offboarding", "oft"]
+    }
+    targets = [t.lower() for t in slug_map.get(kpi_slug.lower(), [kpi_slug.lower()])]
+    
+    # Load dashboard data
+    dash_path = os.path.join(BASE_DIR, "dashboard_data.json")
+    matched_entry = None
+    if os.path.exists(dash_path):
+        try:
+            with open(dash_path, "r", encoding="utf-8") as f:
+                history = json.load(f)
+                for entry in history:
+                    kpi_name = entry.get("kpi_name", "").lower()
+                    if any(target in kpi_name for target in targets):
+                        matched_entry = entry
+                        break
+        except Exception as e:
+            pass
+            
+    # Load active breaches tracker info
+    active_path = os.path.join(BASE_DIR, "active_breaches.json")
+    active_info = None
+    if os.path.exists(active_path):
+        try:
+            with open(active_path, "r", encoding="utf-8") as f:
+                active_breaches = json.load(f)
+                for b_id, b_data in active_breaches.items():
+                    kpi_name = b_data.get("kpi_name", "").lower()
+                    if any(target in kpi_name for target in targets):
+                        active_info = b_data
+                        break
+        except Exception:
+            pass
+            
+    return JSONResponse(content={"entry": matched_entry, "active_info": active_info})
+
+@app.get("/api/alerts")
+def get_all_alerts():
+    """Returns summary of all alerts combining historical data & active breach statuses."""
+    dash_path = os.path.join(BASE_DIR, "dashboard_data.json")
+    active_path = os.path.join(BASE_DIR, "active_breaches.json")
+    
+    history = []
+    if os.path.exists(dash_path):
+        try:
+            with open(dash_path, "r", encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception:
+            pass
+            
+    active_breaches = {}
+    if os.path.exists(active_path):
+        try:
+            with open(active_path, "r", encoding="utf-8") as f:
+                active_breaches = json.load(f)
+        except Exception:
+            pass
+            
+    return JSONResponse(content={"alerts": history, "active_breaches": active_breaches})
 
 @app.get("/api/status")
 def get_status():

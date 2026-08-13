@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offboarding Completion Time Breach Analysis — HR KPI Agentic AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-dark: #090d16;
+            --panel-bg: #121824;
+            --panel-border: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --nav-bg: rgba(18, 24, 36, 0.85);
+            --card-inner-bg: #0f172a;
+            --blue: #3b82f6;
+            --blue-glow: rgba(59, 130, 246, 0.15);
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.15);
+            --red: #f43f5e;
+            --red-glow: rgba(244, 63, 94, 0.15);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.15);
+            --purple: #8b5cf6;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light-theme {
+            --bg-dark: #f8fafc;
+            --panel-bg: #ffffff;
+            --panel-border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --card-inner-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: var(--radius-md); border: 1px solid var(--panel-border); background: #1e293b; color: var(--text-primary); cursor: pointer; transition: var(--transition); }
+        .btn:hover { background: #334155; }
+        .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+        .btn-primary:hover { background: #2563eb; }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+        .header-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4); }
+        .header-title-group { display: flex; flex-direction: column; gap: 6px; }
+        .page-title { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+
+        .badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-critical { background: var(--red-glow); color: var(--red); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-active { background: var(--blue-glow); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        .meta-text { font-size: 13px; color: var(--text-secondary); }
+
+        .card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4); }
+        .card-header { font-size: 16px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--panel-border); display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
+        .card-body { font-size: 14px; color: var(--text-primary); line-height: 1.7; }
+
+        ul.styled-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        ul.styled-list li { position: relative; padding-left: 24px; }
+        ul.styled-list li::before { content: "•"; color: var(--blue); font-size: 20px; position: absolute; left: 6px; top: -2px; }
+
+        .table-container { width: 100%; overflow-x: auto; border: 1px solid var(--panel-border); border-radius: var(--radius-md); margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 600px; }
+        th, td { padding: 12px 16px; border-bottom: 1px solid var(--panel-border); }
+        th { background: rgba(30, 41, 59, 0.4); font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--card-inner-bg); }
+
+        .risk-box { background: var(--red-glow); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-md); padding: 16px; color: var(--text-primary); }
+
+        @media (max-width: 768px) {
+            .container { padding: 16px; gap: 16px; }
+            .header-card, .card { padding: 16px; }
+            .page-title { font-size: 18px; flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Banner -->
+        <div class="header-card">
+            <div class="header-title-group">
+                <div class="page-title">
+                    📋 Offboarding Completion Time Breach Analysis
+                    <span id="severityBadge" class="badge badge-critical">Critical</span>
+                    <span id="statusBadge" class="badge badge-active">Active</span>
+                </div>
+                <div class="meta-text" id="metaInfo">Loading breach context...</div>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="toggleDetailsBtn" onclick="toggleDetails()">🔍 View Breach Details</button>
+            </div>
+        </div>
+
+        <!-- Predictive Risk & Prescriptive Analysis Highlights -->
+        <div class="card">
+            <div class="card-header">💡 Predictive Risk & Prescriptive Analysis</div>
+            <div class="card-body" id="combinedSummary">Loading summary...</div>
+        </div>
+
+        <!-- Collapsible Detailed Section -->
+        <div id="detailedSection" style="display: none; flex-direction: column; gap: 20px;">
+            <!-- Executive Summary Card inside View Breach Details -->
+            <div class="card">
+                <div class="card-header">📝 Executive Summary</div>
+                <div class="card-body">
+                    <ul class="styled-list" id="execSummaryList"></ul>
+                </div>
+            </div>
+
+            <!-- Detailed Prescriptive Recommendations & Immediate Actions Table -->
+            <div class="card">
+                <div class="card-header">🛠️ Prescriptive Analysis & Immediate Actions</div>
+                <div class="card-body">
+                    <div id="prescriptiveDetailList" style="margin-bottom: 16px;"></div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Action Item</th>
+                                    <th>Responsible Owner</th>
+                                    <th>Expected Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody id="immediateActionsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Breach Analysis & Record Details -->
+            <div class="card">
+                <div class="card-header">🔍 Detailed Breach & Offboarding Breakdown</div>
+                <div class="card-body">
+                    <div id="breachReason" style="margin-bottom: 12px;"></div>
+                    <p id="responsibleParties" style="margin-bottom: 16px; font-weight: 500;"></p>
+                    <div style="font-weight: 600; margin-bottom: 8px;">Delayed Offboarding Records:</div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Employee / Process ID</th>
+                                    <th>Reason for Delay</th>
+                                    <th>Responsible Party / Department</th>
+                                </tr>
+                            </thead>
+                            <tbody id="affectedRecordsTable">
+                                <tr><td colspan="3" style="text-align: center; color: var(--text-secondary);">No specific records populated</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Root Causes -->
+            <div class="card">
+                <div class="card-header">🎯 Root Cause Analysis</div>
+                <div class="card-body">
+                    <ul class="styled-list" id="rootCausesList"></ul>
+                </div>
+            </div>
+
+            <!-- Strategic Action Plan -->
+            <div class="card">
+                <div class="card-header">📅 Strategic Offboarding Action Plan</div>
+                <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <h4 style="color: var(--blue); margin-bottom: 8px;">Medium-Term Actions (1-3 Months)</h4>
+                        <ul class="styled-list" id="mediumTermList"></ul>
+                    </div>
+                    <div style="border-top: 1px solid var(--panel-border); padding-top: 16px;">
+                        <h4 style="color: var(--purple); margin-bottom: 8px;">Long-Term Actions (3-6 Months)</h4>
+                        <ul class="styled-list" id="longTermList"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Assessment & Precautions -->
+            <div class="card">
+                <div class="card-header">⚠️ Risk Assessment & Preventive Precautions</div>
+                <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="risk-box" id="riskAssessment">Loading risk assessment...</div>
+                    <div>
+                        <h4 style="margin-bottom: 8px;">Precautions & Mitigations</h4>
+                        <ul class="styled-list" id="precautionsList"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails() {
+            const section = document.getElementById('detailedSection');
+            const btn = document.getElementById('toggleDetailsBtn');
+            if (section.style.display === 'none' || !section.style.display) {
+                section.style.display = 'flex';
+                btn.innerHTML = '🔼 Hide Breach Details';
+            } else {
+                section.style.display = 'none';
+                btn.innerHTML = '🔍 View Breach Details';
+            }
+        }
+
+        function textToBulletList(htmlText) {
+            if (!htmlText) return [];
+            if (Array.isArray(htmlText)) return htmlText;
+            const tmp = document.createElement("DIV");
+            tmp.innerHTML = String(htmlText).trim();
+            const plain = tmp.textContent || tmp.innerText || "";
+            return plain.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 5).map(s => s.trim());
+        }
+
+        function extractPredictiveItems(data) {
+            const raw = data.predictive_risk_analysis || data.predictive_analysis || [];
+            let items = [];
+            if (Array.isArray(raw)) {
+                raw.forEach(item => {
+                    if (typeof item === 'string') {
+                        const tmp = document.createElement("DIV");
+                        tmp.innerHTML = item;
+                        items.push(tmp.textContent || tmp.innerText || item);
+                    } else if (typeof item === 'object' && item !== null) {
+                        items.push(item.description || item.text || item.summary || JSON.stringify(item));
+                    }
+                });
+            } else if (typeof raw === 'string') {
+                items = textToBulletList(raw);
+            }
+            return items;
+        }
+
+        function extractPrescriptiveItems(data) {
+            const raw = data.prescriptive_analysis || data.prescriptive_actions || data.immediate_actions || [];
+            let items = [];
+            if (Array.isArray(raw)) {
+                raw.forEach(item => {
+                    if (typeof item === 'string') {
+                        items.push({ action: item, role: 'Prescriptive Agent', impact: 'High' });
+                    } else if (typeof item === 'object' && item !== null) {
+                        items.push({
+                            action: item.action || item.recommendation || item.description || item.text || '',
+                            role: item.responsible_role || item.role || item.owner || 'HRBP / HR',
+                            impact: item.expected_impact || item.impact || 'Offboarding Process Optimization'
+                        });
+                    }
+                });
+            } else if (typeof raw === 'string') {
+                const bullets = textToBulletList(raw);
+                bullets.forEach(b => items.push({ action: b, role: 'Prescriptive Agent', impact: 'High' }));
+            }
+            return items;
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch('/api/breaches/offboarding');
+                const result = await res.json();
+                
+                if (!result.entry) {
+                    document.getElementById('combinedSummary').innerText = 'No analysis data found for Offboarding breach.';
+                    return;
+                }
+
+                const entry = result.entry;
+                const data = entry.data || {};
+                const activeInfo = result.active_info || {};
+
+                document.getElementById('severityBadge').innerText = activeInfo.severity || 'Critical';
+                document.getElementById('statusBadge').innerText = activeInfo.status || 'Active';
+                document.getElementById('metaInfo').innerText = `Department: ${activeInfo.department || 'Quality Assurance'} | Last Updated: ${new Date(entry.timestamp).toLocaleString()}`;
+
+                // 1. Top Card: Focus exclusively on Predictive Risk & Prescriptive Actions
+                const predictiveBullets = extractPredictiveItems(data);
+                const prescriptiveItems = extractPrescriptiveItems(data);
+                
+                let combinedItems = [];
+
+                predictiveBullets.forEach(pred => {
+                    combinedItems.push(`<strong>🔮 Predictive Risk:</strong> ${pred}`);
+                });
+
+                prescriptiveItems.forEach(p => {
+                    if (p.action) {
+                        combinedItems.push(`<strong>🛠️ Prescriptive Action:</strong> ${p.action} <em>(${p.role})</em>`);
+                    }
+                });
+
+                document.getElementById('combinedSummary').innerHTML = `<ul class="styled-list">${combinedItems.map(item => `<li>${item}</li>`).join('')}</ul>`;
+
+                // 2. View Breach Details section: Show full Executive Summary
+                const execBullets = textToBulletList(data.executive_summary);
+                document.getElementById('execSummaryList').innerHTML = execBullets.map(b => `<li>${b}</li>`).join('');
+
+                document.getElementById('prescriptiveDetailList').innerHTML = `<ul class="styled-list">${prescriptiveItems.map(p => `<li><strong>Recommendation:</strong> ${p.action} — <span>Owner: ${p.role}</span></li>`).join('')}</ul>`;
+
+                document.getElementById('immediateActionsTable').innerHTML = prescriptiveItems.map(a => `
+                    <tr>
+                        <td><strong>${a.action || ''}</strong></td>
+                        <td>${a.role || ''}</td>
+                        <td>${a.impact || ''}</td>
+                    </tr>
+                `).join('');
+
+                const detailed = data.detailed_breach_analysis || {};
+                const detailedBullets = textToBulletList(detailed.breach_reason);
+                document.getElementById('breachReason').innerHTML = `<ul class="styled-list">${detailedBullets.map(b => `<li>${b}</li>`).join('')}</ul>`;
+                document.getElementById('responsibleParties').innerHTML = detailed.responsible_parties ? `<strong>Responsible Parties:</strong> ${detailed.responsible_parties}` : '';
+                
+                const recTable = document.getElementById('affectedRecordsTable');
+                if (detailed.affected_records && detailed.affected_records.length > 0) {
+                    recTable.innerHTML = detailed.affected_records.map(r => `
+                        <tr>
+                            <td><strong>${r.record_id || 'N/A'}</strong></td>
+                            <td>${r.reason_for_delay || 'N/A'}</td>
+                            <td>${r.responsible_person || 'N/A'}</td>
+                        </tr>
+                    `).join('');
+                }
+
+                const rootCauses = data.root_causes || [];
+                document.getElementById('rootCausesList').innerHTML = (Array.isArray(rootCauses) ? rootCauses : [rootCauses]).map(rc => `<li>${rc}</li>`).join('');
+
+                const medActions = data.medium_term_actions || [];
+                document.getElementById('mediumTermList').innerHTML = medActions.map(m => `<li>${m}</li>`).join('');
+
+                const longActions = data.long_term_actions || [];
+                document.getElementById('longTermList').innerHTML = longActions.map(l => `<li>${l}</li>`).join('');
+
+                const riskBullets = textToBulletList(data.risk_assessment);
+                document.getElementById('riskAssessment').innerHTML = `<strong>⚠️ Risk Assessment:</strong><ul class="styled-list">${riskBullets.map(rb => `<li>${rb}</li>`).join('')}</ul>`;
+                const precautions = data.precautions || [];
+                document.getElementById('precautionsList').innerHTML = precautions.map(p => `<li>${p}</li>`).join('');
+
+            } catch (err) {
+                console.error('Error loading Offboarding breach data:', err);
+            }
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
