@@ -195,8 +195,18 @@
             try {
                 const res = await fetch('/api/alerts');
                 const data = await res.json();
-                allAlerts = data.alerts || [];
+                let rawAlerts = data.alerts || [];
                 activeBreachesMap = data.active_breaches || {};
+
+                // Sort descending by timestamp or numeric id so latest/newest alerts are on top
+                rawAlerts.sort((a, b) => {
+                    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : (parseFloat(a.id) || 0);
+                    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : (parseFloat(b.id) || 0);
+                    return timeB - timeA;
+                });
+
+                // Show only the latest 10 KPIs
+                allAlerts = rawAlerts.slice(0, 10);
 
                 renderAlerts();
             } catch (err) {

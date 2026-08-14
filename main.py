@@ -170,6 +170,12 @@ def get_all_alerts():
         except Exception:
             pass
             
+    if history and isinstance(history, list):
+        try:
+            history.sort(key=lambda x: str(x.get("timestamp") or x.get("id") or ""), reverse=True)
+        except Exception:
+            pass
+
     return JSONResponse(content={"alerts": history, "active_breaches": active_breaches})
 
 @app.get("/api/status")
