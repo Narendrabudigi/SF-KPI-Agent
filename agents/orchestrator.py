@@ -202,8 +202,6 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
             if d_lock:
                 runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Acquiring dependency lock for domain: [cyan]{dep_domain}[/cyan]...")
                 d_lock.acquire()
-                if dep_domain:
-                    runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "running"
             
             run_info = None
             try:
@@ -273,8 +271,6 @@ def handle_rca_workflow(primary_kpi_name, severity, year, month, **extra_params)
                     ]
                 if d_lock:
                     runtime_state.log_system_event(f"[bold yellow][Orchestrator][/bold yellow] Releasing dependency lock for domain: [cyan]{dep_domain}[/cyan]")
-                    if runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] == "running":
-                        runtime_state.SYSTEM_STATE["agent_statuses"][dep_domain] = "completed"
                     d_lock.release()
                     
         threads = []

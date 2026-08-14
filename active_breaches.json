@@ -4,8 +4,8 @@
         "kpi_name": "Time-to-Hire",
         "severity": "Critical",
         "department": "Engineering",
-        "first_detected": "2026-08-13T15:02:32.605916",
-        "last_notified": "2026-08-13T15:02:32.605916",
+        "first_detected": "2026-08-14T05:55:28.188881+00:00",
+        "last_notified": "2026-08-14T05:55:28.188881+00:00",
         "notification_count": 1,
         "status": "ACTIVE"
     }

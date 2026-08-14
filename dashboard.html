@@ -1105,16 +1105,8 @@
                                         dep1Status = "inactive"; // Idle during Stage 1
                                     } else {
                                         const depDomainStatus = state.agent_statuses && state.agent_statuses[dep1];
-                                        if (status === "completed") {
+                                        if (status === "completed" || status === "running") {
                                             dep1Status = depDomainStatus === "failed" ? "failed" : "completed";
-                                        } else if (status === "running") {
-                                            if (depDomainStatus === "completed") {
-                                                dep1Status = "completed";
-                                            } else if (depDomainStatus === "failed") {
-                                                dep1Status = "failed";
-                                            } else {
-                                                dep1Status = "inactive";
-                                            }
                                         } else {
                                             dep1Status = "inactive";
                                         }
