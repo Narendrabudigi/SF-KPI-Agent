@@ -10,3 +10,7 @@ venv/
 
 # Ignore git data
 .git/
+
+# Ignore local active states/caches
+active_breaches.json
+run_state.json

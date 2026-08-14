@@ -219,7 +219,9 @@ def is_in_cooldown(breach_id: str) -> Tuple[bool, Optional[str], float]:
 
         try:
             last_notified_dt = datetime.datetime.fromisoformat(last_notified_str)
-            now = datetime.datetime.now()
+            if last_notified_dt.tzinfo is None:
+                last_notified_dt = last_notified_dt.replace(tzinfo=datetime.timezone.utc)
+            now = datetime.datetime.now(datetime.timezone.utc)
             elapsed_minutes = (now - last_notified_dt).total_seconds() / 60.0
             cooldown_minutes = float(config.NOTIFICATION_COOLDOWN_MINUTES)
 
@@ -249,7 +251,7 @@ def record_breach_notification(
     """
     canonical_kpi = normalize_kpi_name(kpi_name)
     breach_id = breach_id_override if breach_id_override else generate_breach_id(canonical_kpi, row)
-    now_iso = datetime.datetime.now().isoformat()
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     # Extract department for display (attrition KPIs only)
     dept = None

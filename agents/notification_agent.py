@@ -50,14 +50,14 @@ def _save_to_dashboard(data: dict, kpi_name: str):
     """Saves the output to a local JSON file for the web dashboard."""
     import json
     import os
-    from datetime import datetime
+    from datetime import datetime, timezone
     
     file_path = "dashboard_data.json"
     
     # Add metadata
     entry = {
-        "id": str(datetime.now().timestamp()),
-        "timestamp": datetime.now().isoformat(),
+        "id": str(datetime.now(timezone.utc).timestamp()),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "kpi_name": kpi_name,
         "data": data
     }
