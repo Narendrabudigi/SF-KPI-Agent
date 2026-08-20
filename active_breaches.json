@@ -1,12 +1,72 @@
 {
-    "time_to_hire_app701933": {
-        "breach_id": "time_to_hire_app701933",
-        "kpi_name": "Time-to-Hire",
+    "onboarding_completion_time_onb100141": {
+        "breach_id": "onboarding_completion_time_onb100141",
+        "kpi_name": "Onboarding Completion Time",
         "severity": "Critical",
-        "department": "Engineering",
-        "first_detected": "2026-08-14T05:55:28.188881+00:00",
-        "last_notified": "2026-08-14T05:55:28.188881+00:00",
-        "notification_count": 1,
+        "department": null,
+        "first_detected": "2026-08-17T13:37:47.734714+00:00",
+        "last_notified": "2026-08-20T05:30:19.017663+00:00",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "onboarding_completion_time_onb100132": {
+        "breach_id": "onboarding_completion_time_onb100132",
+        "kpi_name": "Onboarding Completion Time",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-08-17T13:37:47.747720+00:00",
+        "last_notified": "2026-08-20T05:30:19.039388+00:00",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "time_to_hire_app1000001": {
+        "breach_id": "time_to_hire_app1000001",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Warning",
+        "department": null,
+        "first_detected": "2026-08-19T06:12:35.622787+00:00",
+        "last_notified": "2026-08-20T05:30:36.325656+00:00",
+        "notification_count": 4,
+        "status": "ACTIVE"
+    },
+    "time_to_hire_app1000003": {
+        "breach_id": "time_to_hire_app1000003",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Warning",
+        "department": null,
+        "first_detected": "2026-08-19T06:12:35.639701+00:00",
+        "last_notified": "2026-08-20T05:30:36.341902+00:00",
+        "notification_count": 4,
+        "status": "ACTIVE"
+    },
+    "time_to_hire_app1000011": {
+        "breach_id": "time_to_hire_app1000011",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Warning",
+        "department": null,
+        "first_detected": "2026-08-19T06:12:35.656687+00:00",
+        "last_notified": "2026-08-20T05:30:36.362349+00:00",
+        "notification_count": 4,
+        "status": "ACTIVE"
+    },
+    "offboarding_completion_time_ofb100122": {
+        "breach_id": "offboarding_completion_time_ofb100122",
+        "kpi_name": "Offboarding Completion Time",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-08-19T06:12:47.936696+00:00",
+        "last_notified": "2026-08-20T05:30:43.718348+00:00",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "offboarding_completion_time_ofb100637": {
+        "breach_id": "offboarding_completion_time_ofb100637",
+        "kpi_name": "Offboarding Completion Time",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-08-19T06:12:47.948189+00:00",
+        "last_notified": "2026-08-20T05:30:43.736525+00:00",
+        "notification_count": 5,
         "status": "ACTIVE"
     }
 }

@@ -67,11 +67,11 @@ EMPLOYEE_PAYMENT_RESULTS_TABLE = os.getenv("EMPLOYEE_PAYMENT_RESULTS_TABLE")
 DATABRICKS_SQL_HTTP_PATH: str = os.getenv("DATABRICKS_SQL_HTTP_PATH", "")
 
 # ---------------------------------------------------------------------------
-# KPI Interdependency Matrix (HR Cascade)
+# KPI Correlation Matrix (Single Main Breach Analysis)
 # ---------------------------------------------------------------------------
 INTERDEPENDENCY_MATRIX = {
     "Time-to-Hire": {
-        "affected_by": [], # Commented for now: ["Payroll Error Rate"]
+        "affected_by": [],
         "affects": ["Onboarding Completion Time"],
         "correlated_with": ["Employee Attrition Rate"]
     },
@@ -81,21 +81,15 @@ INTERDEPENDENCY_MATRIX = {
         "correlated_with": ["Offboarding Completion Time"]
     },
     "Employee Attrition Rate": {
-        "affected_by": ["Onboarding Completion Time"], # Commented for now: "Payroll Error Rate"
+        "affected_by": ["Onboarding Completion Time"],
         "affects": ["Offboarding Completion Time"],
-        "correlated_with": ["Time-to-Hire"] # Commented for now: "Payroll Error Rate"
+        "correlated_with": ["Time-to-Hire"]
     },
     "Offboarding Completion Time": {
         "affected_by": ["Employee Attrition Rate"],
-        "affects": [], # Commented for now: ["Payroll Error Rate"]
+        "affects": [],
         "correlated_with": ["Onboarding Completion Time"]
-    },
-    # Commented out Payroll Error Rate block for now
-    # "Payroll Error Rate": {
-    #     "affected_by": ["Offboarding Completion Time"],
-    #     "affects": ["Employee Attrition Rate", "Time-to-Hire"],
-    #     "correlated_with": ["Employee Attrition Rate"]
-    # }
+    }
 }
 
 

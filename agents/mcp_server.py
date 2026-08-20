@@ -61,6 +61,7 @@ def get_incident_context(incident_id: str) -> str:
 def store_odata_row(incident_id: str, row_data: str) -> str:
     """
     Saves the original OData SAP row (as JSON string) for a specific incident.
+    In batch mode, row_data may be a JSON array of multiple rows.
     Used to enrich context with employee/candidate-level details from SuccessFactors,
     which the prescriptive LLM agent retrieves and injects into its prompt.
     """
@@ -74,6 +75,7 @@ def store_odata_row(incident_id: str, row_data: str) -> str:
 def get_odata_row(incident_id: str) -> str:
     """
     Retrieves the original OData SAP row JSON for a specific incident.
+    In batch mode, returns a JSON array of multiple rows.
     Used by prescriptive_agent to inject employee/candidate-level detail into the LLM prompt.
     """
     mem = _read_memory()
@@ -93,6 +95,7 @@ def execute_domain_agent(
     month: str,
     primary_kpi: str = None,
     kpi_id: str = None,
+    breach_list_json: str = None,
     extra_params_json: str = None
 ) -> str:
     """
@@ -105,7 +108,10 @@ def execute_domain_agent(
         year: Breach year
         month: Breach month
         primary_kpi: The primary breach KPI (for cascade scenarios)
-        kpi_id: The unique KPI/process ID for this specific breach record (optional)
+        kpi_id: The unique KPI/process ID for this specific breach record (optional, not used in batch mode)
+        breach_list_json: JSON string of batch breach list, e.g.
+            '[{"KPI_ID": "OFB100002", "Severity": "WARNING"}, ...]'
+            When provided, the domain agent passes this as BREACH_LIST to Databricks.
         extra_params_json: JSON string of all OData row parameters.
                            These are forwarded as **kwargs to the Databricks notebook.
 
@@ -138,7 +144,12 @@ def execute_domain_agent(
     if kpi_id and "kpi_id" not in extra_params and "KPI_ID" not in extra_params:
         extra_params["KPI_ID"] = kpi_id
 
-    run_id = agent.run_agent(kpi_name, severity, year, month, primary_kpi=primary_kpi, **extra_params)
+    run_id = agent.run_agent(
+        kpi_name, severity, year, month, 
+        primary_kpi=primary_kpi, 
+        breach_list_json=breach_list_json,
+        **extra_params
+    )
     if not run_id:
         raise RuntimeError(f"Agent failed to submit job for {kpi_name}")
     return str(run_id)
@@ -188,17 +199,38 @@ def query_results_table(table_name: str, primary_kpi_filter: str = None) -> str:
 def run_prescriptive_analysis(
     incident_id: str,
     kpi_name: str,
+    interdependency_info_json: str = None,
     correlated_with_json: str = None,
     severity: str = "Critical",
-    row_json: str = None
+    row_json: str = None,
+    breach_summaries_json: str = None
 ) -> str:
     """
-    Runs prescriptive analysis for a breach incident.
+    Runs prescriptive analysis for a breach incident (single or batch).
     Fetches context from memory, queries LLM, and triggers email/Teams notifications.
+    
+    In batch mode, the context contains ONLY ACTUAL_BREACH data and a single
+    consolidated notification is sent covering all breaches.
+    
+    Args:
+        incident_id: Unique incident key for MCP memory lookup
+        kpi_name: The primary breached KPI name
+        interdependency_info_json: JSON dict of full matrix entry (affects, affected_by, correlated_with)
+        correlated_with_json: JSON array of correlated KPI names (backward compat)
+        severity: Breach severity
+        row_json: JSON string of OData row(s) — may be a single dict or array of dicts
+        breach_summaries_json: JSON array of breach summary dicts for consolidated notification
     """
     from agents import prescriptive_agent
     import json
     
+    interdependency_info = None
+    if interdependency_info_json:
+        try:
+            interdependency_info = json.loads(interdependency_info_json)
+        except Exception:
+            pass
+            
     correlated_with = None
     if correlated_with_json:
         try:
@@ -212,15 +244,26 @@ def run_prescriptive_analysis(
             row = json.loads(row_json)
         except Exception:
             pass
+    
+    breach_summaries = None
+    if breach_summaries_json:
+        try:
+            breach_summaries = json.loads(breach_summaries_json)
+        except Exception:
+            pass
             
     prescriptive_agent.run_prescriptive_analysis(
         incident_id=incident_id,
         kpi_name=kpi_name,
+        interdependency_info=interdependency_info,
         correlated_with=correlated_with,
         severity=severity,
-        row=row
+        row=row,
+        breach_summaries=breach_summaries
     )
-    return f"Prescriptive analysis completed and notifications distributed for {kpi_name}."
+    
+    breach_count = len(breach_summaries) if breach_summaries else 1
+    return f"Prescriptive analysis completed and consolidated notification sent for {kpi_name} ({breach_count} breach(es))."
 
 @mcp.tool()
 def wait_and_fetch_results_batch(
@@ -232,7 +275,13 @@ def wait_and_fetch_results_batch(
 ) -> str:
     """
     Waits for multiple Databricks notebook runs to complete, then fetches all their output tables.
-    Returns the combined context block (or empty string if none).
+    
+    Returns a JSON string with separated context:
+    - actual_breach_context: Only ACTUAL_BREACH rows (for prescriptive agent)
+    - predictive_risk_context: Only PREDICTIVE_RISK rows (for logging/dashboard)
+    - full_context: All rows combined
+    
+    The caller (orchestrator) uses actual_breach_context for the prescriptive agent.
     """
     from agents import coordinator_agent
     import json
@@ -251,7 +300,16 @@ def wait_and_fetch_results_batch(
         year=year,
         month=month
     )
-    return res or ""
+    
+    if res is None:
+        return ""
+    
+    # If result is a dict (new structured format), serialize it as JSON
+    if isinstance(res, dict):
+        return json.dumps(res)
+    
+    # Backward compat: if result is a plain string, return as-is
+    return res
 
 @mcp.tool()
 def trigger_odata_check() -> str:

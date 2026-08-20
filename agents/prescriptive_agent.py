@@ -11,19 +11,27 @@ console = Console()
 SYSTEM_PROMPT = """You are an expert SAP SuccessFactors HR analyst specializing in Recruitment, Onboarding, Offboarding, Employee Central, and Employee Central Payroll operations. 
 Your role is to analyze HR KPI breach root causes and provide actionable, prescriptive recommendations for the PRIMARY incident.
 
+IMPORTANT: You may be given data for MULTIPLE breaches at once. In this case, provide a UNIFIED analysis covering ALL breaches together — do not repeat the structure for each breach separately.
+
 Guidelines:
-1. Focus your actionable recommendations on resolving the PRIMARY BREACH.
-2. If cascading impacts on other HR KPIs or historical correlations are provided, factor them into your root cause narrative, explaining the logical, departmental, or process-level impact (e.g., how high attrition in Legal & Compliance will lead to an increase in offboarding queue volume and delay offboarding completion times). Do NOT assume or make up record-level linkages between them if they are not explicitly present in the data.
+1. Focus your actionable recommendations on resolving the PRIMARY BREACH(ES).
+2. DOWNSTREAM PREDICTIVE RISK & TARGET RESOLUTION TIMELINE:
+    * In "predictive_risk_analysis", provide 2 to 3 detailed, concrete bullet points focusing EXCLUSIVELY on the downstream process listed under "Downstream Dependent HR Processes".
+    * For EACH bullet point, you MUST provide:
+        a) The specific operational bottleneck and impact on the downstream process (e.g. IT provisioning delay, compliance document verification hold, or new-hire training cohort postponement).
+        b) The EXACT resolution timeframe / SLA in days required to prevent a breach in that downstream process (e.g., "Must be resolved within **4 business days** to prevent a cascading breach in **Onboarding Completion Time**").
+    * NEVER mention or write predictive points for any other KPI or unrelated area. All bullet points in this section must focus 100% on different angles of the single listed downstream dependent process.
+    * If "Downstream Dependent HR Processes" is not listed or empty (such as for Offboarding), you MUST return an empty array `[]` for "predictive_risk_analysis".
 3. Be specific, extremely detailed, and actionable - avoid generic advice.
 4. Consider SAP SuccessFactors capabilities in your recommendations.
 5. Address both immediate fixes and long-term improvements to reduce future failures and support business development.
 6. Quantify expected impact where possible.
 7. Consider cross-functional HR impacts.
 8. Prioritize recommendations by effort vs. impact.
-9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table and dependency table within the root cause analysis findings. Detail exactly WHY the breach occurred, and BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay) ONLY IF they are explicitly present in the provided OData row or root cause details. If no specific record is affected (e.g., in a data-quality breach), explain that this is a system/data-quality issue, mentioning file/ID info (like "July 2026 CSV source data" or "KPI ID: OFF400013") rather than leaving it empty.
+9. ANALYZE DETAIL DATA: Carefully inspect the detailed employee or candidate level data provided in the root table within the root cause analysis findings. Detail exactly WHY the breach occurred, and BECAUSE OF WHOM (identifying the specific candidate IDs, employee IDs, department names, or responsible owners who caused/are experiencing the delay) ONLY IF they are explicitly present in the provided OData row or root cause details. If no specific record is affected (e.g., in a data-quality breach), explain that this is a system/data-quality issue, mentioning file/ID info (like "July 2026 CSV source data" or "KPI ID: OFF400013") rather than leaving it empty.
 10. HIGHLIGHT IMPORTANT THINGS: In your descriptions, executive summaries, root causes, and precautions, highlight critical values, specific names, employee IDs, percentages, and durations using markdown bolding (e.g., **Engineering**, **EMP100001**, **45.6%**, **4 days**). Only highlight real values present in the input.
 11. DETAILED EXPLANATION: Write detailed, context-rich analysis and recommendations rather than brief summaries. Provide deep business insights that help in process optimization.
-12. NO TECHNICAL MODEL NAMES: Absolutely do not mention ML model/algorithm names (e.g., do NOT mention "HistGradientBoostingRegressor", "HistGradientBoostingRegressor_SHAP", "SourcingChannelBaselineAnalysis", or "Onboarding_Dependency_Cascade_Model"). Instead, use plain business terms (e.g., "hiring risk predictor model", "sourcing channel analytics", "departmental contribution model", or "process cascade forecasting").
+12. NO "MODEL" OR "ML" REFERENCES: Speak authoritatively as a senior HR analyst. Absolutely DO NOT say "the model predicted", "the ML model says", "our algorithm shows", etc. State the insights directly as business facts or forecasts (e.g., "This delay will compress the onboarding timeline by 8 days" instead of "The model predicts an 8 day delay"). Never use technical model names.
 13. NO RECORD HALLUCINATIONS: Do not invent specific delayed records for dependent or correlated KPIs that are department-level or do not have matching record-level details in the input context. Keep "affected_records" empty or strictly limited to actual records provided in the inputs.
 14. SIMPLE DAY BREAKDOWNS: In your Executive Summary and Root Causes, explain the delay using a simple, short, and punchy format:
     *   **Why it is late**: The operational bottleneck (e.g., technical interview feedback lag).
@@ -33,14 +41,16 @@ Guidelines:
 15. C-SUITE FORMATTING RULES (FOR CEO/CFO):
     *   **Convert Day of Week Codes**: Never output raw codes like `Dayofweek: 4.0` or `Dayofweek: 2.0`. Translate them to actual days of the week (e.g., **Thursday**, **Tuesday**).
     *   **Translate Confidence Scores**: Convert raw confidence percentages into qualitative executive risk descriptors:
-        *   `90% - 100%`: **Near Certain / Highly Critical**
-        *   `70% - 89%`: **High Probability Risk**
-        *   `50% - 69%`: **Moderate Risk / Monitor**
+        *   90% - 100%: **Near Certain / Highly Critical**
+        *   70% - 89%: **High Probability Risk**
+        *   50% - 69%: **Moderate Risk / Monitor**
     *   **No Technical placeholders**: Clean up any database artifacts like `nan`, `null`, or raw database keys from the final text.
+16. MULTIPLE BREACHES: When multiple breach records are provided, your executive summary should mention ALL breach IDs and their severities. Your root causes should cover the common and individual drivers across all breaches. Recommendations should address ALL breaches holistically.
+17. PROFESSIONAL BUSINESS TONE & NO INTERNAL LABELS: Never output internal prompt labels, technical placeholders, emojis (like 🔴, 🟡, 🔵), or phrases like "according to the rules", "interdependency matrix", or "based on the rules". Speak strictly in natural, professional executive HR terminology.
 
 Format your response as valid JSON with the following structure:
 {
-    "executive_summary": "Clean, high-level summary of the breach, its drivers, and downstream operational impact. Highlight key records and percentages.",
+    "executive_summary": "Clean, high-level summary of the breach(es), their drivers, and downstream operational impact. Mention all breach IDs if multiple. Highlight key records and percentages.",
     "root_causes": [
         "Detail driver 1 (explain what happened and why in plain business terms)...",
         "Detail driver 2...",
@@ -53,8 +63,8 @@ Format your response as valid JSON with the following structure:
         }
     ],
     "predictive_risk_analysis": [
-        "Plain-language explanation of predictions, risk days, or forecast percentages provided by the models...",
-        "Explanation of downstream cascading delays and probabilities..."
+        "Downstream operational bottleneck 1 on the affected KPI with an explicit resolution timeline (e.g., 'Delay in background verification directly compresses pre-onboarding runway for **Onboarding Completion Time**; hiring managers must clear pending approvals within **3 business days** to prevent a downstream onboarding breach.').",
+        "Downstream operational bottleneck 2 on the SAME affected KPI with an explicit resolution timeline (e.g., 'Hardware and system access provisioning lead times are at risk; IT requests must be submitted within **5 business days** to ensure day-one readiness and avoid an onboarding milestone delay.')."
     ],
     "preventative_actions": [
         {
@@ -65,6 +75,8 @@ Format your response as valid JSON with the following structure:
     "risk_assessment": "Plain-language business warning explaining the long-term impact on operations, company baseline, and other departments if left unaddressed."
 }
 """
+
+import re
 
 def _clean_json_response(raw_response: str) -> str:
     """Removes markdown code blocks if the LLM returned them"""
@@ -79,46 +91,209 @@ def _clean_json_response(raw_response: str) -> str:
         
     return cleaned.strip()
 
-def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: list = None, severity: str = "Critical", row: dict = None):
+def _robust_json_parse(raw_response: str) -> dict:
+    """
+    Robustly parses JSON from LLM response.
+    Handles trailing duplicate words, unescaped characters, or formatting glitches.
+    """
+    cleaned = _clean_json_response(raw_response)
+    
+    # 1. Direct standard parse
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        pass
+        
+    # 2. Extract substring between first { and last }
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start != -1 and end != -1:
+        candidate = cleaned[start:end+1]
+        try:
+            return json.loads(candidate)
+        except Exception:
+            pass
+            
+        # 3. Clean up duplicate trailing lines before closing brace
+        # e.g., "risk_assessment": "..."\n some trailing duplicate words\n}
+        candidate_fixed = re.sub(r'("\s*)\n[^\{\}\[\]",:]+\s*\}', r'\1\n}', candidate)
+        try:
+            return json.loads(candidate_fixed)
+        except Exception:
+            pass
+
+    # 4. Fallback: Regex extraction of structured fields
+    data = {}
+    
+    # Extract executive_summary
+    m_exec = re.search(r'"executive_summary"\s*:\s*"((?:[^"\\]|\\.)*)"', cleaned, re.DOTALL)
+    if m_exec:
+        try:
+            data["executive_summary"] = bytes(m_exec.group(1), "utf-8").decode("unicode_escape")
+        except Exception:
+            data["executive_summary"] = m_exec.group(1)
+    else:
+        data["executive_summary"] = "Executive summary generated for KPI breach."
+
+    # Extract risk_assessment
+    m_risk = re.search(r'"risk_assessment"\s*:\s*"((?:[^"\\]|\\.)*)"', cleaned, re.DOTALL)
+    if m_risk:
+        try:
+            data["risk_assessment"] = bytes(m_risk.group(1), "utf-8").decode("unicode_escape")
+        except Exception:
+            data["risk_assessment"] = m_risk.group(1)
+    else:
+        data["risk_assessment"] = ""
+
+    # Extract array of strings: root_causes, predictive_risk_analysis
+    for arr_key in ["root_causes", "predictive_risk_analysis"]:
+        m_arr = re.search(rf'"{arr_key}"\s*:\s*\[(.*?)\]', cleaned, re.DOTALL)
+        if m_arr:
+            items = re.findall(r'"((?:[^"\\]|\\.)*)"', m_arr.group(1))
+            extracted = []
+            for it in items:
+                try:
+                    extracted.append(bytes(it, "utf-8").decode("unicode_escape"))
+                except Exception:
+                    extracted.append(it)
+            data[arr_key] = extracted
+        else:
+            data[arr_key] = []
+
+    # Extract array of objects: immediate_actions, preventative_actions
+    for obj_arr_key in ["immediate_actions", "preventative_actions"]:
+        m_arr = re.search(rf'"{obj_arr_key}"\s*:\s*\[(.*?)\]\s*(?:,|\n|\}})', cleaned, re.DOTALL)
+        if m_arr:
+            obj_blocks = re.findall(r'\{(.*?)\}', m_arr.group(1), re.DOTALL)
+            actions = []
+            for b in obj_blocks:
+                m_act = re.search(r'"action"\s*:\s*"((?:[^"\\]|\\.)*)"', b, re.DOTALL)
+                m_role = re.search(r'"responsible_role"\s*:\s*"((?:[^"\\]|\\.)*)"', b, re.DOTALL)
+                if m_act:
+                    act_str = m_act.group(1)
+                    role_str = m_role.group(1) if m_role else "HR Operations"
+                    try:
+                        act_str = bytes(act_str, "utf-8").decode("unicode_escape")
+                    except Exception:
+                        pass
+                    try:
+                        role_str = bytes(role_str, "utf-8").decode("unicode_escape")
+                    except Exception:
+                        pass
+                    actions.append({
+                        "action": act_str,
+                        "responsible_role": role_str
+                    })
+            data[obj_arr_key] = actions
+        else:
+            data[obj_arr_key] = []
+
+    if data.get("executive_summary") or data.get("root_causes") or data.get("immediate_actions"):
+        return data
+
+    raise ValueError("Could not parse or extract valid JSON from LLM output.")
+
+def run_prescriptive_analysis(
+    incident_id: str,
+    kpi_name: str,
+    interdependency_info: dict = None,
+    correlated_with: list = None,
+    severity: str = "Critical",
+    row: dict = None,
+    breach_summaries: list = None
+):
     """
     Takes the incident ID, retrieves the ML findings context from the MCP memory,
     and passes them to the LLM to generate prescriptive business recommendations.
     
+    In batch mode, the context contains ONLY ACTUAL_BREACH data (PREDICTIVE_RISK is excluded).
+    A single consolidated email is sent covering all breaches.
+    
     Args:
         incident_id: Unique breach incident key used to retrieve context from MCP memory
         kpi_name: The primary breached KPI name
-        correlated_with: List of historically correlated KPI names
+        interdependency_info: Full dictionary mapping from INTERDEPENDENCY_MATRIX (affects, affected_by, correlated_with)
+        correlated_with: List of historically correlated KPI names (backward compat)
         severity: Breach severity ('Critical' or 'Warning') — forwarded to notification routing
-        row: The original OData SAP row dict — stored in MCP memory and used to identify specific records
+        row: The original OData SAP row dict (or list of dicts in batch mode)
+        breach_summaries: List of breach summary dicts for consolidated notification, e.g.
+            [{"kpi_id": "OFB100002", "kpi_name": "...", "severity": "Warning"}, ...]
     """
     from clients.mcp_client import mcp_client
     ml_context = mcp_client.call_tool("get_incident_context", {"incident_id": incident_id})
-    console.print(Panel(f"[bold magenta]Starting Prescriptive Analysis for Primary Incident: {kpi_name}...[/bold magenta]", border_style="magenta"))
     
-    # Retrieve the original OData SAP row (employee/candidate level detail from SuccessFactors)
-    # This enriches the LLM prompt with actual record-level context — who caused the breach, which dept, etc.
+    # Determine breach count for logging
+    breach_count = len(breach_summaries) if breach_summaries else 1
+    console.print(Panel(
+        f"[bold magenta]Starting Prescriptive Analysis for {breach_count} Breach(es): {kpi_name}...[/bold magenta]"
+        f"\n[dim]Note: Only ACTUAL_BREACH data is included (PREDICTIVE_RISK excluded)[/dim]",
+        border_style="magenta"
+    ))
+    
+    # Retrieve the original OData SAP row(s) — may be a list of rows in batch mode
     odata_row_str = mcp_client.call_tool("get_odata_row", {"incident_id": incident_id})
     odata_context = ""
     if odata_row_str and "No OData row found" not in odata_row_str:
         try:
             import json as _json
-            odata_row = _json.loads(odata_row_str)
-            odata_context = (
-                f"\n\n--- ORIGINAL SAP OData BREACH ROW ---\n"
-                f"(Employee/Candidate Level Detail from SuccessFactors — use this to identify WHO caused the breach)\n"
-                f"{_json.dumps(odata_row, indent=2)}\n"
-            )
-            console.print(f"[dim]📎 OData row context injected into LLM prompt ({len(odata_row)} fields)[/dim]")
+            odata_data = _json.loads(odata_row_str)
+            
+            if isinstance(odata_data, list):
+                # Batch mode — multiple OData rows
+                odata_context = (
+                    f"\n\n--- ORIGINAL SAP OData BREACH ROWS ({len(odata_data)} records) ---\n"
+                    f"(Employee/Candidate Level Detail from SuccessFactors — use these to identify WHO caused the breaches)\n"
+                    f"{_json.dumps(odata_data, indent=2)}\n"
+                )
+                console.print(f"[dim]📎 OData batch context injected into LLM prompt ({len(odata_data)} rows)[/dim]")
+            else:
+                # Single row (backward compat)
+                odata_context = (
+                    f"\n\n--- ORIGINAL SAP OData BREACH ROW ---\n"
+                    f"(Employee/Candidate Level Detail from SuccessFactors — use this to identify WHO caused the breach)\n"
+                    f"{_json.dumps(odata_data, indent=2)}\n"
+                )
+                console.print(f"[dim]📎 OData row context injected into LLM prompt ({len(odata_data)} fields)[/dim]")
         except Exception:
             odata_context = f"\n\nSAP OData Row (raw): {odata_row_str}\n"
 
-    correlation_text = ""
-    if correlated_with:
-        correlation_text = f"\nFYI: This breach is historically correlated with the following KPIs: {', '.join(correlated_with)}. Keep this in mind during your analysis.\n"
+    # Build Interdependency Context from INTERDEPENDENCY_MATRIX (affects only for predictive risk)
+    interdependency_text = ""
+    affects_list = []
+    if interdependency_info and isinstance(interdependency_info, dict):
+        affects_list = interdependency_info.get("affects", [])
+        affected_by_list = interdependency_info.get("affected_by", [])
         
-    # Construct User Prompt — includes Databricks ML results + OData row detail + correlation context
-    user_prompt = f"""Based on the following ML Root Cause Findings, provide your prescriptive recommendations to solve the primary breach of {kpi_name}:
-{correlation_text}
+        matrix_lines = []
+        if affects_list:
+            matrix_lines.append(f"- Downstream Dependent HR Processes (Predictive Risk Focus): {', '.join(affects_list)}")
+            
+        if affected_by_list:
+            matrix_lines.append(f"- Preceding Influencing HR Processes (Root Cause Context): {', '.join(affected_by_list)}")
+            
+        if matrix_lines:
+            interdependency_text = (
+                f"\n\n--- HR PROCESS FLOW & DEPENDENCIES ---\n"
+                f"Use this process flow to assess downstream operational impact:\n"
+                + "\n".join(matrix_lines) + "\n"
+            )
+    
+    # Add breach summary info to prompt if in batch mode
+    breach_info_text = ""
+    if breach_summaries and len(breach_summaries) > 1:
+        breach_info_text = f"\n\nIMPORTANT: You are analyzing {len(breach_summaries)} ACTUAL BREACHES in this batch:\n"
+        for bs in breach_summaries:
+            if bs.get("department"):
+                period_str = f" | Period: {bs.get('year')}-{bs.get('month')}" if bs.get('year') and bs.get('month') else ""
+                breach_info_text += f"  - Department: {bs.get('department')} | Severity: {bs.get('severity', 'N/A')}{period_str}\n"
+            else:
+                breach_info_text += f"  - KPI_ID: {bs.get('kpi_id', 'N/A')} | Severity: {bs.get('severity', 'N/A')}\n"
+        breach_info_text += "Provide a UNIFIED analysis covering ALL of these breaches.\n"
+        
+    # Construct User Prompt — includes Databricks ML results + OData row detail + Interdependency matrix context
+    user_prompt = f"""Based on the following ML Root Cause Findings (ACTUAL BREACH data only — predictive risks have been excluded), provide your prescriptive recommendations to solve the breach(es) of {kpi_name}:
+{breach_info_text}
+{interdependency_text}
 {odata_context}
 {ml_context}
 """
@@ -130,13 +305,16 @@ def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: 
         console.print("[bold red]Failed to generate recommendations from any LLM provider.[/bold red]")
         return
         
-    # Clean and parse the response
+    # Clean and parse the response with robust multi-stage repair
     try:
-        cleaned_response = _clean_json_response(raw_response)
-        data = json.loads(cleaned_response)
+        data = _robust_json_parse(raw_response)
+        
+        # Enforce Interdependency Matrix rule: If there are NO downstream 'affects' KPIs, predictive_risk_analysis MUST be empty []
+        if not affects_list:
+            data["predictive_risk_analysis"] = []
         
         # Display Executive Summary
-        console.print(Panel(data.get("executive_summary", ""), title="📊 Executive Summary", border_style="green"))
+        console.print(Panel(data.get("executive_summary", ""), title=f"📊 Executive Summary ({breach_count} Breach(es))", border_style="green"))
         
         # Display Narrative
         root_causes = data.get('root_causes', [])
@@ -180,10 +358,15 @@ def run_prescriptive_analysis(incident_id: str, kpi_name: str, correlated_with: 
         # Display Risk Assessment
         console.print(f"\n[bold red]⚠️ Risk Assessment:[/bold red] {data.get('risk_assessment', '')}\n")
         
-        console.print("[bold green]✅ Prescriptive Analysis Complete![/bold green]")
+        console.print(f"[bold green]✅ Prescriptive Analysis Complete for {breach_count} breach(es)![/bold green]")
         
-        # Trigger Downstream Notifications (pass severity and original row for breach recording)
-        notification_agent.distribute_recommendations(data, kpi_name, severity=severity, row=row)
+        # Trigger Downstream Notifications — pass breach_summaries for consolidated email
+        notification_agent.distribute_recommendations(
+            data, kpi_name, 
+            severity=severity, 
+            row=row,
+            breach_summaries=breach_summaries
+        )
         
     except json.JSONDecodeError as e:
         console.print(f"[bold red]Failed to parse LLM response as JSON: {e}[/bold red]")

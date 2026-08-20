@@ -5,10 +5,15 @@ from clients import databricks_client
 
 console = Console()
 
-def run_agent(kpi_name, severity, year, month, primary_kpi=None, **extra_params):
+def run_agent(kpi_name, severity, year, month, primary_kpi=None, breach_list_json=None, **extra_params):
     """
     Triggered by the Master Orchestrator for Offboarding-related KPI breaches.
     Triggers the Databricks ML notebook for Offboarding RCA.
+    
+    Args:
+        breach_list_json: Optional JSON string of batch breach list, e.g.
+            '[{"KPI_ID": "OFB100002", "Severity": "WARNING"}, ...]'
+            When provided, Databricks processes all breaches in a single run.
     """
     console.print(f"[bold green][Offboarding Agent][/bold green] Initiating Root Cause Analysis for breached KPI: [bold red]{kpi_name}[/bold red] (Severity: {severity})")
     
@@ -22,10 +27,15 @@ def run_agent(kpi_name, severity, year, month, primary_kpi=None, **extra_params)
             "PRIMARY_BREACH_KPI": primary_kpi if primary_kpi else kpi_name
         }
         
+        # Pass the batch breach list to Databricks if provided (matching BREACH_PAYLOAD widget)
+        if breach_list_json:
+            params["BREACH_PAYLOAD"] = breach_list_json
+            params["BREACH_LIST"] = breach_list_json
+        
         # Merge extra parameters (excluding keys that map to standard ones)
         for k, v in extra_params.items():
             k_upper = k.upper()
-            if k_upper not in params and k_upper not in ("PRIMARY_KPI", "PRIMARY_BREACH_KPI"):
+            if k_upper not in params and k_upper not in ("PRIMARY_KPI", "PRIMARY_BREACH_KPI", "BREACH_LIST", "BREACH_PAYLOAD"):
                 params[k_upper] = str(v)
 
         # Submit the run to Databricks

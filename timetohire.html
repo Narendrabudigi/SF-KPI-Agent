@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time-to-Hire Breach Analysis — HR KPI Agentic AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+    </script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -15,6 +23,10 @@
             --text-secondary: #94a3b8;
             --nav-bg: rgba(18, 24, 36, 0.85);
             --card-inner-bg: #0f172a;
+            --btn-bg: #1e293b;
+            --btn-border: #1e293b;
+            --btn-hover-bg: #334155;
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
             --blue: #3b82f6;
             --blue-glow: rgba(59, 130, 246, 0.15);
             --green: #10b981;
@@ -29,13 +41,18 @@
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        html.light-theme body,
         body.light-theme {
-            --bg-dark: #f8fafc;
+            --bg-dark: #f1f5f9;
             --panel-bg: #ffffff;
-            --panel-border: #e2e8f0;
+            --panel-border: #cbd5e1;
             --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --card-inner-bg: #f1f5f9;
+            --text-secondary: #475569;
+            --card-inner-bg: #f8fafc;
+            --btn-bg: #ffffff;
+            --btn-border: #cbd5e1;
+            --btn-hover-bg: #e2e8f0;
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
         }
 
         body {
@@ -55,14 +72,18 @@
             font-size: 13px;
             font-weight: 600;
             border-radius: var(--radius-md);
-            border: 1px solid var(--panel-border);
-            background: #1e293b;
+            border: 1px solid var(--btn-border);
+            background: var(--btn-bg);
             color: var(--text-primary);
             cursor: pointer;
             transition: var(--transition);
+            text-decoration: none;
         }
 
-        .btn:hover { background: #334155; }
+        .btn:hover {
+            background: var(--btn-hover-bg);
+            border-color: var(--blue);
+        }
         .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
         .btn-primary:hover { background: #2563eb; }
 
@@ -224,7 +245,11 @@
                 </div>
                 <div class="meta-text" id="metaInfo">Loading breach context...</div>
             </div>
-            <div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button id="btn-theme-toggle" class="btn" onclick="toggleTheme()" aria-label="Toggle Theme" style="padding: 8px 12px;">
+                    <svg id="theme-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"></svg>
+                </button>
+                <a href="/dashboard" class="btn">← Dashboard</a>
                 <button class="btn btn-primary" id="toggleDetailsBtn" onclick="toggleDetails()">🔍 View Breach Details</button>
             </div>
         </div>
@@ -480,7 +505,48 @@
             }
         }
 
-        window.onload = loadData;
+        // Theme Switcher Logic
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.documentElement.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+                document.documentElement.classList.remove('light-theme');
+            }
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            document.documentElement.classList.toggle('light-theme', isLight);
+            const theme = isLight ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const svg = document.getElementById('theme-icon');
+            const btn = document.getElementById('btn-theme-toggle');
+            if (!svg) return;
+            if (theme === 'light') {
+                svg.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m9.75-9h-2.25m-13.5 0H3m16.035-6.785l-1.59 1.59M6.343 17.657l-1.59 1.59m12.728 0l-1.59-1.59M6.343 6.343L4.753 4.753M12 9.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
+                `;
+                if (btn) btn.setAttribute('title', 'Switch to Dark Theme');
+            } else {
+                svg.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                `;
+                if (btn) btn.setAttribute('title', 'Switch to Light Theme');
+            }
+        }
+
+        window.onload = function() {
+            initTheme();
+            loadData();
+        };
     </script>
 </body>
 </html>
