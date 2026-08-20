@@ -71,6 +71,11 @@ def _is_attrition_kpi(kpi_name: str) -> bool:
 def _extract_department(row: Dict[str, Any]) -> Optional[str]:
     """Extracts the department/division value from a row dict (for attrition KPIs)."""
     dept = (
+        row.get("DEPARTMENT_ID") or
+        row.get("Department_ID") or
+        row.get("department_id") or
+        row.get("DEPT_ID") or
+        row.get("Dept_ID") or
         row.get("Department") or
         row.get("DEPARTMENT") or
         row.get("Dept") or

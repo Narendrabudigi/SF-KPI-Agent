@@ -119,14 +119,21 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
         sev = "CRITICAL" if is_critical else "WARNING"
         
         if is_attrition:
-            dept = breach_tracker._extract_department(row) or row.get("Department") or ""
-            row_year = row.get("Year") or row.get("Posting_Year") or year
-            row_month = row.get("Month") or row.get("Posting_Month") or month
+            dept = breach_tracker._extract_department(row) or row.get("DEPARTMENT_ID") or row.get("Department") or ""
+            row_year = row.get("YEAR") or row.get("Year") or row.get("Posting_Year") or year
+            row_month = row.get("MONTH") or row.get("Month") or row.get("Posting_Month") or month
+            
+            month_str = str(row_month) if row_month is not None else str(month)
+            if month_str.isdigit():
+                month_str = str(int(month_str))
+
+            year_str = str(row_year) if row_year is not None else str(year)
+
             breach_entry = {
-                "Department": str(dept),
-                "Severity": sev,
-                "Year": str(row_year) if row_year is not None else "",
-                "Month": str(row_month) if row_month is not None else ""
+                "DEPARTMENT_ID": str(dept),
+                "YEAR": year_str,
+                "MONTH": month_str,
+                "Severity": sev
             }
         else:
             kpi_id = (
