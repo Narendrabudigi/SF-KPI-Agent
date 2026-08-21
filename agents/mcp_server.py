@@ -203,7 +203,8 @@ def run_prescriptive_analysis(
     correlated_with_json: str = None,
     severity: str = "Critical",
     row_json: str = None,
-    breach_summaries_json: str = None
+    breach_summaries_json: str = None,
+    critical_predictive_risks_json: str = None
 ) -> str:
     """
     Runs prescriptive analysis for a breach incident (single or batch).
@@ -220,6 +221,7 @@ def run_prescriptive_analysis(
         severity: Breach severity
         row_json: JSON string of OData row(s) — may be a single dict or array of dicts
         breach_summaries_json: JSON array of breach summary dicts for consolidated notification
+        critical_predictive_risks_json: JSON array of critical predictive risk records for Excel export
     """
     from agents import prescriptive_agent
     import json
@@ -251,6 +253,13 @@ def run_prescriptive_analysis(
             breach_summaries = json.loads(breach_summaries_json)
         except Exception:
             pass
+
+    critical_predictive_risks = None
+    if critical_predictive_risks_json:
+        try:
+            critical_predictive_risks = json.loads(critical_predictive_risks_json)
+        except Exception:
+            pass
             
     prescriptive_agent.run_prescriptive_analysis(
         incident_id=incident_id,
@@ -259,7 +268,8 @@ def run_prescriptive_analysis(
         correlated_with=correlated_with,
         severity=severity,
         row=row,
-        breach_summaries=breach_summaries
+        breach_summaries=breach_summaries,
+        critical_predictive_risks=critical_predictive_risks
     )
     
     breach_count = len(breach_summaries) if breach_summaries else 1
@@ -304,9 +314,9 @@ def wait_and_fetch_results_batch(
     if res is None:
         return ""
     
-    # If result is a dict (new structured format), serialize it as JSON
+    # If result is a dict (new structured format), serialize it as JSON with default=str for dates
     if isinstance(res, dict):
-        return json.dumps(res)
+        return json.dumps(res, default=str)
     
     # Backward compat: if result is a plain string, return as-is
     return res

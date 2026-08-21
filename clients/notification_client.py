@@ -1,6 +1,8 @@
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 import requests
 from rich.console import Console
 
@@ -8,29 +10,50 @@ import config
 
 console = Console()
 
-def send_email(to_email: str, subject: str, html_body: str):
+def send_email(to_email: str, subject: str, html_body: str, attachments: list = None):
     """
-    Sends an HTML email using SMTP configuration in .env.
+    Sends an HTML email using SMTP configuration in .env, with optional file attachments.
     """
     if not to_email:
         to_email = config.SENDER_EMAIL or config.SMTP_USER
         
     if not config.SMTP_SERVER or not config.SMTP_USER or not config.SMTP_PASS or not to_email:
-        console.print(f"[dim][Notification Client] Mock Email to {to_email}: {subject}[/dim]")
+        att_msg = f" with {len(attachments)} attachment(s)" if attachments else ""
+        console.print(f"[dim][Notification Client] Mock Email to {to_email}: {subject}{att_msg}[/dim]")
         return
         
     try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"] = config.SENDER_EMAIL or config.SMTP_USER
-        msg["To"] = to_email
-        
-        # Add a plain text fallback to prevent Gmail from flagging as spam
-        text_part = MIMEText("Please view this email in an HTML-compatible email client to see the Prescriptive Recommendations.", "plain")
-        html_part = MIMEText(html_body, "html")
-        
-        msg.attach(text_part)
-        msg.attach(html_part)
+        if attachments:
+            msg = MIMEMultipart("mixed")
+            msg["Subject"] = subject
+            msg["From"] = config.SENDER_EMAIL or config.SMTP_USER
+            msg["To"] = to_email
+            
+            body_part = MIMEMultipart("alternative")
+            text_part = MIMEText("Please view this email in an HTML-compatible email client to see the Prescriptive Recommendations.", "plain")
+            html_part = MIMEText(html_body, "html")
+            body_part.attach(text_part)
+            body_part.attach(html_part)
+            msg.attach(body_part)
+            
+            for file_path in attachments:
+                if os.path.exists(file_path):
+                    file_name = os.path.basename(file_path)
+                    with open(file_path, "rb") as f:
+                        part = MIMEApplication(f.read(), Name=file_name)
+                    part['Content-Disposition'] = f'attachment; filename="{file_name}"'
+                    msg.attach(part)
+                    console.print(f"[bold cyan][Notification Client] Attached file: {file_name}[/bold cyan]")
+        else:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"] = config.SENDER_EMAIL or config.SMTP_USER
+            msg["To"] = to_email
+            
+            text_part = MIMEText("Please view this email in an HTML-compatible email client to see the Prescriptive Recommendations.", "plain")
+            html_part = MIMEText(html_body, "html")
+            msg.attach(text_part)
+            msg.attach(html_part)
         
         # Connect to SMTP server
         server = smtplib.SMTP(config.SMTP_SERVER, config.SMTP_PORT)
@@ -43,6 +66,7 @@ def send_email(to_email: str, subject: str, html_body: str):
         
     except Exception as e:
         console.print(f"[bold red][Notification Client] Failed to send email to {to_email}: {e}[/bold red]")
+
 
 
 def send_teams_message(markdown_body: str):

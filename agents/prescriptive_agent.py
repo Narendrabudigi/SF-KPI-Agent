@@ -1,4 +1,5 @@
 import json
+import re
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -33,11 +34,7 @@ Guidelines:
 11. DETAILED EXPLANATION: Write detailed, context-rich analysis and recommendations rather than brief summaries. Provide deep business insights that help in process optimization.
 12. NO "MODEL" OR "ML" REFERENCES: Speak authoritatively as a senior HR analyst. Absolutely DO NOT say "the model predicted", "the ML model says", "our algorithm shows", etc. State the insights directly as business facts or forecasts (e.g., "This delay will compress the onboarding timeline by 8 days" instead of "The model predicts an 8 day delay"). Never use technical model names.
 13. NO RECORD HALLUCINATIONS: Do not invent specific delayed records for dependent or correlated KPIs that are department-level or do not have matching record-level details in the input context. Keep "affected_records" empty or strictly limited to actual records provided in the inputs.
-14. SIMPLE DAY BREAKDOWNS: In your Executive Summary and Root Causes, explain the delay using a simple, short, and punchy format:
-    *   **Why it is late**: The operational bottleneck (e.g., technical interview feedback lag).
-    *   **By how much**: The forecast duration (e.g., **41 days** predicted cycle time).
-    *   **What is the downstream delay**: The next process affected (e.g., pushes back **Onboarding** setup timelines).
-    Keep sentences short and readable for business leaders.
+14. FLUID EXECUTIVE NARRATIVE: In your Executive Summary and Root Causes, write in smooth, professional, fluid business paragraphs. Do NOT output raw prompt bullet labels or literal headers such as "* Why it is late:", "* By how much:", or "* What is the downstream delay:". Integrate the operational bottleneck, total delay duration, and downstream impacts seamlessly into natural C-suite sentences.
 15. C-SUITE FORMATTING RULES (FOR CEO/CFO):
     *   **Convert Day of Week Codes**: Never output raw codes like `Dayofweek: 4.0` or `Dayofweek: 2.0`. Translate them to actual days of the week (e.g., **Thursday**, **Tuesday**).
     *   **Translate Confidence Scores**: Convert raw confidence percentages into qualitative executive risk descriptors:
@@ -47,10 +44,11 @@ Guidelines:
     *   **No Technical placeholders**: Clean up any database artifacts like `nan`, `null`, or raw database keys from the final text.
 16. MULTIPLE BREACHES: When multiple breach records are provided, your executive summary should mention ALL breach IDs and their severities. Your root causes should cover the common and individual drivers across all breaches. Recommendations should address ALL breaches holistically.
 17. PROFESSIONAL BUSINESS TONE & NO INTERNAL LABELS: Never output internal prompt labels, technical placeholders, emojis (like 🔴, 🟡, 🔵), or phrases like "according to the rules", "interdependency matrix", or "based on the rules". Speak strictly in natural, professional executive HR terminology.
+18. DEPARTMENT-WISE & SEVERITY-WISE PRIORITIZATION (ACTUAL BREACHES): When presenting root cause analysis, executive summaries, and immediate actions for actual breaches, structure your analysis Department-Wise first, and within each department, sort/order breaches by Severity (**CRITICAL** items prioritized at the top before **WARNING** items). Clearly highlight which department requires immediate attention and which specific breaches must be resolved faster.
 
 Format your response as valid JSON with the following structure:
 {
-    "executive_summary": "Clean, high-level summary of the breach(es), their drivers, and downstream operational impact. Mention all breach IDs if multiple. Highlight key records and percentages.",
+    "executive_summary": "Clean, high-level summary of the breach(es), their drivers, and downstream operational impact. Grouped department-wise and sorted by severity (Critical first, then Warning). Highlight key records and percentages.",
     "root_causes": [
         "Detail driver 1 (explain what happened and why in plain business terms)...",
         "Detail driver 2...",
@@ -76,7 +74,38 @@ Format your response as valid JSON with the following structure:
 }
 """
 
-import re
+def _generate_critical_risks_excel(critical_risks: list, kpi_name: str) -> str:
+    """
+    Generates an Excel file (.xlsx) or CSV containing all CRITICAL predicted risk records.
+    Returns the absolute path to the generated file.
+    """
+    import pandas as pd
+    import os
+    import re
+    import tempfile
+    
+    if not critical_risks:
+        return None
+        
+    try:
+        df = pd.DataFrame(critical_risks)
+        safe_kpi = re.sub(r'[^a-zA-Z0-9_]', '_', kpi_name)
+        filename = f"Critical_Predicted_Risks_{safe_kpi}.xlsx"
+        temp_dir = tempfile.gettempdir()
+        filepath = os.path.join(temp_dir, filename)
+        
+        try:
+            df.to_excel(filepath, index=False, engine='openpyxl')
+        except Exception:
+            filename = f"Critical_Predicted_Risks_{safe_kpi}.csv"
+            filepath = os.path.join(temp_dir, filename)
+            df.to_csv(filepath, index=False)
+            
+        console.print(f"[bold green]📊 Generated temp attachment export for {len(critical_risks)} Critical Predicted Risk record(s): {filepath}[/bold green]")
+        return filepath
+    except Exception as e:
+        console.print(f"[bold red]Failed to generate export for critical predicted risks: {e}[/bold red]")
+        return None
 
 def _clean_json_response(raw_response: str) -> str:
     """Removes markdown code blocks if the LLM returned them"""
@@ -91,36 +120,55 @@ def _clean_json_response(raw_response: str) -> str:
         
     return cleaned.strip()
 
+def _clean_summary_text(text: str) -> str:
+    """Sanitizes raw prompt headers like '* Why it is late:' from executive summary into clean prose."""
+    if not isinstance(text, str):
+        return text
+    text = re.sub(r'[*•]\s*\*\*Why it is late\*\*\s*:\s*', 'Why it is late: ', text, flags=re.IGNORECASE)
+    text = re.sub(r'[*•]\s*\*\*By how much\*\*\s*:\s*', 'By how much: ', text, flags=re.IGNORECASE)
+    text = re.sub(r'[*•]\s*\*\*What is the downstream delay\*\*\s*:\s*', 'Downstream delay: ', text, flags=re.IGNORECASE)
+    text = re.sub(r'\s*\*\s*Why it is late:\s*', ' Why it is late: ', text, flags=re.IGNORECASE)
+    text = re.sub(r'\s*\*\s*By how much:\s*', ' By how much: ', text, flags=re.IGNORECASE)
+    text = re.sub(r'\s*\*\s*What is the downstream delay:\s*', ' Downstream delay: ', text, flags=re.IGNORECASE)
+    return text.strip()
+
+
 def _robust_json_parse(raw_response: str) -> dict:
     """
     Robustly parses JSON from LLM response.
     Handles trailing duplicate words, unescaped characters, or formatting glitches.
     """
     cleaned = _clean_json_response(raw_response)
+    data = None
     
     # 1. Direct standard parse
     try:
-        return json.loads(cleaned)
+        data = json.loads(cleaned)
     except Exception:
         pass
         
     # 2. Extract substring between first { and last }
-    start = cleaned.find("{")
-    end = cleaned.rfind("}")
-    if start != -1 and end != -1:
-        candidate = cleaned[start:end+1]
-        try:
-            return json.loads(candidate)
-        except Exception:
-            pass
-            
-        # 3. Clean up duplicate trailing lines before closing brace
-        # e.g., "risk_assessment": "..."\n some trailing duplicate words\n}
-        candidate_fixed = re.sub(r'("\s*)\n[^\{\}\[\]",:]+\s*\}', r'\1\n}', candidate)
-        try:
-            return json.loads(candidate_fixed)
-        except Exception:
-            pass
+    if not data:
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+        if start != -1 and end != -1:
+            candidate = cleaned[start:end+1]
+            try:
+                data = json.loads(candidate)
+            except Exception:
+                pass
+                
+            if not data:
+                candidate_fixed = re.sub(r'("\s*)\n[^\{\}\[\]",:]+\s*\}', r'\1\n}', candidate)
+                try:
+                    data = json.loads(candidate_fixed)
+                except Exception:
+                    pass
+
+    if data and isinstance(data, dict):
+        if "executive_summary" in data:
+            data["executive_summary"] = _clean_summary_text(data["executive_summary"])
+        return data
 
     # 4. Fallback: Regex extraction of structured fields
     data = {}
@@ -200,13 +248,15 @@ def run_prescriptive_analysis(
     correlated_with: list = None,
     severity: str = "Critical",
     row: dict = None,
-    breach_summaries: list = None
+    breach_summaries: list = None,
+    critical_predictive_risks: list = None
 ):
     """
     Takes the incident ID, retrieves the ML findings context from the MCP memory,
     and passes them to the LLM to generate prescriptive business recommendations.
     
     In batch mode, the context contains ONLY ACTUAL_BREACH data (PREDICTIVE_RISK is excluded).
+    Critical PREDICTIVE_RISK records are exported to an Excel attachment.
     A single consolidated email is sent covering all breaches.
     
     Args:
@@ -216,17 +266,24 @@ def run_prescriptive_analysis(
         correlated_with: List of historically correlated KPI names (backward compat)
         severity: Breach severity ('Critical' or 'Warning') — forwarded to notification routing
         row: The original OData SAP row dict (or list of dicts in batch mode)
-        breach_summaries: List of breach summary dicts for consolidated notification, e.g.
-            [{"kpi_id": "OFB100002", "kpi_name": "...", "severity": "Warning"}, ...]
+        breach_summaries: List of breach summary dicts for consolidated notification
+        critical_predictive_risks: List of CRITICAL predicted risk records from Databricks ML results
     """
     from clients.mcp_client import mcp_client
     ml_context = mcp_client.call_tool("get_incident_context", {"incident_id": incident_id})
     
+    # Generate Excel export if CRITICAL predicted risk records exist
+    attachments = []
+    if critical_predictive_risks:
+        excel_file = _generate_critical_risks_excel(critical_predictive_risks, kpi_name)
+        if excel_file:
+            attachments.append(excel_file)
+
     # Determine breach count for logging
     breach_count = len(breach_summaries) if breach_summaries else 1
     console.print(Panel(
         f"[bold magenta]Starting Prescriptive Analysis for {breach_count} Breach(es): {kpi_name}...[/bold magenta]"
-        f"\n[dim]Note: Only ACTUAL_BREACH data is included (PREDICTIVE_RISK excluded)[/dim]",
+        f"\n[dim]Note: Only ACTUAL_BREACH data is included (PREDICTIVE_RISK excluded from prompt; {len(critical_predictive_risks) if critical_predictive_risks else 0} Critical risks exported to Excel)[/dim]",
         border_style="magenta"
     ))
     
@@ -288,7 +345,7 @@ def run_prescriptive_analysis(
                 breach_info_text += f"  - Department: {bs.get('department')} | Severity: {bs.get('severity', 'N/A')}{period_str}\n"
             else:
                 breach_info_text += f"  - KPI_ID: {bs.get('kpi_id', 'N/A')} | Severity: {bs.get('severity', 'N/A')}\n"
-        breach_info_text += "Provide a UNIFIED analysis covering ALL of these breaches.\n"
+        breach_info_text += "Provide a UNIFIED analysis covering ALL of these breaches, structured Department-Wise and sorted Severity-Wise (CRITICAL first).\n"
         
     # Construct User Prompt — includes Databricks ML results + OData row detail + Interdependency matrix context
     user_prompt = f"""Based on the following ML Root Cause Findings (ACTUAL BREACH data only — predictive risks have been excluded), provide your prescriptive recommendations to solve the breach(es) of {kpi_name}:
@@ -360,12 +417,13 @@ def run_prescriptive_analysis(
         
         console.print(f"[bold green]✅ Prescriptive Analysis Complete for {breach_count} breach(es)![/bold green]")
         
-        # Trigger Downstream Notifications — pass breach_summaries for consolidated email
+        # Trigger Downstream Notifications — pass breach_summaries and attachments
         notification_agent.distribute_recommendations(
             data, kpi_name, 
             severity=severity, 
             row=row,
-            breach_summaries=breach_summaries
+            breach_summaries=breach_summaries,
+            attachments=attachments
         )
         
     except json.JSONDecodeError as e:

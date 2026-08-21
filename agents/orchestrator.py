@@ -263,8 +263,13 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
     # Parse the structured context from coordinator agent
     # mb_context is a JSON string from MCP tool — parse it to extract actual/predictive separation
     # -------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    # Parse the structured context from coordinator agent
+    # mb_context is a JSON string from MCP tool — parse it to extract actual/predictive separation
+    # -------------------------------------------------------------------------
     actual_breach_context = None
     predictive_risk_context = None
+    critical_predictive_risks = []
     full_combined_context = None
     
     if isinstance(mb_context, str):
@@ -272,6 +277,7 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
             context_dict = json.loads(mb_context)
             actual_breach_context = context_dict.get("actual_breach_context")
             predictive_risk_context = context_dict.get("predictive_risk_context")
+            critical_predictive_risks = context_dict.get("critical_predictive_risks", [])
             full_combined_context = context_dict.get("full_context", mb_context)
         except (json.JSONDecodeError, TypeError):
             # If it's a plain string (backward compat from old coordinator), treat as full context
@@ -280,6 +286,7 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
     elif isinstance(mb_context, dict):
         actual_breach_context = mb_context.get("actual_breach_context")
         predictive_risk_context = mb_context.get("predictive_risk_context")
+        critical_predictive_risks = mb_context.get("critical_predictive_risks", [])
         full_combined_context = mb_context.get("full_context", str(mb_context))
     else:
         full_combined_context = str(mb_context)
@@ -305,32 +312,100 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
     # Store incident context in MCP Memory
     mcp_client.call_tool("store_incident_context", {"incident_id": batch_incident_id, "context_data": prescriptive_context})
     
-    # Build breach summaries for consolidated notification
+    # Build enriched breach summaries for consolidated notification & dashboard UI
     breach_summaries = []
     for i, row in enumerate(breach_rows_list):
+        sev = severities[i] if i < len(severities) else batch_severity
+        # Clean kpi_id string
+        raw_kpi_id = (
+            row.get("KPI_ID") or row.get("KPI_Id") or row.get("kpi_id") or
+            row.get("Kpi_Id") or row.get("KPI_ID_Col") or
+            row.get("OFFBOARDING_PROCESS_ID") or row.get("ONBOARDING_PROCESS_ID") or
+            row.get("JOB_REQ_ID") or row.get("APPLICATION_ID")
+        )
+        clean_kpi_id = str(raw_kpi_id).strip() if raw_kpi_id is not None and str(raw_kpi_id).strip() not in ("0", "None", "nan", "") else None
+
+        dept = (
+            row.get("DEPARTMENT_NAME") or row.get("Department_Name") or row.get("Department") or
+            row.get("DEPARTMENT_ID") or row.get("Department_Id") or row.get("DEPARTMENT")
+        )
+        loc = (
+            row.get("LOCATION") or row.get("Location") or row.get("LOCATION_NAME") or
+            row.get("LOCATION_ID") or row.get("Location_Id")
+        )
+        
+        first_name = row.get("FIRST_NAME") or row.get("First_Name") or row.get("CANDIDATE_NAME") or row.get("Candidate_Name") or ""
+        last_name = row.get("LAST_NAME") or row.get("Last_Name") or ""
+        person_name = f"{first_name} {last_name}".strip()
+        
+        if person_name and clean_kpi_id:
+            person_info = f"{person_name} ({clean_kpi_id})"
+        elif person_name:
+            person_info = person_name
+        elif clean_kpi_id:
+            person_info = clean_kpi_id
+        else:
+            person_info = None
+            
+        stage = (
+            row.get("CURRENT_STAGE") or row.get("Current_Stage") or row.get("STEP_NAME") or
+            row.get("Step_Name") or row.get("STATUS") or row.get("Status") or row.get("STAGE")
+        )
+        
+        why = (
+            row.get("DELAY_REASON") or row.get("Delay_Reason") or row.get("KEY_DRIVERS") or
+            row.get("Key_Drivers") or row.get("REASON") or row.get("Reason") or row.get("DELAY_DRIVER")
+        )
+        
+        act_days = row.get("ACTUAL_DAYS") or row.get("Actual_Days") or row.get("TOTAL_DAYS") or row.get("TOTAL_CYCLE_TIME_DAYS")
+        sla_days = row.get("TARGET_SLA_DAYS") or row.get("SLA_DAYS") or row.get("TARGET_DAYS") or row.get("BENCHMARK_SLA_DAYS")
+        if act_days and sla_days:
+            try:
+                diff = float(act_days) - float(sla_days)
+                diff_str = f" (+{diff:.1f}d)" if diff > 0 else ""
+                sla_impact = f"{act_days}d Actual vs {sla_days}d SLA{diff_str}"
+            except Exception:
+                sla_impact = f"{act_days}d Actual vs {sla_days}d SLA"
+        elif act_days:
+            sla_impact = f"{act_days}d Actual"
+        else:
+            sla_impact = None
+
+        hr_lead = (
+            row.get("HR_PARTNER_EMPLOYEE_ID") or row.get("HR_PARTNER_ID") or
+            row.get("MANAGER_EMPLOYEE_ID") or row.get("MANAGER_ID") or row.get("RECRUITER_EMPLOYEE_ID")
+        )
+        
         if is_attrition:
-            dept = breach_tracker._extract_department(row) or row.get("Department") or f"Dept-{i}"
+            dept_val = breach_tracker._extract_department(row) or dept or f"Dept-{i}"
             row_year = row.get("Year") or row.get("Posting_Year") or year
             row_month = row.get("Month") or row.get("Posting_Month") or month
             breach_summaries.append({
-                "kpi_id": str(dept),
-                "department": str(dept),
+                "kpi_id": str(dept_val),
+                "department": str(dept_val),
+                "location": str(loc) if loc else None,
+                "person": None,  # Attrition is department-level aggregate; no individual employee person column
+                "stage": str(stage) if stage else None,
+                "why": str(why) if why else None,
+                "sla_impact": sla_impact,
+                "hr_lead": str(hr_lead) if hr_lead else None,
                 "kpi_name": kpi_name,
-                "severity": severities[i] if i < len(severities) else batch_severity,
+                "severity": sev,
                 "year": str(row_year) if row_year else "",
                 "month": str(row_month) if row_month else ""
             })
         else:
-            kpi_id = (
-                row.get("KPI_ID") or row.get("KPI_Id") or row.get("kpi_id") or
-                row.get("Kpi_Id") or row.get("KPI_ID_Col") or
-                row.get("OFFBOARDING_PROCESS_ID") or row.get("ONBOARDING_PROCESS_ID") or
-                row.get("JOB_REQ_ID")
-            )
             breach_summaries.append({
                 "kpi_id": str(kpi_id) if kpi_id else f"Unknown-{i}",
+                "department": str(dept) if dept else None,
+                "location": str(loc) if loc else None,
+                "person": person_info,
+                "stage": str(stage) if stage else None,
+                "why": str(why) if why else None,
+                "sla_impact": sla_impact,
+                "hr_lead": str(hr_lead) if hr_lead else None,
                 "kpi_name": kpi_name,
-                "severity": severities[i] if i < len(severities) else batch_severity
+                "severity": sev
             })
     
     mcp_client.call_tool("run_prescriptive_analysis", {
@@ -339,8 +414,9 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
         "interdependency_info_json": json.dumps(matrix_entry) if matrix_entry else None,
         "correlated_with_json": json.dumps(matrix_entry.get("correlated_with", [])) if matrix_entry.get("correlated_with") else None,
         "severity": batch_severity,
-        "row_json": json.dumps(all_odata_rows),
-        "breach_summaries_json": json.dumps(breach_summaries)
+        "row_json": json.dumps(all_odata_rows, default=str),
+        "breach_summaries_json": json.dumps(breach_summaries),
+        "critical_predictive_risks_json": json.dumps(critical_predictive_risks, default=str) if critical_predictive_risks else None
     })
     
     if runtime_state.SYSTEM_STATE["agent_statuses"][domain_key] != "failed":

@@ -1,4 +1,5 @@
 import time
+import json
 import pandas as pd
 from rich.console import Console
 from rich.panel import Panel
@@ -60,8 +61,10 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
                             
                         runtime_state.log_system_event(
                             f"[bold red][RCA Coordinator] Databricks Run {run_id} ({run_info['kpi_name']}) Failed![/bold red]\n"
-                            f"Result State: [yellow]{result_state}[/yellow] | Message: {state_msg}{error_detail}"
+                            f"Result State: [yellow]{result_state}[/yellow] | Message: {state_msg}{error_detail}\n"
+                            f"[yellow]Attempting Databricks SQL Warehouse table fetch for {run_info['kpi_name']} ({run_info['table_name']}) as fallback...[/yellow]"
                         )
+                        completed_runs.append(run_info)
                         pending_runs.remove(run_info)
                         
             except Exception as e:
@@ -79,6 +82,7 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
     actual_breach_blocks = []
     predictive_risk_blocks = []
     all_blocks = []
+    critical_predictive_records = []
     
     header = f"Primary Incident: {primary_kpi_name} (Severity: {severity}, Period: {year}-{month})\n"
     actual_breach_blocks.append(header)
@@ -121,6 +125,19 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
                     
                     if not predictive_df.empty:
                         predictive_risk_blocks.append(f"--- {role} (PREDICTIVE RISKS) ---\n{predictive_df.to_string()}\n")
+                        # Extract CRITICAL predicted risk rows for Excel generation
+                        sev_col = next((c for c in predictive_df.columns if c.upper() in ('SEVERITY', 'BREACH_SEVERITY')), None)
+                        if sev_col:
+                            crit_pred = predictive_df[predictive_df[sev_col].astype(str).str.upper() == 'CRITICAL']
+                        else:
+                            crit_pred = predictive_df
+                            
+                        if not crit_pred.empty:
+                            records = json.loads(crit_pred.to_json(orient="records", date_format="iso"))
+                            critical_predictive_records.extend(records)
+                            runtime_state.log_system_event(
+                                f"[bold red][RCA Coordinator][/bold red] ⚠️ Extracted {len(crit_pred)} CRITICAL PREDICTIVE_RISK row(s) for Excel export"
+                            )
                     
                     # Full context includes both
                     all_blocks.append(f"--- {role} ---\n{df.to_string()}\n")
@@ -146,6 +163,7 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
         result = {
             "actual_breach_context": "\n".join(actual_breach_blocks) if has_actual else None,
             "predictive_risk_context": "\n".join(predictive_risk_blocks) if has_predictive else None,
+            "critical_predictive_risks": critical_predictive_records,
             "full_context": "\n".join(all_blocks)
         }
         

@@ -198,12 +198,13 @@
             border-collapse: collapse;
             text-align: left;
             font-size: 13px;
-            min-width: 600px;
         }
 
         th, td {
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--panel-border);
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         th {
@@ -227,9 +228,20 @@
         }
 
         @media (max-width: 768px) {
-            .container { padding: 16px; gap: 16px; }
-            .header-card, .card { padding: 16px; }
+            .container { padding: 12px; gap: 12px; }
+            .header-card, .card { padding: 12px; }
             .page-title { font-size: 18px; flex-wrap: wrap; }
+
+            table {
+                font-size: 11px;
+            }
+            th, td {
+                padding: 6px 8px;
+            }
+            th {
+                font-size: 9.5px;
+                letter-spacing: 0.2px;
+            }
         }
     </style>
 </head>
@@ -240,8 +252,6 @@
             <div class="header-title-group">
                 <div class="page-title">
                     ⏱️ Time-to-Hire Breach Analysis
-                    <span id="severityBadge" class="badge badge-critical">Critical</span>
-                    <span id="statusBadge" class="badge badge-active">Active</span>
                 </div>
                 <div class="meta-text" id="metaInfo">Loading breach context...</div>
             </div>
@@ -249,9 +259,14 @@
                 <button id="btn-theme-toggle" class="btn" onclick="toggleTheme()" aria-label="Toggle Theme" style="padding: 8px 12px;">
                     <svg id="theme-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"></svg>
                 </button>
-                <a href="/dashboard" class="btn">← Dashboard</a>
                 <button class="btn btn-primary" id="toggleDetailsBtn" onclick="toggleDetails()">🔍 View Breach Details</button>
             </div>
+        </div>
+
+        <!-- Actual Breaches Breakdown Card -->
+        <div class="card" id="breachTableCard" style="display: none;">
+            <div class="card-header" id="breachTableHeader">📦 Actual Breaches Breakdown</div>
+            <div class="card-body" id="breachTableContainer"></div>
         </div>
 
         <!-- Predictive Risk & Prescriptive Analysis Highlights -->
@@ -414,6 +429,80 @@
             return items;
         }
 
+        function renderBreachTable(summaries) {
+            if (!summaries || !summaries.length) return '';
+
+            const sorted = [...summaries].sort((a, b) => {
+                const sevA = (a.severity || '').toUpperCase() === 'CRITICAL' ? 0 : 1;
+                const sevB = (b.severity || '').toUpperCase() === 'CRITICAL' ? 0 : 1;
+                return sevA - sevB;
+            });
+
+            const hasDept = sorted.some(s => s.department);
+            const hasLoc = sorted.some(s => s.location);
+            const hasPerson = sorted.some(s => s.person && String(s.person).trim() !== '0' && String(s.person).trim() !== 'None');
+            const hasStage = sorted.some(s => s.stage);
+            const hasWhy = sorted.some(s => s.why);
+            const hasSLA = sorted.some(s => s.sla_impact);
+            const hasHR = sorted.some(s => s.hr_lead);
+
+            let headers = [];
+            if (hasDept || hasLoc) headers.push("Department & Location");
+            if (hasPerson) headers.push("Candidate / Employee & ID");
+            else if (!hasDept && !hasLoc) headers.push("KPI / ID");
+            if (hasStage) headers.push("Current Stage / Step");
+            if (hasWhy) headers.push("Why (Delay Driver / Bottleneck)");
+            if (hasSLA) headers.push("SLA Impact");
+            if (hasHR) headers.push("HR Lead / Manager");
+            headers.push("Severity & Priority");
+
+            let thHtml = headers.map(h => `<th>${h}</th>`).join('');
+
+            let rowsHtml = sorted.map(s => {
+                const isCrit = (s.severity || '').toUpperCase() === 'CRITICAL';
+                const badgeColor = isCrit ? 'var(--red)' : 'var(--orange)';
+                const badgeText = isCrit ? 'CRITICAL' : (s.severity || 'WARNING').toUpperCase();
+                const actionTag = isCrit ? '🔥 URGENT' : '⚡ HIGH PRIORITY';
+
+                let tds = [];
+                if (hasDept || hasLoc) {
+                    const dStr = s.department || '';
+                    const lStr = s.location || '';
+                    let val = dStr && lStr ? `<strong>${dStr}</strong><br><small style="color:var(--text-secondary);">📍 ${lStr}</small>` : (dStr ? `<strong>${dStr}</strong>` : `<strong>${lStr}</strong>`);
+                    tds.push(`<td>${val}</td>`);
+                }
+                if (hasPerson) {
+                    tds.push(`<td><strong>${s.person || s.kpi_id || 'N/A'}</strong></td>`);
+                } else if (!hasDept && !hasLoc) {
+                    tds.push(`<td><strong>${s.kpi_id || 'N/A'}</strong></td>`);
+                }
+                if (hasStage) {
+                    tds.push(`<td><span style="background:var(--btn-bg); border:1px solid var(--panel-border); padding:2px 6px; border-radius:4px; font-size:11px;">${s.stage || 'N/A'}</span></td>`);
+                }
+                if (hasWhy) {
+                    tds.push(`<td style="font-size:12px; color:var(--text-secondary);">${s.why || 'SLA threshold breach'}</td>`);
+                }
+                if (hasSLA) {
+                    tds.push(`<td style="font-size:12px; font-weight:600; color:var(--red);">${s.sla_impact || 'N/A'}</td>`);
+                }
+                if (hasHR) {
+                    tds.push(`<td style="font-size:12px;">${s.hr_lead || 'N/A'}</td>`);
+                }
+                tds.push(`<td><div style="display:inline-flex; flex-wrap:wrap; gap:4px; align-items:center;"><span style="background:${badgeColor}20; color:${badgeColor}; border:1px solid ${badgeColor}40; padding:2px 6px; border-radius:12px; font-size:10px; font-weight:700; white-space:nowrap;">${badgeText}</span><span style="font-size:10px; color:${badgeColor}; font-weight:600; white-space:nowrap;">${actionTag}</span></div></td>`);
+
+                return `<tr>${tds.join('')}</tr>`;
+            }).join('');
+
+            return `
+                <div class="table-container" style="margin-top: 0;">
+                    <table>
+                        <thead><tr>${thHtml}</tr></thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
         async function loadData() {
             try {
                 const res = await fetch('/api/breaches/timetohire');
@@ -428,9 +517,16 @@
                 const data = entry.data || {};
                 const activeInfo = result.active_info || {};
 
-                document.getElementById('severityBadge').innerText = activeInfo.severity || 'Critical';
-                document.getElementById('statusBadge').innerText = activeInfo.status || 'Active';
-                document.getElementById('metaInfo').innerText = `Department: ${activeInfo.department || 'Engineering'} | Last Updated: ${new Date(entry.timestamp).toLocaleString()}`;
+                document.getElementById('metaInfo').innerText = `Last Updated: ${new Date(entry.timestamp).toLocaleString()}`;
+
+                if (entry.breach_summaries && entry.breach_summaries.length > 0) {
+                    const tableHtml = renderBreachTable(entry.breach_summaries);
+                    if (tableHtml) {
+                        document.getElementById('breachTableHeader').innerText = `📦 Actual Breaches Breakdown (${entry.breach_summaries.length})`;
+                        document.getElementById('breachTableContainer').innerHTML = tableHtml;
+                        document.getElementById('breachTableCard').style.display = 'block';
+                    }
+                }
 
                 // 1. Top Card: Focus exclusively on Predictive Risk & Prescriptive Actions
                 const predictiveBullets = extractPredictiveItems(data);

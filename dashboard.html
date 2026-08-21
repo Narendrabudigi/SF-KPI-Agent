@@ -883,9 +883,6 @@
                             <span>Notebook: <strong>Recruitment_RCA</strong></span>
                             <span>Target: <strong>recruitment_rca_results</strong></span>
                         </div>
-                        <div class="agent-tree" id="tree-recruitment"
-                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
-                        </div>
                     </div>
 
                     <!-- Onboarding Agent -->
@@ -897,9 +894,6 @@
                         <div class="agent-detail">
                             <span>Notebook: <strong>Onboarding_RCA</strong></span>
                             <span>Target: <strong>onboarding_rca_results</strong></span>
-                        </div>
-                        <div class="agent-tree" id="tree-onboarding"
-                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
                         </div>
                     </div>
 
@@ -913,9 +907,6 @@
                             <span>Notebook: <strong>Offboarding_RCA</strong></span>
                             <span>Target: <strong>offboarding_rca_results</strong></span>
                         </div>
-                        <div class="agent-tree" id="tree-offboarding"
-                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
-                        </div>
                     </div>
 
                     <!-- Employee Central Agent -->
@@ -928,9 +919,6 @@
                             <span>Notebook: <strong>Central_RCA</strong></span>
                             <span>Target: <strong>central_rca_results</strong></span>
                         </div>
-                        <div class="agent-tree" id="tree-employee_central"
-                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
-                        </div>
                     </div>
 
                     <!-- Payroll Agent (Hidden for now since payroll is inactive) -->
@@ -942,9 +930,6 @@
                         <div class="agent-detail">
                             <span>Notebook: <strong>Payroll_RCA</strong></span>
                             <span>Target: <strong>payment_rca_results</strong></span>
-                        </div>
-                        <div class="agent-tree" id="tree-employee_payment"
-                            style="display:none; margin-top:12px; border-top:1px solid var(--panel-border); padding-top:8px;">
                         </div>
                     </div>
                 </div>
@@ -963,19 +948,8 @@
     <script>
         const statusColors = {
             "idle": { color: "#10b981", text: "IDLE" },
-            "fetching": { color: "#f59e0b", text: "FETCHING SAP ODATA" },
-            "analyzing_recruitment": { color: "#3b82f6", text: "ANALYZING RECRUITMENT BREACH" },
-            "analyzing_onboarding": { color: "#3b82f6", text: "ANALYZING ONBOARDING BREACH" },
-            "analyzing_offboarding": { color: "#3b82f6", text: "ANALYZING OFFBOARDING BREACH" },
-            "analyzing_employee_central": { color: "#3b82f6", text: "ANALYZING CENTRAL BREACH" },
-            "analyzing_employee_payment": { color: "#3b82f6", text: "ANALYZING PAYROLL BREACH" },
-            "running_stage_1": { color: "#3b82f6", text: "STAGE 1: RUNNING PRIMARY ANALYSES" },
-            "running_stage_2": { color: "#8b5cf6", text: "STAGE 2: RUNNING CASCADING ANALYSES" },
-            "prescribing": { color: "#8b5cf6", text: "STAGE 3: PRESCRIBING RECOMMENDATIONS" },
-            "completed": { color: "#10b981", text: "KPI SCAN COMPLETED" }
+            "completed": { color: "#10b981", text: "IDLE" }
         };
-
-        let lastResultsCount = -1;
 
         const dependencyMap = {
             "recruitment": ["onboarding"],
@@ -1036,14 +1010,17 @@
                 const lastCheckEl = document.getElementById('sys-last-check');
 
                 const currentStatus = state.status || "idle";
-                const config = statusColors[currentStatus] || { color: "#10b981", text: currentStatus };
+                const isIdle = currentStatus === "idle" || currentStatus === "completed";
+                const config = isIdle 
+                    ? { color: "#10b981", text: "IDLE" } 
+                    : { color: "#3b82f6", text: "ACTIVE" };
 
                 statusEl.textContent = config.text;
                 indicator.style.backgroundColor = config.color;
                 indicator.style.boxShadow = `0 0 12px ${config.color}`;
                 indicator.style.setProperty('--glow-color', config.color);
 
-                if (currentStatus !== "idle" && currentStatus !== "completed") {
+                if (!isIdle) {
                     indicator.classList.add('pulsing');
                 } else {
                     indicator.classList.remove('pulsing');
@@ -1051,7 +1028,7 @@
 
                 lastCheckEl.textContent = state.last_checked || "Never";
 
-                // Update Agent Cards (employee_payment removed for now)
+                // Update Agent Cards
                 const agents = ['recruitment', 'onboarding', 'offboarding', 'employee_central'];
                 agents.forEach(agent => {
                     const el = document.getElementById(`agent-${agent}`);
@@ -1065,96 +1042,6 @@
 
                     const badge = el.querySelector('.agent-badge');
                     badge.textContent = status;
-
-                    // Render dependency tree if running, completed, or failed
-                    const treeEl = document.getElementById(`tree-${agent}`);
-                    if (treeEl) {
-                        if (status === "running" || status === "completed" || status === "failed") {
-                            const level1 = dependencyMap[agent] || [];
-                            let treeHtml = `<div style="font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); font-size: 11px;">Dependency Execution Tree:</div>`;
-                            treeHtml += `<div style="font-family: monospace; line-height: 1.5; padding-left: 2px;">`;
-
-                            // Helper to find run detail
-                            const getRunDetail = (nameKey) => {
-                                if (!state.active_runs) return null;
-                                const targetPrimaryKPI = agentPrimaryKPIs[nameKey];
-                                return state.active_runs.find(run => {
-                                    return run.primary_kpi === targetPrimaryKPI && run.kpi_name === targetPrimaryKPI;
-                                });
-                            };
-
-                            const getDepRunDetail = (nameKey, parentKPI) => {
-                                if (!state.active_runs) return null;
-                                const depKPI = agentPrimaryKPIs[nameKey];
-                                return state.active_runs.find(run => {
-                                    return run.kpi_name === depKPI && run.primary_kpi === parentKPI;
-                                });
-                            };
-
-                            // Self node
-                            let selfColor = "var(--text-secondary)";
-                            if (status === "running") selfColor = "var(--blue)";
-                            if (status === "completed") selfColor = "var(--green)";
-                            if (status === "failed") selfColor = "var(--red)";
-                            treeHtml += `<div><span style="color: ${selfColor};">●</span> <span style="font-weight: 600; color: ${selfColor};">${agentDisplayNames[agent]}</span> <span class="tree-badge" style="background: ${selfColor}15; color: ${selfColor}; border: 1px solid ${selfColor}30; font-size: 8px; padding: 0px 3px;">${status}</span></div>`;
-
-                            const selfRun = getRunDetail(agent);
-                            if (selfRun) {
-                                treeHtml += `<div style="font-size: 10px; color: var(--text-secondary); padding-left: 12px; margin-bottom: 4px;">└─ Run ID: ${selfRun.run_id} | ${selfRun.stage}</div>`;
-                            }
-
-                            const parentKPI = agentPrimaryKPIs[agent];
-
-                            // Children (Level 1 dependencies)
-                            level1.forEach(dep1 => {
-                                const dep1KPI = agentPrimaryKPIs[dep1];
-                                const dep1Run = getDepRunDetail(dep1, parentKPI);
-
-                                let dep1Status = "inactive";
-                                if (dep1Run) {
-                                    dep1Status = "running";
-                                } else {
-                                    const isParentPrimaryRunning = state.active_runs && state.active_runs.some(run => {
-                                        return run.kpi_name === parentKPI && run.stage.includes("Stage 1");
-                                    });
-
-                                    if (isParentPrimaryRunning) {
-                                        dep1Status = "inactive"; // Idle during Stage 1
-                                    } else {
-                                        const depDomainStatus = state.agent_statuses && state.agent_statuses[dep1];
-                                        if (status === "completed" || status === "running") {
-                                            dep1Status = depDomainStatus === "failed" ? "failed" : "completed";
-                                        } else {
-                                            dep1Status = "inactive";
-                                        }
-                                    }
-                                }
-
-                                let dep1Color = "var(--text-secondary)";
-                                if (dep1Status === "running") dep1Color = "var(--blue)";
-                                if (dep1Status === "completed") dep1Color = "var(--green)";
-                                if (dep1Status === "failed") dep1Color = "var(--red)";
-
-                                treeHtml += `
-                                    <div class="tree-node">
-                                        ├── <span style="font-weight: 600; color: ${dep1Color};">${agentDisplayNames[dep1]}</span>
-                                        <span class="tree-badge" style="background: ${dep1Color}15; color: ${dep1Color}; border: 1px solid ${dep1Color}30; font-size: 8px; padding: 0px 3px;">${dep1Status}</span>
-                                    </div>
-                                `;
-
-                                if (dep1Run) {
-                                    treeHtml += `<div style="font-size: 10px; color: var(--text-secondary); padding-left: 20px; margin-bottom: 4px;">└─ Run ID: ${dep1Run.run_id} | ${dep1Run.stage}</div>`;
-                                }
-                            });
-
-                            treeHtml += `</div>`;
-                            treeEl.innerHTML = treeHtml;
-                            treeEl.style.display = "block";
-                        } else {
-                            treeEl.style.display = "none";
-                            treeEl.innerHTML = "";
-                        }
-                    }
                 });
 
                 // Update Active Jobs
@@ -1162,16 +1049,25 @@
                 document.getElementById('jobs-count').textContent = activeJobs.length;
                 const jobsListEl = document.getElementById('active-jobs-list');
 
+                const getAgentLabel = (kpi) => {
+                    if (!kpi) return "Databricks";
+                    const k = kpi.toLowerCase();
+                    if (k.includes("hire") || k.includes("recruitment")) return "Recruitment";
+                    if (k.includes("onboarding")) return "Onboarding";
+                    if (k.includes("offboarding")) return "Offboarding";
+                    if (k.includes("attrition") || k.includes("central")) return "Central";
+                    if (k.includes("payroll")) return "Payroll";
+                    return kpi;
+                };
+
                 if (activeJobs.length === 0) {
                     jobsListEl.innerHTML = `<div style="font-size:12px; color:var(--text-secondary); text-align:center; padding:12px; background:var(--card-inner-bg); border: 1px dashed var(--panel-border); border-radius:var(--radius-md);">No active Databricks jobs.</div>`;
                 } else {
                     jobsListEl.innerHTML = activeJobs.map(job => `
                         <div class="job-item">
                             <div class="job-meta">
-                                <span class="job-kpi">${job.kpi_name}</span>
-                                <span class="job-id">Run ID: ${job.run_id}</span>
-                                <span class="job-id" style="color: var(--text-secondary); font-size: 11px; word-break: break-all; margin-top: 2px;">Notebook: ${job.notebook_path || 'N/A'}</span>
-                                <span class="job-stage" style="margin-top: 4px;">${job.stage}</span>
+                                <span class="job-kpi" style="font-size: 13px; font-weight: 600; color: var(--blue);">${getAgentLabel(job.kpi_name)} Notebook Running</span>
+                                <span class="job-id" style="color: var(--text-secondary); font-size: 11px; margin-top: 2px;">KPI: ${job.kpi_name}</span>
                             </div>
                             <div class="spinner"></div>
                         </div>
@@ -1185,7 +1081,8 @@
                 // Track if we need to auto-scroll (user is already at the bottom)
                 const shouldScroll = terminal.scrollHeight - terminal.scrollTop <= terminal.clientHeight + 40;
 
-                terminal.innerHTML = logs.map(line => {
+                terminal.innerHTML = logs.map(rawLine => {
+                    const line = String(rawLine || '');
                     const match = line.match(/^\[([^\]]+)\]\s*(.*)$/);
                     let time = "";
                     let msg = line;
@@ -1276,13 +1173,90 @@
             return date.toLocaleString();
         }
 
+        function renderBreachTable(summaries) {
+            if (!summaries || !summaries.length) return '';
+
+            const sorted = [...summaries].sort((a, b) => {
+                const sevA = (a.severity || '').toUpperCase() === 'CRITICAL' ? 0 : 1;
+                const sevB = (b.severity || '').toUpperCase() === 'CRITICAL' ? 0 : 1;
+                return sevA - sevB;
+            });
+
+            const hasDept = sorted.some(s => s.department);
+            const hasLoc = sorted.some(s => s.location);
+            const hasPerson = sorted.some(s => s.person && String(s.person).trim() !== '0' && String(s.person).trim() !== 'None');
+            const hasStage = sorted.some(s => s.stage);
+            const hasWhy = sorted.some(s => s.why);
+            const hasSLA = sorted.some(s => s.sla_impact);
+            const hasHR = sorted.some(s => s.hr_lead);
+
+            let headers = [];
+            if (hasDept || hasLoc) headers.push("Department & Location");
+            if (hasPerson) headers.push("Candidate / Employee & ID");
+            else if (!hasDept && !hasLoc) headers.push("KPI / ID");
+            if (hasStage) headers.push("Current Stage / Step");
+            if (hasWhy) headers.push("Why (Delay Driver / Bottleneck)");
+            if (hasSLA) headers.push("SLA Impact");
+            if (hasHR) headers.push("HR Lead / Manager");
+            headers.push("Severity & Priority");
+
+            let thHtml = headers.map(h => `<th>${h}</th>`).join('');
+
+            let rowsHtml = sorted.map(s => {
+                const isCrit = (s.severity || '').toUpperCase() === 'CRITICAL';
+                const badgeColor = isCrit ? 'var(--red)' : 'var(--orange)';
+                const badgeText = isCrit ? 'CRITICAL' : (s.severity || 'WARNING').toUpperCase();
+                const actionTag = isCrit ? '🔥 URGENT' : '⚡ HIGH PRIORITY';
+
+                let tds = [];
+                if (hasDept || hasLoc) {
+                    const dStr = s.department || '';
+                    const lStr = s.location || '';
+                    let val = dStr && lStr ? `<strong>${dStr}</strong><br><small style="color:var(--text-secondary);">📍 ${lStr}</small>` : (dStr ? `<strong>${dStr}</strong>` : `<strong>${lStr}</strong>`);
+                    tds.push(`<td>${val}</td>`);
+                }
+                if (hasPerson) {
+                    tds.push(`<td><strong>${s.person || s.kpi_id || 'N/A'}</strong></td>`);
+                } else if (!hasDept && !hasLoc) {
+                    tds.push(`<td><strong>${s.kpi_id || 'N/A'}</strong></td>`);
+                }
+                if (hasStage) {
+                    tds.push(`<td><span style="background:var(--btn-bg); border:1px solid var(--panel-border); padding:2px 6px; border-radius:4px; font-size:11px;">${s.stage || 'N/A'}</span></td>`);
+                }
+                if (hasWhy) {
+                    tds.push(`<td style="font-size:12px; color:var(--text-secondary);">${s.why || 'SLA threshold breach'}</td>`);
+                }
+                if (hasSLA) {
+                    tds.push(`<td style="font-size:12px; font-weight:600; color:var(--red);">${s.sla_impact || 'N/A'}</td>`);
+                }
+                if (hasHR) {
+                    tds.push(`<td style="font-size:12px;">${s.hr_lead || 'N/A'}</td>`);
+                }
+                tds.push(`<td><div style="display:inline-flex; flex-wrap:wrap; gap:4px; align-items:center;"><span style="background:${badgeColor}20; color:${badgeColor}; border:1px solid ${badgeColor}40; padding:2px 6px; border-radius:12px; font-size:10px; font-weight:700; white-space:nowrap;">${badgeText}</span><span style="font-size:10px; color:${badgeColor}; font-weight:600; white-space:nowrap;">${actionTag}</span></div></td>`);
+
+                return `<tr>${tds.join('')}</tr>`;
+            }).join('');
+
+            return `
+                <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary); margin-top: 16px;">📦 Actual Breaches Breakdown (${sorted.length})</div>
+                <div class="table-wrap" style="margin-top: 8px; margin-bottom: 16px;">
+                    <table>
+                        <thead><tr>${thHtml}</tr></thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
         function renderCard(item, idx) {
-            const d = item.data;
+            if (!item) return '';
+            const d = item.data || {};
             const rootCauses = d.root_causes || [];
             const immediateActions = d.immediate_actions || [];
             const predictiveAnalysis = d.predictive_risk_analysis || [];
             const preventativeActions = d.preventative_actions || [];
             const risk = d.risk_assessment || '';
+            const breachSummaries = item.breach_summaries || [];
 
             // Root causes
             let rcHtml = '';
@@ -1335,6 +1309,7 @@
             }
 
             let riskHtml = risk ? `<div class="risk-box">${risk}</div>` : '';
+            let breachTableHtml = renderBreachTable(breachSummaries);
 
             return `
                 <div class="alert-card">
@@ -1346,6 +1321,8 @@
                         <span class="severity-badge">Breach Detected</span>
                     </div>
                     <div class="alert-card-body">
+                        ${breachTableHtml}
+
                         <div class="field-label" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Executive Summary</div>
                         <p class="field-content">${d.executive_summary || ''}</p>
 
@@ -1367,39 +1344,44 @@
                 </div>`;
         }
 
+        let lastResultsFingerprint = '';
+
         async function fetchResults() {
             try {
                 const res = await fetch('/api/results');
                 const data = await res.json();
 
-                if (data.length === lastResultsCount) return; // Skip DOM rebuild if no new data
-                lastResultsCount = data.length;
+                const fingerprint = JSON.stringify(data);
+                if (fingerprint === lastResultsFingerprint) return;
 
                 const el = document.getElementById('alerts-container');
+                if (!el) return;
 
-                if (!data.length) {
+                if (!Array.isArray(data) || !data.length) {
                     el.innerHTML = `
                         <div class="empty-state">
                             <h3>No Prescriptive Insights Yet</h3>
                             <p>Click "Trigger HR KPI Scan" above or wait for the daily 9:00 AM scan to trigger domain agent calculations.</p>
                         </div>`;
+                    lastResultsFingerprint = fingerprint;
                     return;
                 }
-                el.innerHTML = data.map((item, i) => renderCard(item, i)).join('');
+
+                const cardsHtml = data.map((item, i) => {
+                    try {
+                        return renderCard(item, i);
+                    } catch (cardErr) {
+                        console.error(`Error rendering alert card #${i}:`, cardErr, item);
+                        return '';
+                    }
+                }).filter(Boolean).join('');
+
+                el.innerHTML = cardsHtml;
+                lastResultsFingerprint = fingerprint;
             } catch (e) {
                 console.error('Fetch results error:', e);
             }
         }
-
-        // Initialize and schedule polling
-        fetchSystemState();
-        fetchResults();
-
-        // Poll status every 2 seconds for high-fidelity logs
-        setInterval(fetchSystemState, 2000);
-
-        // Poll results every 5 seconds for new recommendations
-        setInterval(fetchResults, 5000);
 
         // Theme Switcher Logic
         function initTheme() {
@@ -1439,7 +1421,23 @@
             }
         }
 
+        // Initialize theme and DOM handlers immediately
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            fetchSystemState();
+            fetchResults();
+        });
+
+        // Initial call in case DOMContentLoaded already fired
         initTheme();
+        fetchSystemState();
+        fetchResults();
+
+        // Poll status every 2 seconds for high-fidelity logs
+        setInterval(fetchSystemState, 2000);
+
+        // Poll results every 5 seconds for new recommendations
+        setInterval(fetchResults, 5000);
     </script>
 </body>
 

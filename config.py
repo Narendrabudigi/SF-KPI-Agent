@@ -117,16 +117,16 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # Fallback Chain
 PRIMARY_PROVIDER = os.getenv("PRIMARY_PROVIDER", "gemini")
-PRIMARY_MODEL = os.getenv("PRIMARY_MODEL", "gemini-2.5-flash")
+PRIMARY_MODEL = os.getenv("PRIMARY_MODEL", "gemini-3.5-flash")
 
 SECONDARY_PROVIDER = os.getenv("SECONDARY_PROVIDER", "gemini")
-SECONDARY_MODEL = os.getenv("SECONDARY_MODEL", "gemini-2.5-flash-lite")
+SECONDARY_MODEL = os.getenv("SECONDARY_MODEL", "gemini-3.6-flash")
 
-THIRD_PROVIDER = os.getenv("THIRD_PROVIDER", "groq")
-THIRD_MODEL = os.getenv("THIRD_MODEL", "llama-3.3-70b-versatile")
+THIRD_PROVIDER = os.getenv("THIRD_PROVIDER", "gemini")
+THIRD_MODEL = os.getenv("THIRD_MODEL", "gemini-2.5-pro")
 
 FOURTH_PROVIDER = os.getenv("FOURTH_PROVIDER", "groq")
-FOURTH_MODEL = os.getenv("FOURTH_MODEL", "qwen/qwen3-32b")
+FOURTH_MODEL = os.getenv("FOURTH_MODEL", "openai/gpt-oss-120b")
 
 # Notification Configuration
 # ---------------------------------------------------------------------------
