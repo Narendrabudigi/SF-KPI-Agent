@@ -10,7 +10,7 @@
         rel="stylesheet">
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-theme');
             }
@@ -554,7 +554,7 @@
             align-items: center;
             padding: 20px 24px;
             border-bottom: 1px solid var(--panel-border);
-            background: rgba(30, 41, 59, 0.2);
+            background: var(--alert-header-bg);
         }
 
         .alert-card-header h3 {
@@ -664,7 +664,7 @@
         }
 
         th {
-            background: rgba(30, 41, 59, 0.4);
+            background: var(--table-th-bg);
             font-weight: 600;
             color: var(--text-secondary);
         }
@@ -1385,7 +1385,7 @@
 
         // Theme Switcher Logic
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.body.classList.add('light-theme');
                 document.documentElement.classList.add('light-theme');
