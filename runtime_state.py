@@ -23,7 +23,8 @@ SYSTEM_STATE = {
 
 def log_system_event(message: str):
     """Utility to append a message to the shared system logs and print it."""
-    timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+    import config
+    timestamp = config.get_now().strftime("%H:%M:%S")
     # Clean rich formatting tags for web logs
     clean_msg = re.sub(r'\[/?[a-zA-Z0-9 _=#,.-]+\]', '', message)
     log_entry = f"[{timestamp}] {clean_msg}"

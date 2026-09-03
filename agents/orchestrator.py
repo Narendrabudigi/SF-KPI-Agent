@@ -136,12 +136,7 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
                 "Severity": sev
             }
         else:
-            kpi_id = (
-                row.get("KPI_ID") or row.get("KPI_Id") or row.get("kpi_id") or
-                row.get("Kpi_Id") or row.get("KPI_ID_Col") or
-                row.get("OFFBOARDING_PROCESS_ID") or row.get("ONBOARDING_PROCESS_ID") or
-                row.get("JOB_REQ_ID")
-            )
+            kpi_id = breach_tracker._extract_kpi_id(row)
             breach_entry = {"KPI_ID": str(kpi_id) if kpi_id else "", "Severity": sev}
 
         breach_list.append(breach_entry)
@@ -396,7 +391,7 @@ def handle_batch_rca_workflow(domain_key, breach_rows_list, kpi_name, year, mont
             })
         else:
             breach_summaries.append({
-                "kpi_id": str(kpi_id) if kpi_id else f"Unknown-{i}",
+                "kpi_id": str(clean_kpi_id) if clean_kpi_id else f"Unknown-{i}",
                 "department": str(dept) if dept else None,
                 "location": str(loc) if loc else None,
                 "person": person_info,
@@ -438,7 +433,7 @@ def check_sap_breaches():
     """
     runtime_state.SYSTEM_STATE["primary_agent"] = None
     runtime_state.SYSTEM_STATE["status"] = "fetching"
-    runtime_state.SYSTEM_STATE["last_checked"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    runtime_state.SYSTEM_STATE["last_checked"] = config.get_now().strftime("%Y-%m-%d %H:%M:%S")
     runtime_state.log_system_event("Checking OData endpoint for active breaches...")
     
     kpi_data = odata_client.fetch_kpi_data()
@@ -557,8 +552,8 @@ def run_orchestrator():
         runtime_state.SYSTEM_STATE["status"] = "idle"
         
     while True:
-        # Sleep until 8:50 AM first
-        now = datetime.datetime.now()
+        # Sleep until 8:50 AM IST (configured timezone) first
+        now = config.get_now()
         target_reset = now.replace(hour=8, minute=50, second=0, microsecond=0)
         if now >= target_reset:
             target_reset += datetime.timedelta(days=1)
@@ -566,7 +561,7 @@ def run_orchestrator():
         seconds_to_sleep_reset = (target_reset - now).total_seconds()
         hours_reset = int(seconds_to_sleep_reset // 3600)
         minutes_reset = int((seconds_to_sleep_reset % 3600) // 60)
-        runtime_state.log_system_event(f"Sleeping until 8:50 AM to reset memory. Next reset scheduled at {target_reset.strftime('%Y-%m-%d %H:%M:%S')} (in {hours_reset}h {minutes_reset}m).")
+        runtime_state.log_system_event(f"Sleeping until 8:50 AM ({config.TIMEZONE_NAME}) to reset memory. Next reset scheduled at {target_reset.strftime('%Y-%m-%d %H:%M:%S')} (in {hours_reset}h {minutes_reset}m).")
         
         # Sleep until 8:50 AM
         time.sleep(seconds_to_sleep_reset)
@@ -574,8 +569,8 @@ def run_orchestrator():
         # Reset memory file
         reset_memory_file()
         
-        # Sleep remaining 10 minutes until 9:00 AM
-        now = datetime.datetime.now()
+        # Sleep remaining 10 minutes until 9:00 AM IST
+        now = config.get_now()
         target_run = now.replace(hour=9, minute=0, second=0, microsecond=0)
         if now >= target_run:
             target_run += datetime.timedelta(days=1)

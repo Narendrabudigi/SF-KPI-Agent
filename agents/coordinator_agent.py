@@ -97,22 +97,36 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
         runtime_state.log_system_event(f"[bold cyan][RCA Coordinator][/bold cyan] Fetching results for {kpi_name} from [bold]{table_name}[/bold]...")
         try:
             df = databricks_sql_client.fetch_results(table_name)
-            # Filter the dataframe to only include rows related to the primary incident (case-insensitive column search)
+            # Filter the dataframe to only include rows related to the primary incident (case-insensitive column & normalized search)
             if not df.empty:
                 df = df.replace(["nan", "NaN", "None", "null"], "")
-                primary_col = next((c for c in df.columns if c.upper() == 'PRIMARY_BREACH_KPI'), None)
+                primary_col = next((c for c in df.columns if c.upper() in ('PRIMARY_BREACH_KPI', 'PRIMARY_KPI', 'KPI_NAME', 'KPI')), None)
                 if primary_col:
-                    df = df[df[primary_col] == primary_kpi_name]
+                    import breach_tracker
+                    target_norm = breach_tracker.normalize_kpi_name(primary_kpi_name).lower()
+                    df_col_norm = df[primary_col].astype(str).apply(lambda x: breach_tracker.normalize_kpi_name(x).lower())
+                    matched_df = df[df_col_norm == target_norm]
+                    if not matched_df.empty:
+                        df = matched_df
+                    else:
+                        matched_df_sub = df[df_col_norm.str.contains(target_norm) | df[primary_col].astype(str).str.lower().str.contains(primary_kpi_name.lower())]
+                        if not matched_df_sub.empty:
+                            df = matched_df_sub
                 
             if not df.empty:
                 role = "PRIMARY BREACH ROOT CAUSES" if is_primary else f"CASCADING IMPACT ON {kpi_name}"
                 
                 # --- Filter by analysis_type column (e.g. ACTUAL_BREACH vs PREDICTIVE_RISK) ---
-                analysis_col = next((c for c in df.columns if c.upper() in ('ANALYSIS_TYPE', 'ACTIVITIES_TYPE')), None)
+                analysis_col = next((c for c in df.columns if c.upper() in ('ANALYSIS_TYPE', 'ACTIVITIES_TYPE', 'RECORD_TYPE', 'TYPE', 'BREACH_TYPE')), None)
                 
                 if analysis_col:
-                    actual_df = df[df[analysis_col].astype(str).str.upper() == 'ACTUAL_BREACH']
-                    predictive_df = df[df[analysis_col].astype(str).str.upper() == 'PREDICTIVE_RISK']
+                    analysis_upper = df[analysis_col].astype(str).str.upper().str.replace('_', ' ').str.strip()
+                    
+                    actual_mask = analysis_upper.str.contains('ACTUAL')
+                    actual_df = df[actual_mask]
+                    
+                    predictive_mask = analysis_upper.str.contains('PREDICT') | analysis_upper.str.contains('RISK')
+                    predictive_df = df[predictive_mask]
                     
                     runtime_state.log_system_event(
                         f"[bold cyan][RCA Coordinator][/bold cyan] Filtered by {analysis_col}: "
@@ -125,10 +139,11 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
                     
                     if not predictive_df.empty:
                         predictive_risk_blocks.append(f"--- {role} (PREDICTIVE RISKS) ---\n{predictive_df.to_string()}\n")
-                        # Extract CRITICAL predicted risk rows for Excel generation
-                        sev_col = next((c for c in predictive_df.columns if c.upper() in ('SEVERITY', 'BREACH_SEVERITY')), None)
+                        # Extract ONLY CRITICAL predicted risk rows for Excel generation across all KPIs
+                        sev_col = next((c for c in predictive_df.columns if c.upper() in ('SEVERITY', 'BREACH_SEVERITY', 'RISK_SEVERITY', 'CRITICAL_LEVEL', 'PRIORITY')), None)
                         if sev_col:
-                            crit_pred = predictive_df[predictive_df[sev_col].astype(str).str.upper() == 'CRITICAL']
+                            sev_upper = predictive_df[sev_col].astype(str).str.upper().str.strip()
+                            crit_pred = predictive_df[sev_upper.isin(['CRITICAL', '1', '1.0', 'HIGH']) | sev_upper.str.contains('CRIT')]
                         else:
                             crit_pred = predictive_df
                             
@@ -142,10 +157,18 @@ def wait_and_fetch_results_batch(run_info_list: list, primary_kpi_name: str, sev
                     # Full context includes both
                     all_blocks.append(f"--- {role} ---\n{df.to_string()}\n")
                 else:
-                    # No analysis_type column found — treat all rows as actual breach (backward compat)
-                    runtime_state.log_system_event(
-                        f"[yellow][RCA Coordinator] No 'analysis_type' column found in {table_name}. Treating all {len(df)} rows as ACTUAL_BREACH.[/yellow]"
-                    )
+                    # No explicit analysis_type column found — check if any rows are marked with CRITICAL severity
+                    sev_col = next((c for c in df.columns if c.upper() in ('SEVERITY', 'BREACH_SEVERITY', 'RISK_SEVERITY', 'CRITICAL_LEVEL', 'PRIORITY')), None)
+                    if sev_col:
+                        sev_upper = df[sev_col].astype(str).str.upper().str.strip()
+                        crit_rows = df[sev_upper.isin(['CRITICAL', '1', '1.0', 'HIGH']) | sev_upper.str.contains('CRIT')]
+                        if not crit_rows.empty:
+                            records = json.loads(crit_rows.to_json(orient="records", date_format="iso"))
+                            critical_predictive_records.extend(records)
+                            runtime_state.log_system_event(
+                                f"[bold red][RCA Coordinator][/bold red] ⚠️ Extracted {len(crit_rows)} CRITICAL row(s) for Excel export"
+                            )
+                                    
                     actual_breach_blocks.append(f"--- {role} ---\n{df.to_string()}\n")
                     all_blocks.append(f"--- {role} ---\n{df.to_string()}\n")
             else:

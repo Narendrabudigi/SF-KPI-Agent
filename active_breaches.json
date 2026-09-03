@@ -1,11 +1,31 @@
 {
-    "employee_attrition_rate_d09": {
-        "breach_id": "employee_attrition_rate_d09",
-        "kpi_name": "Employee Attrition Rate",
+    "onboarding_completion_time_onb100141": {
+        "breach_id": "onboarding_completion_time_onb100141",
+        "kpi_name": "Onboarding Completion Time",
         "severity": "Critical",
-        "department": "D09",
-        "first_detected": "2026-08-21T04:24:19.199900+00:00",
-        "last_notified": "2026-08-21T04:24:19.199900+00:00",
+        "department": null,
+        "first_detected": "2026-09-02T17:55:45.176881+05:30",
+        "last_notified": "2026-09-02T17:55:45.176881+05:30",
+        "notification_count": 1,
+        "status": "ACTIVE"
+    },
+    "onboarding_completion_time_onb100132": {
+        "breach_id": "onboarding_completion_time_onb100132",
+        "kpi_name": "Onboarding Completion Time",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-09-02T17:55:45.474173+05:30",
+        "last_notified": "2026-09-02T17:55:45.474173+05:30",
+        "notification_count": 1,
+        "status": "ACTIVE"
+    },
+    "offboarding_completion_time_ofb100122": {
+        "breach_id": "offboarding_completion_time_ofb100122",
+        "kpi_name": "Offboarding Completion Time",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-09-02T17:56:19.976286+05:30",
+        "last_notified": "2026-09-02T17:56:19.976286+05:30",
         "notification_count": 1,
         "status": "ACTIVE"
     }

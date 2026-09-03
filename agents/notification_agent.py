@@ -60,9 +60,10 @@ def _save_to_dashboard(data: dict, kpi_name: str, breach_summaries: list = None)
     breach_count = len(breach_summaries) if breach_summaries else 1
     breach_ids = [bs.get("kpi_id", "N/A") for bs in breach_summaries] if breach_summaries else []
     
+    now_dt = config.get_now()
     entry = {
-        "id": str(datetime.now(timezone.utc).timestamp()),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "id": str(now_dt.timestamp()),
+        "timestamp": now_dt.isoformat(),
         "kpi_name": kpi_name,
         "breach_count": breach_count,
         "breach_ids": breach_ids,
@@ -109,7 +110,12 @@ def _build_dynamic_breach_table(breach_summaries: list, format_type: str = 'html
     # Check non-empty columns dynamically
     has_dept = any(bs.get("department") for bs in sorted_bs)
     has_loc = any(bs.get("location") for bs in sorted_bs)
-    has_person = any(bs.get("person") and str(bs.get("person")).strip() not in ("0", "None", "") for bs in sorted_bs)
+    has_person = any(bs.get("person") and str(bs.get("person")).strip() not in ("0", "None", "nan", "") for bs in sorted_bs)
+    has_distinct_kpi_id = any(
+        bs.get("kpi_id") and str(bs.get("kpi_id")).strip() not in ("0", "None", "nan", "") 
+        and str(bs.get("kpi_id")).strip().lower() != str(bs.get("department", "")).strip().lower()
+        for bs in sorted_bs
+    )
     has_stage = any(bs.get("stage") for bs in sorted_bs)
     has_why = any(bs.get("why") for bs in sorted_bs)
     has_sla = any(bs.get("sla_impact") for bs in sorted_bs)
@@ -121,6 +127,8 @@ def _build_dynamic_breach_table(breach_summaries: list, format_type: str = 'html
             headers.append("Department & Location")
         if has_person:
             headers.append("Candidate / Employee & ID")
+        elif has_distinct_kpi_id:
+            headers.append("KPI / ID")
         elif not has_dept and not has_loc:
             headers.append("KPI / ID")
         if has_stage:
@@ -159,7 +167,10 @@ def _build_dynamic_breach_table(breach_summaries: list, format_type: str = 'html
             if has_person:
                 p_val = bs.get("person") or bs.get("kpi_id", "N/A")
                 tds.append(f'<td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">{p_val}</td>')
-            else:
+            elif has_distinct_kpi_id:
+                k_val = bs.get("kpi_id", "N/A")
+                tds.append(f'<td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">{k_val}</td>')
+            elif not has_dept and not has_loc:
                 k_val = bs.get("kpi_id", "N/A")
                 tds.append(f'<td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">{k_val}</td>')
 
@@ -202,7 +213,9 @@ def _build_dynamic_breach_table(breach_summaries: list, format_type: str = 'html
             headers.append("Dept & Location")
         if has_person:
             headers.append("Employee / Candidate & ID")
-        else:
+        elif has_distinct_kpi_id:
+            headers.append("KPI ID")
+        elif not has_dept and not has_loc:
             headers.append("KPI ID")
         if has_stage:
             headers.append("Current Stage")
@@ -228,7 +241,9 @@ def _build_dynamic_breach_table(breach_summaries: list, format_type: str = 'html
                 cols.append(f"{dept_str} ({loc_str})" if dept_str and loc_str else (dept_str or loc_str))
             if has_person:
                 cols.append(str(bs.get("person") or bs.get("kpi_id", "N/A")))
-            else:
+            elif has_distinct_kpi_id:
+                cols.append(str(bs.get("kpi_id", "N/A")))
+            elif not has_dept and not has_loc:
                 cols.append(str(bs.get("kpi_id", "N/A")))
             if has_stage:
                 cols.append(str(bs.get("stage", "N/A")))
@@ -439,17 +454,10 @@ def distribute_recommendations(
         if breach_summaries:
             # Batch mode — record each breach individually
             for bs in breach_summaries:
-                # Build a minimal row dict for breach tracking
-                if bs.get("department"):
-                    row_for_tracking = {"Department": bs.get("department")}
-                elif bs.get("kpi_id"):
-                    row_for_tracking = {"KPI_ID": bs.get("kpi_id")}
-                else:
-                    row_for_tracking = None
                 recorded_id = breach_tracker.record_breach_notification(
                     kpi_name, 
                     severity=bs.get("severity", severity), 
-                    row=row_for_tracking
+                    row=bs
                 )
                 console.print(f"[bold green]📌 Recorded active breach: '{recorded_id}' in active_breaches.json[/bold green]")
         elif row:

@@ -33,11 +33,41 @@ DATABRICKS_TOKEN: str = os.getenv("DATABRICKS_TOKEN", "")
 NOTEBOOK_PATH: str = os.getenv("NOTEBOOK_PATH", "")
 
 # ---------------------------------------------------------------------------
-# Polling and Wait Configuration
+# Polling and Wait Configuration & Timezone Configuration
 # ---------------------------------------------------------------------------
 ODATA_POLL_INTERVAL = int(os.getenv("ODATA_POLL_INTERVAL", "15"))
 DATABRICKS_POLL_INTERVAL = int(os.getenv("DATABRICKS_POLL_INTERVAL", "15"))
 MAX_WAIT_SECONDS = int(os.getenv("MAX_WAIT_SECONDS", "3600"))
+
+import datetime
+
+TIMEZONE_NAME: str = os.getenv("TIMEZONE", "Asia/Kolkata").strip()
+
+def get_target_timezone():
+    """
+    Returns an aware timezone object for the configured TIMEZONE (defaults to Asia/Kolkata / IST).
+    Safe fallback for cloud container environments (SAP BTP, Cloud Foundry, Vercel, Docker)
+    where tzdata may not be installed.
+    """
+    tz_env = os.getenv("TIMEZONE", "Asia/Kolkata").strip()
+    if tz_env.upper() in ("IST", "ASIA/KOLKATA", "INDIA"):
+        tz_env = "Asia/Kolkata"
+    
+    try:
+        import zoneinfo
+        return zoneinfo.ZoneInfo(tz_env)
+    except Exception:
+        pass
+
+    # Fallback to IST fixed offset (+5:30) if zoneinfo is unavailable or lookup fails
+    return datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+
+def get_now() -> datetime.datetime:
+    """
+    Returns an aware datetime in the target timezone (IST by default).
+    Guarantees consistent timestamping & scheduling across local and SAP BTP deployments.
+    """
+    return datetime.datetime.now(get_target_timezone())
 
 # ---------------------------------------------------------------------------
 # Databricks Configuration

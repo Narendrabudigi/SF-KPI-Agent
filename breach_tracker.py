@@ -95,7 +95,7 @@ def _extract_department(row: Dict[str, Any]) -> Optional[str]:
 
 def _extract_kpi_id(row: Dict[str, Any]) -> Optional[str]:
     """
-    Extracts the KPI ID / Incident ID from an OData row.
+    Extracts the KPI ID / Incident ID from an OData row or breach summary dict.
     Supports multiple field name conventions used across different SAP SF modules.
     """
     kpi_id = (
@@ -104,22 +104,25 @@ def _extract_kpi_id(row: Dict[str, Any]) -> Optional[str]:
         row.get("kpi_id") or
         row.get("Kpi_Id") or
         row.get("KPI_ID_Col") or
-        row.get("ID") or
-        row.get("Id") or
-        row.get("KPI_CODE") or
-        row.get("KPI_Code") or
+        row.get("APPLICATION_ID") or
+        row.get("Application_ID") or
+        row.get("application_id") or
+        row.get("APP_ID") or
+        row.get("App_ID") or
+        row.get("ONBOARDING_PROCESS_ID") or
+        row.get("Onboarding_Process_ID") or
+        row.get("OFFBOARDING_PROCESS_ID") or
+        row.get("Offboarding_Process_ID") or
+        row.get("JOB_REQ_ID") or
+        row.get("Job_Req_ID") or
         row.get("INCIDENT_ID") or
         row.get("Incident_ID") or
         row.get("BREACH_ID") or
         row.get("Breach_ID") or
-        row.get("JOB_REQ_ID") or
-        row.get("Job_Req_ID") or
-        row.get("ONBOARDING_PROCESS_ID") or
-        row.get("Onboarding_Process_ID") or
-        row.get("OFFBOARDING_PROCESS_ID") or
-        row.get("Offboarding_Process_ID")
+        row.get("ID") or
+        row.get("Id")
     )
-    if kpi_id and str(kpi_id).strip().upper() not in ("NULL", "NONE", ""):
+    if kpi_id and str(kpi_id).strip().upper() not in ("NULL", "NONE", "", "0", "NAN"):
         return str(kpi_id).strip()
     return None
 
@@ -224,9 +227,9 @@ def is_in_cooldown(breach_id: str) -> Tuple[bool, Optional[str], float]:
 
         try:
             last_notified_dt = datetime.datetime.fromisoformat(last_notified_str)
+            now = config.get_now()
             if last_notified_dt.tzinfo is None:
-                last_notified_dt = last_notified_dt.replace(tzinfo=datetime.timezone.utc)
-            now = datetime.datetime.now(datetime.timezone.utc)
+                last_notified_dt = last_notified_dt.replace(tzinfo=now.tzinfo)
             elapsed_minutes = (now - last_notified_dt).total_seconds() / 60.0
             cooldown_minutes = float(config.NOTIFICATION_COOLDOWN_MINUTES)
 
@@ -256,7 +259,7 @@ def record_breach_notification(
     """
     canonical_kpi = normalize_kpi_name(kpi_name)
     breach_id = breach_id_override if breach_id_override else generate_breach_id(canonical_kpi, row)
-    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now_iso = config.get_now().isoformat()
 
     # Extract department for display (attrition KPIs only)
     dept = None
