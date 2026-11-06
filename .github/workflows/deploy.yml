@@ -13,20 +13,18 @@ jobs:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Run Portable Cloud Foundry CLI v8
+    - name: Set up Cloud Foundry CLI v8
+      uses: cloudfoundry/actions-cf-cli@v1
+      with:
+        version: v8
+
+    - name: Authenticate and Push Live to BTP
       env:
         CF_API: ${{ secrets.CF_API }}
         CF_USERNAME: ${{ secrets.CF_USERNAME }}
         CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
       run: |
-        # 1. Download the direct portable Linux binary package from GitHub Releases
-        curl -sL "https://github.com" -o cf8.tgz
-        
-        # 2. Unpack the compressed archive file cleanly
-        tar -xzf cf8.tgz
-        
-        # 3. Authenticate using the unpacked portable local binary (./cf8)
-        ./cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
-        
-        # 4. Deploy your application instance live to BTP
-        ./cf8 push
+        # Secure standard login block
+        cf login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
+        # Deploy your application live
+        cf push
