@@ -13,16 +13,14 @@ jobs:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up Node.js Environment
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-
-    - name: Install Cloud Foundry CLI via NPM
+    - name: Install Official Cloud Foundry CLI v8 Binary
       run: |
-        npm install -g cf-cli@8
-        # This makes sure the 'cf8' alias links up properly if needed
-        sudo ln -s /usr/local/bin/cf /usr/local/bin/cf8
+        # Download the official Linux 64-bit binary archive
+        curl -L "https://cloudfoundry.org" | tar -zx
+        # Move the binary executable to a global system path
+        sudo mv cf8 /usr/local/bin/cf8
+        # Verify it works
+        cf8 --version
 
     - name: Authenticate and Push to BTP
       env:
