@@ -13,13 +13,11 @@ jobs:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up Cloud Foundry CLI
+    - name: Authenticate and Deploy to SAP BTP
       uses: citizen-of-planet-earth/cf-cli-action@v1
       with:
         cf_api: ${{ secrets.CF_API }}
         cf_username: ${{ secrets.CF_USERNAME }}
         cf_password: ${{ secrets.CF_PASSWORD }}
-
-    - name: Deploy to SAP BTP
-      run: |
-        cf push
+        # Setting the push command directly inside the action execution block
+        cf_action: push
