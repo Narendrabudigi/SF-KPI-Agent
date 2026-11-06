@@ -13,11 +13,29 @@ jobs:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Authenticate and Deploy to SAP BTP
-      uses: citizen-of-planet-earth/cf-cli-action@v1
+    - name: Set up Python Environment
+      uses: actions/setup-python@v5
       with:
-        cf_api: ${{ secrets.CF_API }}
-        cf_username: ${{ secrets.CF_USERNAME }}
-        cf_password: ${{ secrets.CF_PASSWORD }}
-        # Corrected parameter name
-        command: push
+        python-version: '3.11'
+
+    - name: Download and Install Official Cloud Foundry CLI v8
+      run: |
+        # Download the official standalone Linux binary archive cleanly
+        curl -sL "https://cloudfoundry.org" -o cf8.tgz
+        # Extract the standalone executable binary
+        tar -xzf cf8.tgz cf8
+        # Move it to a secure, global path executable folder
+        sudo mv cf8 /usr/local/bin/cf8
+        # Verify that the binary runs perfectly
+        cf8 --version
+
+    - name: Authenticate and Push Live to BTP
+      env:
+        CF_API: ${{ secrets.CF_API }}
+        CF_USERNAME: ${{ secrets.CF_USERNAME }}
+        CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
+      run: |
+        # Log into the endpoint using secure multi-line shell escaping
+        cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
+        # Push the application live to your client's dashboard space
+        cf8 push
