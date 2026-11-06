@@ -3,28 +3,38 @@ name: Auto Deploy to SAP BTP Cloud Foundry
 on:
   push:
     branches:
-      - main
+      - main  # Automatically triggers the deployment every time you push code to the main branch
 
 jobs:
   btp-deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Download the source code repository onto the runner machine
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up Cloud Foundry CLI v8
+    # Step 2: Establish the isolated Python runtime engine environment
+    - name: Set up Python Runtime Environment
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    # Step 3: Automatically grab and configure the official Cloud Foundry v8 client binary
+    - name: Initialize Official Cloud Foundry CLI v8
       uses: cloudfoundry/actions-cf-cli@v1
       with:
         version: v8
 
+    # Step 4: Securely execute login authentication and deploy the app
     - name: Authenticate and Push Live to BTP
       env:
         CF_API: ${{ secrets.CF_API }}
         CF_USERNAME: ${{ secrets.CF_USERNAME }}
         CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
       run: |
-        # Secure standard login block
+        # Log into the target SAP BTP space using secure string wrappers
         cf login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
-        # Deploy your application live
+        
+        # Deploy code updates smoothly using the rules defined inside manifest.yml
         cf push
