@@ -20,21 +20,18 @@ jobs:
       with:
         python-version: '3.11'
 
-    # Step 3: Automatically grab and configure the official Cloud Foundry v8 client binary
-    - name: Initialize Official Cloud Foundry CLI v8
-      uses: cloudfoundry/actions-cf-cli@v1
+    # Step 3: Initialize the Cloud Foundry CLI using a verified marketplace action
+    - name: Initialize Cloud Foundry CLI
+      uses: jasonmccallister/setup-cf-cli@v2
       with:
-        version: v8
+        cf_api: ${{ secrets.CF_API }}
+        cf_username: ${{ secrets.CF_USERNAME }}
+        cf_password: ${{ secrets.CF_PASSWORD }}
+        # Setting version to 8 handles standard Cloud Foundry API updates perfectly
+        cf_cli_version: '8'
 
-    # Step 4: Securely execute login authentication and deploy the app
-    - name: Authenticate and Push Live to BTP
-      env:
-        CF_API: ${{ secrets.CF_API }}
-        CF_USERNAME: ${{ secrets.CF_USERNAME }}
-        CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
+    # Step 4: Execute the application push command
+    - name: Deploy Live to BTP
       run: |
-        # Log into the target SAP BTP space using secure string wrappers
-        cf login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
-        
-        # Deploy code updates smoothly using the rules defined inside manifest.yml
+        # Deploy your application smoothly using the manifest.yml configurations
         cf push
