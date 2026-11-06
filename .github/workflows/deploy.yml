@@ -31,5 +31,5 @@ jobs:
         CF_USERNAME: ${{ secrets.CF_USERNAME }}
         CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
       run: |
-        cf login -a $CF_API -u $CF_USERNAME -p $CF_PASSWORD
-        cf push
+        cf8 login -a $CF_API -u $CF_USERNAME -p $CF_PASSWORD
+        cf8 push
