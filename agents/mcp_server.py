@@ -332,3 +332,6 @@ def trigger_odata_check() -> str:
         return "OData breach check cycle completed."
     except Exception as e:
         return f"Error: {e}"
+
+if __name__ == "__main__":
+    mcp.run()

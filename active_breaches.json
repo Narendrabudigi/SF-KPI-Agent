@@ -5,8 +5,8 @@
         "severity": "Critical",
         "department": null,
         "first_detected": "2026-09-02T17:55:45.176881+05:30",
-        "last_notified": "2026-09-02T17:55:45.176881+05:30",
-        "notification_count": 1,
+        "last_notified": "2026-11-03T15:58:54.648060+05:30",
+        "notification_count": 6,
         "status": "ACTIVE"
     },
     "onboarding_completion_time_onb100132": {
@@ -15,8 +15,8 @@
         "severity": "Critical",
         "department": null,
         "first_detected": "2026-09-02T17:55:45.474173+05:30",
-        "last_notified": "2026-09-02T17:55:45.474173+05:30",
-        "notification_count": 1,
+        "last_notified": "2026-11-03T15:58:54.658811+05:30",
+        "notification_count": 6,
         "status": "ACTIVE"
     },
     "offboarding_completion_time_ofb100122": {
@@ -25,7 +25,57 @@
         "severity": "Critical",
         "department": null,
         "first_detected": "2026-09-02T17:56:19.976286+05:30",
-        "last_notified": "2026-09-02T17:56:19.976286+05:30",
+        "last_notified": "2026-11-03T15:58:39.296999+05:30",
+        "notification_count": 6,
+        "status": "ACTIVE"
+    },
+    "offboarding_completion_time_ofb100637": {
+        "breach_id": "offboarding_completion_time_ofb100637",
+        "kpi_name": "Offboarding Completion Time",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-09-08T12:33:57.370941+05:30",
+        "last_notified": "2026-11-03T15:58:39.305251+05:30",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "time_to_hire_app1000001": {
+        "breach_id": "time_to_hire_app1000001",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-09-08T12:34:55.543942+05:30",
+        "last_notified": "2026-11-03T15:58:24.657338+05:30",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "time_to_hire_app1000003": {
+        "breach_id": "time_to_hire_app1000003",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-09-08T12:34:55.586779+05:30",
+        "last_notified": "2026-11-03T15:58:24.665996+05:30",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "time_to_hire_app1000011": {
+        "breach_id": "time_to_hire_app1000011",
+        "kpi_name": "Time-to-Hire",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-09-08T12:34:55.644370+05:30",
+        "last_notified": "2026-11-03T15:58:24.675439+05:30",
+        "notification_count": 5,
+        "status": "ACTIVE"
+    },
+    "employee_attrition_rate": {
+        "breach_id": "employee_attrition_rate",
+        "kpi_name": "Employee Attrition Rate",
+        "severity": "Critical",
+        "department": null,
+        "first_detected": "2026-11-05T11:07:09.214063+05:30",
+        "last_notified": "2026-11-05T11:07:09.214063+05:30",
         "notification_count": 1,
         "status": "ACTIVE"
     }
