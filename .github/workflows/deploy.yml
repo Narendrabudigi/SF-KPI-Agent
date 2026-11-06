@@ -13,33 +13,20 @@ jobs:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up Python Environment
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-
-    - name: Install Official Cloud Foundry CLI via Debian Package
-      run: |
-        # Download and add the secure Cloud Foundry public GPG key
-        wget -q -O - https://cloudfoundry.org | gpg --dearmor | sudo tee /usr/share/keyrings/cloudfoundry-keyring.gpg > /dev/null
-        
-        # Configure the repository source linking explicitly to the secure keyring
-        echo "deb [signed-by=/usr/share/keyrings/cloudfoundry-keyring.gpg] https://cloudfoundry.org stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-        
-        # Update system listings and install the v8 environment package safely
-        sudo apt-get update
-        sudo apt-get install -y cf8-cli
-        
-        # Confirm the utility binary can run properly
-        cf8 --version
-
-    - name: Authenticate and Push Live to BTP
+    - name: Run Portable Cloud Foundry CLI v8
       env:
         CF_API: ${{ secrets.CF_API }}
         CF_USERNAME: ${{ secrets.CF_USERNAME }}
         CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
       run: |
-        # Execute the login sequence safely using double quotes to capture special characters
-        cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
-        # Push the application live to your cloud dashboard route space
-        cf8 push
+        # 1. Download the direct portable Linux binary package from GitHub Releases
+        curl -sL "https://github.com" -o cf8.tgz
+        
+        # 2. Unpack the compressed archive file cleanly
+        tar -xzf cf8.tgz
+        
+        # 3. Authenticate using the unpacked portable local binary (./cf8)
+        ./cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
+        
+        # 4. Deploy your application instance live to BTP
+        ./cf8 push
