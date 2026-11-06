@@ -3,33 +3,32 @@ name: Auto Deploy to SAP BTP Cloud Foundry
 on:
   push:
     branches:
-      - main  # Triggers the deployment every time you push to the main branch
+      - main
 
 jobs:
-  deploy:
+  btp-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up Node.js (or Python/Java if applicable)
+    - name: Set up Node.js Environment
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22'
 
-    - name: Install Cloud Foundry CLI
+    - name: Install Cloud Foundry CLI via NPM
       run: |
-        wget -q -O - https://cloudfoundry.org | sudo apt-key add -
-        echo "deb https://cloudfoundry.org stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-        sudo apt-get update
-        sudo apt-get install cf8-cli
+        npm install -g cf-cli@8
+        # This makes sure the 'cf8' alias links up properly if needed
+        sudo ln -s /usr/local/bin/cf /usr/local/bin/cf8
 
-    - name: Authenticate and Deploy to BTP
+    - name: Authenticate and Push to BTP
       env:
         CF_API: ${{ secrets.CF_API }}
         CF_USERNAME: ${{ secrets.CF_USERNAME }}
         CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
       run: |
-        cf8 login -a $CF_API -u $CF_USERNAME -p $CF_PASSWORD
+        cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
         cf8 push
