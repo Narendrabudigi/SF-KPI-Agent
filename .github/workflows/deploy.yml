@@ -13,20 +13,13 @@ jobs:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Install Official Cloud Foundry CLI v8 Binary
-      run: |
-        # Download the official Linux 64-bit binary archive
-        curl -L "https://cloudfoundry.org" | tar -zx
-        # Move the binary executable to a global system path
-        sudo mv cf8 /usr/local/bin/cf8
-        # Verify it works
-        cf8 --version
+    - name: Set up Cloud Foundry CLI
+      uses: citizen-of-planet-earth/cf-cli-action@v1
+      with:
+        cf_api: ${{ secrets.CF_API }}
+        cf_username: ${{ secrets.CF_USERNAME }}
+        cf_password: ${{ secrets.CF_PASSWORD }}
 
-    - name: Authenticate and Push to BTP
-      env:
-        CF_API: ${{ secrets.CF_API }}
-        CF_USERNAME: ${{ secrets.CF_USERNAME }}
-        CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
+    - name: Deploy to SAP BTP
       run: |
-        cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
-        cf8 push
+        cf push
