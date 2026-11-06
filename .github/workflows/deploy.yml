@@ -18,15 +18,19 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Download and Install Official Cloud Foundry CLI v8
+    - name: Install Official Cloud Foundry CLI via Debian Package
       run: |
-        # Download the official standalone Linux binary archive cleanly
-        curl -sL "https://cloudfoundry.org" -o cf8.tgz
-        # Extract the standalone executable binary
-        tar -xzf cf8.tgz cf8
-        # Move it to a secure, global path executable folder
-        sudo mv cf8 /usr/local/bin/cf8
-        # Verify that the binary runs perfectly
+        # Download and add the secure Cloud Foundry public GPG key
+        wget -q -O - https://cloudfoundry.org | gpg --dearmor | sudo tee /usr/share/keyrings/cloudfoundry-keyring.gpg > /dev/null
+        
+        # Configure the repository source linking explicitly to the secure keyring
+        echo "deb [signed-by=/usr/share/keyrings/cloudfoundry-keyring.gpg] https://cloudfoundry.org stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+        
+        # Update system listings and install the v8 environment package safely
+        sudo apt-get update
+        sudo apt-get install -y cf8-cli
+        
+        # Confirm the utility binary can run properly
         cf8 --version
 
     - name: Authenticate and Push Live to BTP
@@ -35,7 +39,7 @@ jobs:
         CF_USERNAME: ${{ secrets.CF_USERNAME }}
         CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
       run: |
-        # Log into the endpoint using secure multi-line shell escaping
+        # Execute the login sequence safely using double quotes to capture special characters
         cf8 login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD"
-        # Push the application live to your client's dashboard space
+        # Push the application live to your cloud dashboard route space
         cf8 push
