@@ -19,5 +19,5 @@ jobs:
         cf_api: ${{ secrets.CF_API }}
         cf_username: ${{ secrets.CF_USERNAME }}
         cf_password: ${{ secrets.CF_PASSWORD }}
-        # Setting the push command directly inside the action execution block
+        # Setting the push command directly inside the action execution block1
         cf_action: push
